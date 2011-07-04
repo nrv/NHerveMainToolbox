@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="/IcyWebVersion/plugins/adufour/connectedcomponents/ConnectedComponents.jar"/>
 	<classpathentry kind="lib" path="/IcyWebVersion/plugins/vannary/morphomaths/MorphoMaths.jar"/>
 	<classpathentry kind="lib" path="/IcyWebVersion/plugins/nherve/matrix/NHerveMatrix.jar"/>
-	<classpathentry kind="lib" path="/IcyWebVersion/plugins/adufour/ezplug/ezplug.jar"/>
+	<classpathentry kind="lib" path="/IcyWebVersion/plugins/adufour/ezplug/EzPlug.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
