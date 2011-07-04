@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="MacRoman" standalone="no"?>
+<jardesc>
+    <jar path="/Users/nherve/Travail/Export ICY plug/NHerveToolbox.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/NHerveToolboxMain/toolbox.jardesc" exportErrors="false" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" manifestLocation="/NHerveToolboxMain/Manifest.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <file path="/NHerveToolboxMain/Manifest.MF"/>
+        <file path="/NHerveToolboxMain/COPYING"/>
+        <javaElement handleIdentifier="=NHerveToolboxMain/src"/>
+    </selectedElements>
+</jardesc>
