@@ -84,7 +84,8 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	}
 
 	private static final long serialVersionUID = -3551019605947008673L;
-
+	private static final String EMPTY_LABEL = "nothing to display";
+	
 	public static final int DEFAULT_CELL_LENGTH = 150;
 	public static final int DEFAULT_CELL_SPACING = 10;
 	public static final int DEFAULT_MIN_ZOOM = 25;
@@ -114,7 +115,15 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	private boolean cellsJustSet;
 
 	public GridPanel() {
-		this(DEFAULT_CELL_LENGTH, DEFAULT_CELL_SPACING, true, true, DEFAULT_MIN_ZOOM, DEFAULT_MAX_ZOOM, DEFAULT_ZOOM_SMOOTH);
+		this(true);
+	}
+	
+	public GridPanel(boolean zoomOnFocus) {
+		this(zoomOnFocus, true);
+	}
+	
+	public GridPanel(boolean zoomOnFocus, boolean showBottomLine) {
+		this(DEFAULT_CELL_LENGTH, DEFAULT_CELL_SPACING, zoomOnFocus, showBottomLine, DEFAULT_MIN_ZOOM, DEFAULT_MAX_ZOOM, DEFAULT_ZOOM_SMOOTH);
 	}
 
 	public GridPanel(int cellLength, int cellSpacing, boolean zoomOnFocus, boolean showBottomLine) {
@@ -155,7 +164,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 
 			slZoom = new JSlider(JSlider.HORIZONTAL, minZoom, maxZoom, smoothZoom);
 			slZoom.addChangeListener(this);
-			lbNbCells = new JLabel("empty");
+			lbNbCells = new JLabel(EMPTY_LABEL);
 
 			JPanel bottom = GuiUtil.createLineBoxPanel(cbZoomOnFocus, Box.createHorizontalGlue(), slZoom, Box.createHorizontalGlue(), lbNbCells);
 			add(bottom, BorderLayout.SOUTH);
@@ -173,7 +182,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	private void updateLbNbCells() {
 		if (lbNbCells != null) {
 			if (cells == null) {
-				lbNbCells.setText("empty");
+				lbNbCells.setText(EMPTY_LABEL);
 			} else {
 				int countVisible = 0;
 				for (GridCell cell : cells) {
@@ -320,6 +329,10 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	public void adjustmentValueChanged(AdjustmentEvent arg0) {
 //		updateViewport();
 		updateLbNbCells();
+	}
+
+	public boolean isZoomOnFocus() {
+		return zoomOnFocus;
 	}
 	
 //	public boolean isOnScreen(T cell) {
