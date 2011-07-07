@@ -67,9 +67,13 @@ public class BinaryIcyBufferedImage extends IcyBufferedImage {
 	 *            the height
 	 */
 	public BinaryIcyBufferedImage(int width, int height) {
+		this(width, height, false);
+	}
+	
+	public BinaryIcyBufferedImage(int width, int height, boolean value) {
 		super(width, height, 1, TypeUtil.TYPE_BYTE);
 		rawBinaryData = getRawData();
-		Arrays.fill(rawBinaryData, FALSE);
+		Arrays.fill(rawBinaryData, value ? TRUE : FALSE);
 	}
 	
 	/**

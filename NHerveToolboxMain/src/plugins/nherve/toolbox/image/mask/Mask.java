@@ -119,7 +119,7 @@ public class Mask implements Serializable, Iterable<String> {
 	/**
 	 * Instantiates a new mask.
 	 */
-	public Mask() {
+	private Mask() {
 		super();
 		visibleLayer = true;
 		setColor(Color.WHITE);
@@ -155,7 +155,7 @@ public class Mask implements Serializable, Iterable<String> {
 		this();
 		this.width = width;
 		this.height = height;
-		setBinaryData(new BinaryIcyBufferedImage(width, height));
+		setBinaryData(new BinaryIcyBufferedImage(width, height, defaultValue));
 	}
 
 	/**
@@ -407,6 +407,10 @@ public class Mask implements Serializable, Iterable<String> {
 		} else {
 			throw new MaskException("No internal mask representation available");
 		}
+	}
+	
+	public void fill(boolean value) {
+		Arrays.fill(binaryData.getRawData(), value ? BinaryIcyBufferedImage.TRUE : BinaryIcyBufferedImage.FALSE);
 	}
 
 	/**
