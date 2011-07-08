@@ -18,10 +18,10 @@
  */
 package plugins.nherve.toolbox.plugin;
 
+import icy.gui.main.MainEvent;
 import icy.painter.Painter;
 import icy.sequence.Sequence;
 
-//FIXME En attente de SequenceClosed event pour retirer le painter correspondant
 /**
  * The Class BackupAndPainterManagerSingletonPlugin.
  * 
@@ -141,5 +141,17 @@ public abstract class BackupAndPainterManagerSingletonPlugin<O, P extends Painte
 	public void startPlugin() {
 		initPainterManager();
 		super.startPlugin();
+	}
+	
+	@Override
+	public void sequenceClosed(MainEvent event) {
+		removePainterFrom((Sequence)event.getSource());
+		super.sequenceClosed(event);
+	}
+
+	@Override
+	public void stopPlugin() {
+		removePainterFromAllSequences();
+		super.stopPlugin();
 	}
 }
