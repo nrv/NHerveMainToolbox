@@ -62,6 +62,7 @@ public class NherveToolbox extends Plugin implements PluginLibrary {
 	public static final Icon toWhiteIcon = getIcon("to_white.png");
 	public static final Icon handIcon = getIcon("hand.png");
 	public static final Image handImage = getImage("hand.png");
+	public static final Icon switchIcon = getIcon("switch.png");
 	
 	private static Icon getIcon(String file) {
 		return ResourceUtil.getImageIcon(getImage(file));
