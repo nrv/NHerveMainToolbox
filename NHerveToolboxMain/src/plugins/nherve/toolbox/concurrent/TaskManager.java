@@ -18,7 +18,8 @@
  */
 package plugins.nherve.toolbox.concurrent;
 
-import icy.system.CPUMonitor;
+
+import icy.system.SystemUtil;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +46,7 @@ import plugins.nherve.toolbox.Algorithm;
 public class TaskManager extends Algorithm {
 	
 	/** The Constant DEFAULT_NBT. */
-	private final static int DEFAULT_NBT = Math.max(2, CPUMonitor.getAvailableProcessors() - 1);
+	private final static int DEFAULT_NBT = Math.max(2, SystemUtil.getAvailableProcessors() - 1);
 	
 	/** The main. */
 	private static TaskManager main;
@@ -307,10 +308,10 @@ public class TaskManager extends Algorithm {
 	 * @throws InterruptedException 
 	 */
 	public <Input, Output> List<Output> submitMultiForAll(Input[] allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
-		return submitMultiForAll(Arrays.asList(allDatas), method, from, msg, slp);
+		return submitMultiForAll2(Arrays.asList(allDatas), method, from, msg, slp);
 	}
 	
-	public <Input, Output> List<Output> submitMultiForAll(List<Input> allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
+	public <Input, Output> List<Output> submitMultiForAll2(List<Input> allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
 		return submitMultiForAll(allDatas, null, method, from, msg, slp);
 	}
 	

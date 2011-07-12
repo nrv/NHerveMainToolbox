@@ -253,7 +253,7 @@ public class KMeans extends DefaultClusteringAlgorithmImpl<VectorSignature> impl
 	private void computeAffectation(List<VectorSignature> points) {
 		TaskManager tm = TaskManager.getSecondLevelInstance();
 		try {
-			tm.submitMultiForAll(points, ComputeAffectationWorker.class, this, "KMeans", 0);
+			tm.submitMultiForAll2(points, ComputeAffectationWorker.class, this, "KMeans", 0);
 		} catch (TaskException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
