@@ -25,6 +25,8 @@ import icy.gui.main.MainListener;
 import icy.main.Icy;
 import icy.plugin.abstract_.Plugin;
 import icy.plugin.interface_.PluginImageAnalysis;
+import icy.preferences.PluginsPreferences;
+import icy.preferences.XMLPreferences;
 import icy.sequence.Sequence;
 
 import java.util.HashMap;
@@ -436,4 +438,10 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	}
 	
 	public abstract void stopInterface();
+	
+	public XMLPreferences getPreferences() {
+		// TODO patch en attendant version suivante ICY
+		PluginsPreferences.load();
+		return PluginsPreferences.root(this);
+	}
 }
