@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileFilter;
 
 public class PluginHelper {
 	
-	public static void fileChooser(int mode, final String fileExt, final String description, XMLPreferences preferences, String title, JTextField tf) {
+	public static void fileChooser(int mode, final String fileExt, final String description, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
 		fileChooser(mode, new FileFilter() {
 			
 			@Override
@@ -23,10 +23,10 @@ public class PluginHelper {
 			public boolean accept(File f) {
 				return f.getName().toUpperCase().endsWith(fileExt.toUpperCase());
 			}
-		}, preferences, title, tf);
+		}, preferences, title, tf, defaultFile);
 	}
 
-	public static void fileChooser(int mode, FileFilter ff, XMLPreferences preferences, String title, JTextField tf) {
+	public static void fileChooser(int mode, FileFilter ff, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.setFileSelectionMode(mode);
@@ -34,14 +34,18 @@ public class PluginHelper {
 			fileChooser.setFileFilter(ff);
 		}
 	
-		File fp = new File(tf.getText());
-		while ((fp != null) && (fp.getAbsolutePath().length() > 0) && (!fp.exists())) {
-			fp = fp.getParentFile();
+		if (defaultFile != null) {
+			fileChooser.setSelectedFile(defaultFile);
+		} else {
+			File fp = new File(tf.getText());
+			while ((fp != null) && (fp.getAbsolutePath().length() > 0) && (!fp.exists())) {
+				fp = fp.getParentFile();
+			}
+			if ((fp == null) || (!fp.exists())) {
+				fp = new File(preferences.get(PATH, ""));
+			}
+			fileChooser.setCurrentDirectory(fp);
 		}
-		if ((fp == null) || (!fp.exists())) {
-			fp = new File(preferences.get(PATH, ""));
-		}
-		fileChooser.setCurrentDirectory(fp);
 	
 		int x = preferences.getInt("output_x", 0);
 		int y = preferences.getInt("output_y", 0);

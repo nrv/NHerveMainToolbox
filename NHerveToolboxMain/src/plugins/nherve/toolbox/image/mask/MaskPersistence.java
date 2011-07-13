@@ -58,4 +58,6 @@ public interface MaskPersistence {
 	 * @return the mask file extension
 	 */
 	String getMaskFileExtension();
+	
+	File getMaskFileFor(File image);
 }

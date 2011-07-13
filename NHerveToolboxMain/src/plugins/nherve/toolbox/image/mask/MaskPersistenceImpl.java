@@ -240,4 +240,19 @@ public class MaskPersistenceImpl extends Algorithm implements MaskPersistence {
 		fc.write(bb);
 	}
 
+	@Override
+	public File getMaskFileFor(File image) {
+		String name = image.getAbsolutePath();
+		File result = null;
+		if ((name != null) && (name.length() > 0)) {
+			int idx = name.lastIndexOf(".");
+			if (idx > 0) {
+				name = name.substring(0, idx);
+			}
+			name += getMaskFileExtension();
+			result = new File(name);
+		}
+		return result;
+	}
+
 }
