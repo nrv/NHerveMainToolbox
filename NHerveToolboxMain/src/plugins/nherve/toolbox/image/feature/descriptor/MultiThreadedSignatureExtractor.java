@@ -18,7 +18,7 @@
  */
 package plugins.nherve.toolbox.image.feature.descriptor;
 
-import icy.system.CPUMonitor;
+import icy.system.profile.CPUMonitor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -305,7 +305,7 @@ public class MultiThreadedSignatureExtractor<T extends Segmentable> extends Sign
 				}
 			} else {
 				try {
-					tm.submitMultiForAll(Arrays.asList(regions), SignatureExtractionWorker.class, this, "Signatures extraction", 0);
+					tm.submitMultiForAll2(Arrays.asList(regions), SignatureExtractionWorker.class, this, "Signatures extraction", 0);
 				} catch (TaskException e) {
 					e.printStackTrace();
 				} catch (InterruptedException e) {
