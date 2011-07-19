@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with NHerve Main Toolbox. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package plugins.nherve.toolbox;
 
 import icy.image.ImageUtil;

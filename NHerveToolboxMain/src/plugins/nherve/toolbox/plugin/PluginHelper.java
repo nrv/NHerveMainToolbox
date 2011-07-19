@@ -1,5 +1,6 @@
 package plugins.nherve.toolbox.plugin;
 
+import icy.main.Icy;
 import icy.preferences.XMLPreferences;
 
 import java.awt.Dimension;
@@ -9,35 +10,44 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
+import plugins.nherve.toolbox.image.mask.MaskPersistence;
+
 public class PluginHelper {
+	public final static String PATH = "currentpath";
+	public final static String W = "output_width";
+	public final static String H = "output_height";
 	
-	public static void fileChooser(int mode, final String fileExt, final String description, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
-		fileChooser(mode, new FileFilter() {
-			
-			@Override
-			public String getDescription() {
-				return description;
-			}
-			
-			@Override
-			public boolean accept(File f) {
-				return f.getName().toUpperCase().endsWith(fileExt.toUpperCase());
-			}
-		}, preferences, title, tf, defaultFile);
+	public static File fileChooser(FileFilter ff, XMLPreferences preferences, String title, File defaultFile, File defaultDirectory) {
+		return fileChooserInternal(JFileChooser.FILES_AND_DIRECTORIES, ff, preferences, title, defaultFile, defaultDirectory);
+	}
+	
+	public static File fileChooser(final String fileExt, final String description, XMLPreferences preferences, String title) {
+		return fileChooser(getFilter(fileExt, description), preferences, title, null, null);
+	}
+	
+	public static File fileChooser(XMLPreferences preferences, MaskPersistence repository, File defaultFile) {
+		return fileChooser(repository.getMaskFileExtension(), "Segmentation mask (*" + repository.getMaskFileExtension() + ")", preferences, "Choose segmentation file");
 	}
 
-	public static void fileChooser(int mode, FileFilter ff, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
+	private static File fileChooserInternal(int mode, FileFilter ff, XMLPreferences preferences, String title, File defaultFile, File defaultDirectory) {
+		int width = preferences.getInt(W, 400);
+		int height = preferences.getInt(H, 400);
+		
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setPreferredSize(new Dimension(width, height));
 		fileChooser.setMultiSelectionEnabled(false);
 		fileChooser.setFileSelectionMode(mode);
+		fileChooser.setAcceptAllFileFilterUsed(true);
+		fileChooser.setDialogTitle(title);
+		
 		if (ff != null) {
 			fileChooser.setFileFilter(ff);
 		}
-	
+
 		if (defaultFile != null) {
 			fileChooser.setSelectedFile(defaultFile);
-		} else {
-			File fp = new File(tf.getText());
+		} else if(defaultDirectory != null) {
+			File fp = new File(defaultDirectory.getAbsolutePath());
 			while ((fp != null) && (fp.getAbsolutePath().length() > 0) && (!fp.exists())) {
 				fp = fp.getParentFile();
 			}
@@ -45,31 +55,56 @@ public class PluginHelper {
 				fp = new File(preferences.get(PATH, ""));
 			}
 			fileChooser.setCurrentDirectory(fp);
+		} else {
+			String path = preferences.get(PATH, "");
+			fileChooser.setCurrentDirectory(new File(path));
 		}
-	
-		int x = preferences.getInt("output_x", 0);
-		int y = preferences.getInt("output_y", 0);
-		int width = preferences.getInt("output_width", 400);
-		int height = preferences.getInt("output_height", 400);
-	
-		fileChooser.setLocation(x, y);
-		fileChooser.setPreferredSize(new Dimension(width, height));
-	
-		fileChooser.setDialogTitle(title);
-	
-		int returnValue = fileChooser.showDialog(null, "OK");
-	
+
+		int returnValue = fileChooser.showDialog(Icy.getMainInterface().getFrame(), "OK");
+
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			preferences.put(PATH, fileChooser.getSelectedFile().getAbsolutePath());
-			preferences.putInt("output_x", fileChooser.getX());
-			preferences.putInt("output_y", fileChooser.getY());
-			preferences.putInt("output_width", fileChooser.getWidth());
-			preferences.putInt("output_height", fileChooser.getHeight());
-	
-			tf.setText(fileChooser.getSelectedFile().getAbsolutePath());
+			preferences.putInt(W, fileChooser.getWidth());
+			preferences.putInt(H, fileChooser.getHeight());
+			
+			File file = fileChooser.getSelectedFile();
+			return file;
+		} else {
+			return null;
 		}
 	}
+	
+	public static void fileChooserTF(int mode, FileFilter ff, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
+		File defaultDirectory = null;
+		String dd = tf.getText(); 
+		if ((dd != null) && (dd.length() > 0)) {
+			defaultDirectory = new File(dd);
+		}
+		File f = fileChooserInternal(mode, ff, preferences, title, defaultFile, defaultDirectory);
+		if (f != null) {
+			tf.setText(f.getAbsolutePath());
+		}
+	}
+	
+	public static void fileChooserTF(int mode, final String fileExt, final String description, XMLPreferences preferences, String title, JTextField tf, File defaultFile) {
+		fileChooserTF(mode, getFilter(fileExt, description), preferences, title, tf, defaultFile);
+	}
+	
+	private static FileFilter getFilter(final String ext, final String desc) {
+		return new FileFilter() {
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().toUpperCase().endsWith(ext.toUpperCase());
+			}
+			
+			@Override
+			public String getDescription() {
+				return desc;
+			}
+		};
+	}
 
-	public final static String PATH = "currentpath";
+	
 
 }
