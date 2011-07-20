@@ -22,11 +22,15 @@ public class PluginHelper {
 	}
 	
 	public static File fileChooser(final String fileExt, final String description, XMLPreferences preferences, String title) {
-		return fileChooser(getFilter(fileExt, description), preferences, title, null, null);
+		return fileChooser(fileExt, description, preferences, title, null);
+	}
+	
+	public static File fileChooser(final String fileExt, final String description, XMLPreferences preferences, String title, File defaultFile) {
+		return fileChooser(getFilter(fileExt, description), preferences, title, defaultFile, null);
 	}
 	
 	public static File fileChooser(XMLPreferences preferences, MaskPersistence repository, File defaultFile) {
-		return fileChooser(repository.getMaskFileExtension(), "Segmentation mask (*" + repository.getMaskFileExtension() + ")", preferences, "Choose segmentation file");
+		return fileChooser(repository.getMaskFileExtension(), "Segmentation mask (*" + repository.getMaskFileExtension() + ")", preferences, "Choose segmentation file", defaultFile);
 	}
 
 	private static File fileChooserInternal(int mode, FileFilter ff, XMLPreferences preferences, String title, File defaultFile, File defaultDirectory) {

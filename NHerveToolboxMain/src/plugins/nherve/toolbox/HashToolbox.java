@@ -19,6 +19,9 @@
 
 package plugins.nherve.toolbox;
 
+import icy.file.FileUtil;
+
+import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -113,18 +116,25 @@ public class HashToolbox {
 		} else {
 			return outBuff;
 		}
-	
 	}
-
-	public static String hashMD5(String f) {
+	
+	public static String hashMD5(byte[] b) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("MD5");
-			byte[] bts = digest.digest(f.getBytes());
+			byte[] bts = digest.digest(b);
 			return encodeBytes(bts, 0, bts.length, "US-ASCII");
 		} catch (NoSuchAlgorithmException e) {
 			return null;
 		}
 	
+	}
+	
+	public static String hashMD5(File f) {
+		return hashMD5(FileUtil.load(f, false));	
+	}
+
+	public static String hashMD5(String f) {
+		return hashMD5(f.getBytes());	
 	}
 
 }
