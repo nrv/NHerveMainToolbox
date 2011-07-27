@@ -14,12 +14,11 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameListener {
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -3189860026457149715L;
-
-	public HelpWindow(String pluginName, String htmlText, int w, int h, IcyFrame parentFrame) {
-		super(pluginName + " Help", false, true, false, false);
+	public static final String TAG_PLUGIN_NAME = "{{PLUGIN_NAME}}";
+	public static final String TAG_FULL_PLUGIN_NAME = "{{FULL_PLUGIN_NAME}}";
+	
+	HelpWindow(SingletonPlugin plugin, MyFrame frame, String htmlText, int w, int h) {
+		super(plugin.getName() + " Help", false, true, false, false);
 
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 
@@ -33,7 +32,7 @@ public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameL
 
 		add(new JScrollPane(helpEditorPane));
 
-		parentFrame.addFrameListener(this);
+		frame.addFrameListener(this);
 		
 		setVisible(true);
 		center();
