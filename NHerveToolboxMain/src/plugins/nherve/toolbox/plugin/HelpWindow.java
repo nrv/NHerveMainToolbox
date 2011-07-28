@@ -14,8 +14,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameListener {
-	public static final String TAG_PLUGIN_NAME = "__PLUGIN_NAME__";
-	public static final String TAG_FULL_PLUGIN_NAME = "__FULL_PLUGIN_NAME__";
+	private static final String TAG_PLUGIN_NAME = "__PLUGIN_NAME__";
+	private static final String TAG_FULL_PLUGIN_NAME = "__FULL_PLUGIN_NAME__";
 	
 	HelpWindow(SingletonPlugin plugin, MyFrame frame, String htmlText, int w, int h) {
 		super(plugin.getName() + " Help", false, true, false, false);
@@ -105,6 +105,14 @@ public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameL
 
 	@Override
 	public void icyFrameExternalized(IcyFrameEvent e) {
+	}
+
+	public static String getTagPluginName() {
+		return TAG_PLUGIN_NAME;
+	}
+
+	public static String getTagFullPluginName() {
+		return TAG_FULL_PLUGIN_NAME;
 	}
 
 }

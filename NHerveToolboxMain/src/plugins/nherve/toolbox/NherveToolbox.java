@@ -36,11 +36,12 @@ import javax.swing.Icon;
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
 public class NherveToolbox extends Plugin implements PluginLibrary {
-	public final static String DEV_NAME = "Nicolas HERVE";
-	public final static String DEV_NAME_HTML = "Maintained by <a href=\"http://www.herve.name\">Nicolas HERVE</a>";
-	public final static String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur.";
-	public final static String LICENCE_HTML = "	is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
-	public final static String LICENCE_HTMLLINK = "See <a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses</a>.";
+	private static final String DEV_NAME = "Nicolas HERVE";
+	private static final String DEV_NAME_HTML = "Maintained by <a href=\"http://www.herve.name\">Nicolas HERVE</a>";
+	private static final String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur.";
+	private static final String LICENCE_HTML = "	is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
+	private static final String LICENCE_HTMLLINK = "See <a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses</a>.";
+	
 	public static final Icon questionIcon = getIcon("question.png");
 	public static final Icon plusIcon = getIcon("plus.png");
 	public static final Icon minusIcon = getIcon("minus.png");
@@ -75,5 +76,25 @@ public class NherveToolbox extends Plugin implements PluginLibrary {
 		pkg += file;
 		InputStream url = NherveToolbox.class.getClassLoader().getResourceAsStream(pkg);
 		return ImageUtil.loadImage(url);
+	}
+
+	public static String getDevName() {
+		return DEV_NAME;
+	}
+
+	public static String getDevNameHtml() {
+		return DEV_NAME_HTML;
+	}
+
+	public static String getCopyrightHtml() {
+		return COPYRIGHT_HTML;
+	}
+
+	public static String getLicenceHtml() {
+		return LICENCE_HTML;
+	}
+
+	public static String getLicenceHtmllink() {
+		return LICENCE_HTMLLINK;
 	}
 }
