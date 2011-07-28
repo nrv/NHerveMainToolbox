@@ -153,7 +153,11 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	}
 
 	public String getVersion() {
-		return getDescriptor().getVersion().toString();
+		String v = getDescriptor().getVersion().toString();
+		if (v.length() == 0) {
+			return "?.?.?.?";
+		}
+		return v;
 	}
 
 	/**
