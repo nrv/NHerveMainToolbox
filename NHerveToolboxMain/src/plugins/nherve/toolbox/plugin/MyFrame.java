@@ -74,7 +74,7 @@ public class MyFrame extends IcyFrame {
 
 			g2.setColor(darkColor);
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-			g2.setStroke(new BasicStroke(Math.max(1f, Math.min(5f, ray))));
+			g2.setStroke(new BasicStroke(Math.max(1f, 10f)));
 			g2.draw(roundRect);
 
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
