@@ -37,7 +37,7 @@ import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 public abstract class GridCell extends JComponent implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = -3822419525699981741L;
 
-	private BufferedImage thumbnail;
+	protected BufferedImage thumbnail;
 	private boolean needCacheRedraw;
 	private BufferedImage thumbnailCache;
 	private String name;
