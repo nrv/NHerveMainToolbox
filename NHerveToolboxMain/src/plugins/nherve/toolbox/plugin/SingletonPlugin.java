@@ -151,11 +151,15 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		}
 		return null;
 	}
+	
+	public String getDefaultVersion() {
+		return "unknown";
+	}
 
 	public String getVersion() {
 		String v = getDescriptor().getVersion().toString();
 		if (v.length() == 0) {
-			return "?.?.?.?";
+			return getDefaultVersion();
 		}
 		return v;
 	}
