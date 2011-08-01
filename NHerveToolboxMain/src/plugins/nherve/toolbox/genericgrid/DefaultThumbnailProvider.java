@@ -24,9 +24,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.concurrent.TaskManager;
 
-public abstract class DefaultThumbnailProvider<T extends GridCell> implements ThumbnailProvider<T> {
+public abstract class DefaultThumbnailProvider<T extends GridCell> extends Algorithm implements ThumbnailProvider<T> {
 	public class CacheWorker implements Runnable {
 		private T cell;
 
@@ -44,8 +45,7 @@ public abstract class DefaultThumbnailProvider<T extends GridCell> implements Th
 				}
 			} catch (Exception e) {
 				cell.setThumbnail(null);
-				cell.setError(true);
-				e.printStackTrace();
+				cell.setError(e);
 			} finally {
 				removeCacheWorker(cell);
 			}
@@ -63,16 +63,13 @@ public abstract class DefaultThumbnailProvider<T extends GridCell> implements Th
 		@Override
 		public void run() {
 			try {
-				// System.out.println(cell.getName() + " run");
 				if (cell.isOnScreen()) {
-					// System.out.println(cell.getName() + " onscreen");
 					BufferedImage img = getThumbnail(cell);
 					cell.setThumbnail(img);
 				}
-				// System.out.println(cell.getName() + " done");
 			} catch (Exception e) {
 				cell.setThumbnail(null);
-				cell.setError(true);
+				cell.setError(e);
 			} finally {
 				removeThumbnailWorker(cell);
 			}

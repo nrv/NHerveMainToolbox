@@ -28,6 +28,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -44,7 +46,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private Color borderColor;
 	private WaitingAnimation wa;
 	private boolean zoomOnFocus;
-	private boolean error;
+	private String errorMessage;
 	@SuppressWarnings("rawtypes")
 	private ThumbnailProvider thumbnailProvider;
 
@@ -54,11 +56,6 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private Point bckZoomLocation;
 	private double zoomCenterX;
 	private double zoomCenterY;
-	
-//	private Rectangle myBounds;
-	
-//	@SuppressWarnings("rawtypes")
-//	private GridPanel father;
 
 	public GridCell() {
 		this(null);
@@ -67,16 +64,14 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	public GridCell(String name) {
 		super();
 		setName(name);
-		setError(false);
+		setError(null);
 		wa = new WaitingAnimation(this);
 
 		setBorderColor(null);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
-//		father = null;
 	}
-	
+
 	void createThumbnailCache() {
 		if (thumbnail == null) {
 			this.thumbnailCache = null;
@@ -96,11 +91,10 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	}
 
 	public boolean isError() {
-		return error;
+		return errorMessage != null;
 	}
 
 	public boolean isOnScreen() {
-// WARNING : DEADLOCK ?		
 		Rectangle r = getVisibleRect();
 		if (r == null) {
 			return false;
@@ -109,8 +103,6 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			return false;
 		}
 		return true;
-// USE THIS INSTEAD ?
-//		return father.isOnScreen(this);
 	}
 
 	@Override
@@ -222,37 +214,47 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	public void removedFromGrid() {
 		wa.stop();
-//		father = null;
 	}
 
 	public void setBorderColor(Color borderColor) {
 		this.borderColor = borderColor;
 	}
 
-//	@Override
-//	public void setBounds(Rectangle b) {
-//		myBounds = b;
-//		super.setBounds(b);
-//	}
+	public void setErrorMessage(String error) {
+		this.errorMessage = error;
 
-	public void setError(boolean error) {
-		this.error = error;
+		if (error != null) {
+			if (zoomOnFocus) {
+				setToolTipText(null);
+			} else {
+				setToolTipText(error);
+			}
+		}
 	}
 
-//	void setFather(GridPanel<? extends GridCell> father) {
-//		this.father = father;
-//	}
+	public void setError(Throwable tw) {
+		if (tw != null) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			PrintStream ps = new PrintStream(baos);
+			tw.printStackTrace(ps);
+			setErrorMessage(baos.toString());
+			ps.close();
+			
+			wa.stop();
+			createThumbnailCache();
+			repaint();
+		} else {
+			setErrorMessage(null);
+		}
+	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	public void setThumbnail(BufferedImage thumb) {
-		
-		//System.out.println((int)(System.currentTimeMillis() / 1000) + " - " + getName() + " setThumbnail()");
-		
 		wa.stop();
-		
+
 		if (thumb != null) {
 			this.thumbnail = thumb;
 		} else {
@@ -275,10 +277,5 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		} else {
 			setToolTipText(getName());
 		}
-
 	}
-
-//	Rectangle getMyBounds() {
-//		return myBounds;
-//	}
 }

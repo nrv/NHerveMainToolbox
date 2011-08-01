@@ -22,7 +22,9 @@ package plugins.nherve.toolbox.genericgrid;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
-public interface ThumbnailProvider<T extends GridCell> {
+import plugins.nherve.toolbox.AbleToLogMessages;
+
+public interface ThumbnailProvider<T extends GridCell> extends AbleToLogMessages {
 
 	public abstract void createCacheFor(T cell);
 
