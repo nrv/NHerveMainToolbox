@@ -16,7 +16,7 @@ import javax.swing.event.HyperlinkListener;
 public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameListener {
 	private static final String TAG_PLUGIN_NAME = "__PLUGIN_NAME__";
 	private static final String TAG_FULL_PLUGIN_NAME = "__FULL_PLUGIN_NAME__";
-	
+
 	HelpWindow(SingletonPlugin plugin, MyFrame frame, String htmlText, int w, int h) {
 		super(plugin.getName() + " Help", false, true, false, false);
 
@@ -33,13 +33,17 @@ public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameL
 		add(new JScrollPane(helpEditorPane));
 
 		frame.addFrameListener(this);
-		
+
+		if (plugin.isRunningHeadless()) {
+			externalize();
+		}
+
 		setVisible(true);
 		center();
 		addToMainDesktopPane();
 		requestFocus();
 	}
-	
+
 	private String setVariables(SingletonPlugin plugin, String t) {
 		String result = t.replaceAll(TAG_PLUGIN_NAME, plugin.getName());
 		result = result.replaceAll(TAG_FULL_PLUGIN_NAME, plugin.getFullName());

@@ -50,18 +50,28 @@ import plugins.nherve.toolbox.AbleToLogMessages;
  */
 public abstract class SingletonPlugin extends Plugin implements PluginImageAnalysis, MainListener, IcyFrameListener, AbleToLogMessages {
 	private final static Map<Class<? extends SingletonPlugin>, SingletonPlugin> singletons = new HashMap<Class<? extends SingletonPlugin>, SingletonPlugin>();
-	
+
 	protected static SingletonPlugin getInstance(Class<? extends SingletonPlugin> clazz) {
 		return singletons.get(clazz);
 	}
-
-	private boolean log;
-	private boolean uiDisplay;
-	private Sequence currentSequence;
 	
-	private MyFrame frame;
+	private boolean log;
+
+	private boolean uiDisplay;
+	private boolean runningHeadless;
+	private Sequence currentSequence;
+	private MyFrame myFrame;
+	
 	private JPanel mainPanel;
 	private Cursor backupCursor;
+	public SingletonPlugin() {
+		super();
+		
+		setRunningHeadless(false);
+	}
+
+	protected void beforeDisplayInterface(JPanel mainPanel) {
+	}
 
 	/**
 	 * Change sequence.
@@ -105,11 +115,8 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		backupCursor = mainPanel.getCursor();
 		mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 	}
-
-	public abstract void fillInterface(JPanel mainPanel);
 	
-	protected void beforeDisplayInterface(JPanel mainPanel) {
-	}
+	public abstract void fillInterface(JPanel mainPanel);
 
 	/**
 	 * Gets the current sequence.
@@ -122,6 +129,14 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 
 	public abstract Dimension getDefaultFrameDimension();
 
+	public String getDefaultVersion() {
+		return "unknown";
+	}
+
+	public MyFrame getFrame() {
+		return myFrame;
+	}
+
 	public String getFullName() {
 		return getName() + " " + getVersion();
 	}
@@ -129,7 +144,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public String getName() {
 		return getDescriptor().getName();
 	}
-
+	
 	public XMLPreferences getPreferences() {
 		// TODO patch en attendant version suivante ICY
 		PluginsPreferences.load();
@@ -150,10 +165,6 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 			}
 		}
 		return null;
-	}
-	
-	public String getDefaultVersion() {
-		return "unknown";
 	}
 
 	public String getVersion() {
@@ -275,6 +286,10 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		return log;
 	}
 
+	public boolean isRunningHeadless() {
+		return runningHeadless;
+	}
+
 	@Override
 	public boolean isUIDisplayEnabled() {
 		return uiDisplay;
@@ -312,11 +327,11 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void logWarning(String message) {
 		System.err.println("WARNING : " + message);
 	}
-
+	
 	protected void openHelpWindow(String text, int w, int h) {
-		new HelpWindow(this, frame, text, w, h);
+		new HelpWindow(this, myFrame, text, w, h);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -346,7 +361,6 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void pluginClosed(MainEvent arg0) {
 
 	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -366,6 +380,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void roiAdded(MainEvent event) {
 
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -376,6 +391,8 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 
 	}
 	
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -395,8 +412,6 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void sequenceFocused(MainEvent event) {
 		changeSequence();
 	}
-	
-
 
 	/**
 	 * Sequence has changed.
@@ -412,7 +427,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void sequenceOpened(MainEvent event) {
 
 	}
-
+	
 	/**
 	 * Sequence will change.
 	 */
@@ -427,45 +442,59 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	protected void setCurrentSequence(Sequence currentSequence) {
 		this.currentSequence = currentSequence;
 	}
-	
+
 	@Override
 	public void setLogEnabled(boolean log) {
 		this.log = log;
 	}
-	
-	public void setTitle(String title) {
-		frame.setTitle(title);
+
+	public void setRunningHeadless(boolean runningHeadless) {
+		this.runningHeadless = runningHeadless;
 	}
 
+	public void setTitle(String title) {
+		myFrame.setTitle(title);
+	}
+	
 	@Override
 	public void setUIDisplayEnabled(boolean uiDisplay) {
 		this.uiDisplay = uiDisplay;
 	}
-
+	
 	protected void startInterface() {
 		Dimension dd = getDefaultFrameDimension();
 		
 		if (dd == null) {
-			frame = MyFrame.create(this, false, true, false, true);
+			myFrame = MyFrame.create(this, false, true, false, true);
 		} else {
-			frame = MyFrame.create(this, true, true, true, true);
+			myFrame = MyFrame.create(this, true, true, true, true);
 		}
 		
-		mainPanel= frame.getMainPanel();
-		addIcyFrame(frame);
-		new WindowPositionSaver(frame, getPreferences().absolutePath(), new Point(0, 0), dd);
+		mainPanel= myFrame.getMainPanel();
+		addIcyFrame(myFrame);
 		
+	
 		fillInterface(mainPanel);
+
+		if (isRunningHeadless()) {
+			myFrame.externalize();
+		}
 		
-		frame.addFrameListener(this);
-		frame.setVisible(true);
-		frame.pack();
+		new WindowPositionSaver(myFrame, getPreferences().absolutePath(), new Point(0, 0), dd);
+		
+		if (isRunningHeadless()) {
+			myFrame.externalize();
+		}
+		
+		myFrame.addFrameListener(this);
+		myFrame.setVisible(true);
+		myFrame.pack();
 		
 		beforeDisplayInterface(mainPanel);
 		
-		frame.requestFocus();
+		myFrame.requestFocus();
 	}
-
+	
 	/**
 	 * Start plugin.
 	 */
@@ -476,20 +505,20 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	}
 	
 	public abstract void stopInterface();
-	
+
 	/**
 	 * Stop plugin.
 	 */
 	protected void stopPlugin() {
 		singletons.remove(getClass());
 
-		frame.removeAll();
-		frame = null;
+		myFrame.removeAll();
+		myFrame = null;
 		mainPanel = null;
 
 		stopInterface();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -499,7 +528,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void viewerClosed(MainEvent event) {
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -518,9 +547,5 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	@Override
 	public void viewerOpened(MainEvent event) {
 
-	}
-
-	public MyFrame getFrame() {
-		return frame;
 	}
 }
