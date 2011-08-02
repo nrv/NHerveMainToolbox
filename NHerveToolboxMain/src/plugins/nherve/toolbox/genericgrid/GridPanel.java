@@ -244,7 +244,6 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		if (cells != null) {
 			for (GridCell cell : cells) {
 				grid.add(cell);
-//				cell.setFather(this);
 			}
 
 			cells.setZoomOnFocus(zoomOnFocus);
@@ -255,7 +254,6 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		}
 
 		grid.revalidate();
-//		updateViewport();
 		grid.repaint();
 	}
 
