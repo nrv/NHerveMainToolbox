@@ -182,7 +182,8 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void paint(Graphics g) {
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		int w = getWidth();
 		int h = getHeight();
@@ -220,18 +221,6 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		this.borderColor = borderColor;
 	}
 
-	public void setErrorMessage(String error) {
-		this.errorMessage = error;
-
-		if (error != null) {
-			if (zoomOnFocus) {
-				setToolTipText(null);
-			} else {
-				setToolTipText(error);
-			}
-		}
-	}
-
 	public void setError(Throwable tw) {
 		if (tw != null) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -245,6 +234,18 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			repaint();
 		} else {
 			setErrorMessage(null);
+		}
+	}
+
+	public void setErrorMessage(String error) {
+		this.errorMessage = error;
+
+		if (error != null) {
+			if (zoomOnFocus) {
+				setToolTipText(null);
+			} else {
+				setToolTipText(error);
+			}
 		}
 	}
 
