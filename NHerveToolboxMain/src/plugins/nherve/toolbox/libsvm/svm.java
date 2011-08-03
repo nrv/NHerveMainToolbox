@@ -608,7 +608,7 @@ class Solver {
 			// show progress and do shrinking
 
 			// patch nherve
-			if (Thread.interrupted()) {
+			if (Thread.currentThread().isInterrupted()) {
 				return;
 			}
 			// ---

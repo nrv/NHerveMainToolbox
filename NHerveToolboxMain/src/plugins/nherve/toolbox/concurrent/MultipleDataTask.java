@@ -127,7 +127,7 @@ public abstract class MultipleDataTask<Input, Output> implements Callable<Output
 	public Output call() {
 		try {
 			for (int i = getIdx1(); i < getIdx2(); i++) {
-				if (Thread.interrupted()) {
+				if (Thread.currentThread().isInterrupted()) {
 					return null;
 				}
 				call(get(i), i);
