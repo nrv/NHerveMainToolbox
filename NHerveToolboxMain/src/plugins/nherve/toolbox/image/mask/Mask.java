@@ -174,6 +174,16 @@ public class Mask implements Serializable, Iterable<String> {
 		this(width, height, defaultValue);
 		this.label = label;
 	}
+	
+	public static Mask copy(Mask m) throws MaskException {
+		Mask r = new Mask(m.getWidth(), m.getHeight());
+		if (m.hasBinaryData()) {
+			r.setBinaryData(m.getBinaryData().getCopy());
+		} else {
+			throw new MaskException("No internal mask representation available for " + m);
+		}
+		return r;
+	}
 
 	/**
 	 * Adds the.
