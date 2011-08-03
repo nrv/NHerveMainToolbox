@@ -308,10 +308,10 @@ public class TaskManager extends Algorithm {
 	 * @throws InterruptedException 
 	 */
 	public <Input, Output> List<Output> submitMultiForAll(Input[] allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
-		return submitMultiForAll2(Arrays.asList(allDatas), method, from, msg, slp);
+		return submitMultiForAll(Arrays.asList(allDatas), method, from, msg, slp);
 	}
 	
-	public <Input, Output> List<Output> submitMultiForAll2(List<Input> allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
+	public <Input, Output> List<Output> submitMultiForAll(List<Input> allDatas, Class<? extends MultipleDataTask<Input, Output>> method, Object from, String msg, long slp) throws TaskException, InterruptedException {
 		return submitMultiForAll(allDatas, null, method, from, msg, slp);
 	}
 	

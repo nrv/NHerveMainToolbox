@@ -214,7 +214,7 @@ public class FuzzyCMeans extends DefaultFuzzyClusteringAlgorithmImpl {
 	private void computeMemberships(List<VectorSignature> points) {
 		TaskManager tm = TaskManager.getSecondLevelInstance();
 		try {
-			tm.submitMultiForAll2(points, ComputeMembershipWorker.class, this, "FCM", 0);
+			tm.submitMultiForAll(points, ComputeMembershipWorker.class, this, "FCM", 0);
 		} catch (TaskException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

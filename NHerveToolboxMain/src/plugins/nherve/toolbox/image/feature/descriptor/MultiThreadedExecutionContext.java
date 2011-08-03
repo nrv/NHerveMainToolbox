@@ -278,7 +278,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 			}
 		} else {
 			try {
-				tm.submitMultiForAll2(Arrays.asList(regions), SignatureExtractionWorker.class, this, "Signatures extraction", 0);
+				tm.submitMultiForAll(Arrays.asList(regions), SignatureExtractionWorker.class, this, "Signatures extraction", 0);
 			} catch (TaskException e) {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
