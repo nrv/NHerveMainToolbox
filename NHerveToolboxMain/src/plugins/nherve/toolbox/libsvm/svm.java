@@ -292,7 +292,7 @@ abstract class Kernel extends QMatrix {
 			sum += y[j].value;
 			j++;
 		}
-		
+
 		return sum;
 	}
 
@@ -616,7 +616,7 @@ class Solver {
 				return;
 			}
 			// ---
-			
+
 			if (--counter == 0) {
 				counter = Math.min(l, 1000);
 				if (shrinking != 0)
@@ -1588,10 +1588,10 @@ public class svm {
 	 * @author Nicolas HERVE - nicolas.herve@pasteur.fr
 	 */
 	static class decision_function {
-		
+
 		/** The alpha. */
 		double[] alpha;
-		
+
 		/** The rho. */
 		double rho;
 	};
@@ -2590,7 +2590,6 @@ public class svm {
 	/** The Constant kernel_type_table. */
 	static public final String kernel_type_table[] = { "linear", "polynomial", "rbf", "sigmoid", "precomputed", "triangular", "laplace", "chi2" };
 
-	
 	public static void svm_save_model(OutputStream out, svm_model model) throws IOException {
 		DataOutputStream fp = new DataOutputStream(new BufferedOutputStream(out));
 
@@ -2664,10 +2663,8 @@ public class svm {
 					fp.writeBytes(p[j].index + ":" + p[j].value + " ");
 			fp.writeBytes("\n");
 		}
-
-		fp.close();
 	}
-	
+
 	/**
 	 * Svm_save_model.
 	 * 
@@ -2679,7 +2676,15 @@ public class svm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void svm_save_model(String model_file_name, svm_model model) throws IOException {
-		svm_save_model(new FileOutputStream(model_file_name), model);
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(model_file_name);
+			svm_save_model(fos, model);
+		} finally {
+			if (fos != null) {
+				fos.close();
+			}
+		}
 	}
 
 	/**
@@ -2704,7 +2709,6 @@ public class svm {
 		return Integer.parseInt(s);
 	}
 
-	
 	public static svm_model svm_load_model(InputStream is) throws IOException {
 		BufferedReader fp = new BufferedReader(new InputStreamReader(is));
 
@@ -2817,10 +2821,9 @@ public class svm {
 			}
 		}
 
-		fp.close();
 		return model;
 	}
-	
+
 	/**
 	 * Svm_load_model.
 	 * 
@@ -2831,7 +2834,15 @@ public class svm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static svm_model svm_load_model(String model_file_name) throws IOException {
-		return svm_load_model(new FileInputStream(model_file_name));
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(model_file_name);
+			return svm_load_model(fis);
+		} finally {
+			if (fis != null) {
+				fis.close();
+			}
+		}
 	}
 
 	/**
