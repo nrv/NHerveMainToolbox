@@ -20,6 +20,8 @@ package plugins.nherve.toolbox.image.feature.learning;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import plugins.nherve.toolbox.image.db.ImageDatabaseSplit;
@@ -274,6 +276,14 @@ public class SVMClassifier extends LearningAlgorithm {
 	 */
 	public void saveModel(File f) throws IOException {
 		svm.svm_save_model(f.getAbsolutePath(), model);
+	}
+	
+	public void saveModel(OutputStream out) throws IOException {
+		svm.svm_save_model(out, model);
+	}
+	
+	public void loadModel(InputStream is) throws IOException {
+		model = svm.svm_load_model(is);
 	}
 	
 	/**

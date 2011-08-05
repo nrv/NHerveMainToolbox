@@ -21,9 +21,13 @@ package plugins.nherve.toolbox.libsvm;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.util.StringTokenizer;
 
 //
@@ -2586,18 +2590,9 @@ public class svm {
 	/** The Constant kernel_type_table. */
 	static public final String kernel_type_table[] = { "linear", "polynomial", "rbf", "sigmoid", "precomputed", "triangular", "laplace", "chi2" };
 
-	/**
-	 * Svm_save_model.
-	 * 
-	 * @param model_file_name
-	 *            the model_file_name
-	 * @param model
-	 *            the model
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public static void svm_save_model(String model_file_name, svm_model model) throws IOException {
-		DataOutputStream fp = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(model_file_name)));
+	
+	public static void svm_save_model(OutputStream out, svm_model model) throws IOException {
+		DataOutputStream fp = new DataOutputStream(new BufferedOutputStream(out));
 
 		svm_parameter param = model.param;
 
@@ -2672,6 +2667,20 @@ public class svm {
 
 		fp.close();
 	}
+	
+	/**
+	 * Svm_save_model.
+	 * 
+	 * @param model_file_name
+	 *            the model_file_name
+	 * @param model
+	 *            the model
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static void svm_save_model(String model_file_name, svm_model model) throws IOException {
+		svm_save_model(new FileOutputStream(model_file_name), model);
+	}
 
 	/**
 	 * Atof.
@@ -2695,17 +2704,9 @@ public class svm {
 		return Integer.parseInt(s);
 	}
 
-	/**
-	 * Svm_load_model.
-	 * 
-	 * @param model_file_name
-	 *            the model_file_name
-	 * @return the svm_model
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	public static svm_model svm_load_model(String model_file_name) throws IOException {
-		BufferedReader fp = new BufferedReader(new FileReader(model_file_name));
+	
+	public static svm_model svm_load_model(InputStream is) throws IOException {
+		BufferedReader fp = new BufferedReader(new InputStreamReader(is));
 
 		// read parameters
 
@@ -2818,6 +2819,19 @@ public class svm {
 
 		fp.close();
 		return model;
+	}
+	
+	/**
+	 * Svm_load_model.
+	 * 
+	 * @param model_file_name
+	 *            the model_file_name
+	 * @return the svm_model
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static svm_model svm_load_model(String model_file_name) throws IOException {
+		return svm_load_model(new FileInputStream(model_file_name));
 	}
 
 	/**
