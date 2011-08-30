@@ -97,11 +97,8 @@ public class HashToolbox {
 		int d = 0;
 		int e = 0;
 		int len2 = len - 2;
-		int lineLength = 0;
 		for (; d < len2; d += 3, e += 4) {
 			encode3to4(source, d + off, 3, outBuff, e);
-	
-			lineLength += 4;
 		}
 	
 		if (d < len) {
