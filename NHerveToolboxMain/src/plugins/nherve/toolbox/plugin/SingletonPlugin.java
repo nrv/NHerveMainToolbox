@@ -63,7 +63,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	private MyFrame myFrame;
 	
 	private JPanel mainPanel;
-	private Cursor backupCursor;
+//	private Cursor backupCursor;
 	public SingletonPlugin() {
 		super();
 		
@@ -101,7 +101,8 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	}
 
 	public void disableWaitingCursor() {
-		mainPanel.setCursor(backupCursor);
+//		mainPanel.setCursor(backupCursor);
+		mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	}
 
 	@Override
@@ -112,7 +113,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	}
 
 	public void enableWaitingCursor() {
-		backupCursor = mainPanel.getCursor();
+//		backupCursor = mainPanel.getCursor();
 		mainPanel.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 	}
 	
