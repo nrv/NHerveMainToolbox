@@ -2651,7 +2651,8 @@ public class svm {
 		double[][] sv_coef = model.sv_coef;
 		svm_node[][] SV = model.SV;
 
-		for (int i = 0; i < l; i++) {
+		int i = 0;
+		for (; i < l; i++) {
 			for (int j = 0; j < nr_class - 1; j++)
 				fp.writeBytes(sv_coef[j][i] + " ");
 
@@ -2663,6 +2664,8 @@ public class svm {
 					fp.writeBytes(p[j].index + ":" + p[j].value + " ");
 			fp.writeBytes("\n");
 		}
+		
+		fp.close();
 	}
 
 	/**
@@ -2808,6 +2811,10 @@ public class svm {
 
 		for (int i = 0; i < l; i++) {
 			String line = fp.readLine();
+			if (line == null) {
+				System.err.println("null line for i = " + i + " / " + l);
+				return null;
+			}
 			StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
 
 			for (int k = 0; k < m; k++)
