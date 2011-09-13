@@ -772,6 +772,7 @@ public class Mask implements Serializable, Iterable<String> {
 	public void setBinaryData(BinaryIcyBufferedImage data) {
 		this.binaryData = data;
 		this.rawBinaryData = data.getRawData();
+		forceRedraw();
 	}
 
 	/**

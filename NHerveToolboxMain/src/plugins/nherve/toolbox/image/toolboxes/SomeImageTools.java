@@ -140,6 +140,27 @@ public class SomeImageTools {
 
 		return ibin;
 	}
+	
+	
+	public static BinaryIcyBufferedImage toMask(IcyBufferedImage img) {
+		int w = img.getWidth();
+		int h = img.getHeight();
+		int s = w * h;
+
+		BinaryIcyBufferedImage ibin = new BinaryIcyBufferedImage(w, h);
+		double[] data = img.getDataXYAsDouble(0);
+		byte[] bool = ibin.getDataXYAsByte(0);
+
+		for (int idx = 0; idx < s; idx++) {
+			if (data[idx] == 0) {
+				bool[idx] = BinaryIcyBufferedImage.TRUE;
+			} else {
+				bool[idx] = BinaryIcyBufferedImage.FALSE;
+			}
+		}
+
+		return ibin;
+	}
 
 	/**
 	 * Binarize.

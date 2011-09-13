@@ -46,6 +46,7 @@ public class NherveToolbox extends Plugin implements PluginLibrary {
 	public static final Icon plusIcon = getIcon("plus.png");
 	public static final Icon minusIcon = getIcon("minus.png");
 	public static final Icon saveIcon = getIcon("save.png");
+	public static final Icon loadIcon = getIcon("load.png");
 	public static final Icon toSwimingPoolIcon = getIcon("to-sp.png");
 	public static final Icon fromSwimingPoolIcon = getIcon("from-sp.png");
 	public static final Icon upIcon = getIcon("arrow-up.png");

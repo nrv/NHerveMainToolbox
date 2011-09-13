@@ -284,6 +284,10 @@ public class SVMClassifier extends LearningAlgorithm {
 	
 	public void loadModel(InputStream is) throws IOException {
 		model = svm.svm_load_model(is);
+		
+		if (model == null) {
+			throw new IOException("unable to load the svm model");
+		}
 	}
 	
 	/**
