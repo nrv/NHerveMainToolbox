@@ -236,6 +236,11 @@ public class TaskManager extends Algorithm {
 		}
 		return poolResults;
 	}
+	
+	public <Output> List<Output> submitAndWait(List<Callable<Output>> tasks, long slp) throws TaskException, InterruptedException {
+		List<Future<Output>> poolResults = submitAll(tasks);
+		return waitResults(poolResults, "", slp);
+	}
 
 	/**
 	 * Submit single for all.

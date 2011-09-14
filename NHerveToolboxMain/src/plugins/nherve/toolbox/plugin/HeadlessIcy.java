@@ -23,6 +23,7 @@ import icy.gui.frame.IcyExternalFrame;
 import icy.gui.frame.IcyFrameAdapter;
 import icy.gui.frame.IcyFrameEvent;
 import icy.gui.util.LookAndFeelUtil;
+import icy.plugin.PluginLoader;
 import icy.preferences.IcyPreferences;
 import icy.system.thread.ThreadUtil;
 
@@ -39,6 +40,8 @@ public class HeadlessIcy extends IcyFrameAdapter {
 			System.err.println("Usage : HeadlessIcy singleton.plugin.class");
 			return;
 		}
+		
+		PluginLoader.JCLDisabled = true;
 		
 		String className = args[0];
 		try {
