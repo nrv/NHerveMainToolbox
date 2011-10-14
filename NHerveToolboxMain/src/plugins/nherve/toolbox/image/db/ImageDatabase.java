@@ -34,53 +34,54 @@ import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
 
-
 /**
  * The Class ImageDatabase.
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
 public class ImageDatabase implements Iterable<ImageEntry> {
-	
+
 	/** The Constant VERSION. */
 	public final static String VERSION = "ImageDatabase_v1.0.0";
 
 	/** The Constant DESC_SEPARATOR. */
 	public final static String DESC_SEPARATOR = "|";
-	
-//	private final static String PFX_GLOBAL = "[Global]";
-//	private final static String PFX_LOCAL = "[Local]";
+
+	// private final static String PFX_GLOBAL = "[Global]";
+	// private final static String PFX_LOCAL = "[Local]";
 
 	/** The name. */
-private String name;
-	
+	private String name;
+
 	/** The image directory. */
 	private String imageDirectory;
 	
+	private String signatureDirectory;
+
 	/** The entries. */
 	private List<ImageEntry> entries;
-	
+
 	/** The next id. */
 	private int nextId;
-	
+
 	/** The root directory. */
 	private transient String rootDirectory;
-	
+
 	/** The available global descriptors. */
 	private transient Set<String> availableGlobalDescriptors;
-	
+
 	/** The available local descriptors. */
 	private transient Set<String> availableLocalDescriptors;
-	
+
 	/** The all descriptors. */
 	private transient Set<String> allDescriptors;
-	
+
 	/** The pos classes entries. */
 	private transient Map<String, List<ImageEntry>> posClassesEntries;
-	
+
 	/** The neg classes entries. */
 	private transient Map<String, List<ImageEntry>> negClassesEntries;
-	
+
 	/** The utd entries. */
 	private transient boolean utdEntries;
 
@@ -109,10 +110,15 @@ private String name;
 	 *            the root directory
 	 */
 	public ImageDatabase(String name, String rootDirectory) {
+		this(name, rootDirectory, "images", "signatures");
+	}
+
+	public ImageDatabase(String name, String rootDirectory, String imageDirectory, String signatureDirectory) {
 		this();
 		this.rootDirectory = rootDirectory;
 		this.name = name;
-		this.imageDirectory = "images";
+		this.imageDirectory = imageDirectory;
+		this.signatureDirectory = signatureDirectory;
 	}
 
 	/**
@@ -145,7 +151,7 @@ private String name;
 	public Set<String> getAvailableGlobalDescriptors() {
 		return availableGlobalDescriptors;
 	}
-	
+
 	/**
 	 * Gets the available local descriptors.
 	 * 
@@ -163,7 +169,7 @@ private String name;
 		allDescriptors.clear();
 		entries.clear();
 	}
-	
+
 	/**
 	 * Clear descriptors.
 	 */
@@ -207,7 +213,7 @@ private String name;
 	public boolean containsDescriptor(String desc) {
 		return containsGlobalDescriptor(desc) || containsLocalDescriptor(desc);
 	}
-	
+
 	/**
 	 * Contains global descriptor.
 	 * 
@@ -218,7 +224,7 @@ private String name;
 	public boolean containsGlobalDescriptor(String desc) {
 		return availableGlobalDescriptors.contains(desc);
 	}
-	
+
 	/**
 	 * Contains local descriptor.
 	 * 
@@ -240,7 +246,7 @@ private String name;
 	public ImageEntry get(int index) {
 		return entries.get(index);
 	}
-	
+
 	/**
 	 * Sets the.
 	 * 
@@ -284,7 +290,7 @@ private String name;
 			} else {
 				return entries;
 			}
-			
+
 		}
 	}
 
@@ -316,9 +322,9 @@ private String name;
 		if (desc.length == 0) {
 			throw new FeatureException("No descriptor asked for database " + getName());
 		}
-		
+
 		VectorSignature res = null;
-		
+
 		if (desc.length > 1) {
 			VectorSignatureConcatenator concat = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, false);
 
@@ -338,7 +344,7 @@ private String name;
 			String d = desc[0];
 			res = entry.getGlobalSignatures().get(d);
 		}
-		
+
 		return res;
 	}
 
@@ -370,9 +376,9 @@ private String name;
 		if (desc.length == 0) {
 			throw new FeatureException("No descriptor asked for database " + getName());
 		}
-		
+
 		List<VectorSignature> res = null;
-		
+
 		if (desc.length > 1) {
 			VectorSignatureConcatenator concat = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, true);
 
@@ -395,7 +401,7 @@ private String name;
 				res.add(e.getGlobalSignatures().get(d));
 			}
 		}
-		
+
 		return res;
 	}
 
@@ -494,6 +500,10 @@ private String name;
 	public String getRootImageDirectory() {
 		return getRootDirectory() + "/" + getImageDirectory();
 	}
+	
+	public String getRootSignatureDirectory() {
+		return getRootDirectory() + "/" + getSignatureDirectory();
+	}
 
 	/**
 	 * Index of.
@@ -515,7 +525,9 @@ private String name;
 		return entries.isEmpty();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Iterable#iterator()
 	 */
 	public Iterator<ImageEntry> iterator() {
@@ -578,7 +590,7 @@ private String name;
 	public void setImageDirectory(String imageDirectory) {
 		this.imageDirectory = imageDirectory;
 	}
-	
+
 	/**
 	 * Sets the name.
 	 * 
@@ -588,7 +600,7 @@ private String name;
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Sets the next id.
 	 * 
@@ -598,7 +610,7 @@ private String name;
 	public void setNextId(int nextId) {
 		this.nextId = nextId;
 	}
-	
+
 	/**
 	 * Sets the root directory.
 	 * 
@@ -608,7 +620,7 @@ private String name;
 	public void setRootDirectory(String rootDirectory) {
 		this.rootDirectory = rootDirectory;
 	}
-	
+
 	/**
 	 * Size.
 	 * 
@@ -617,8 +629,10 @@ private String name;
 	public int size() {
 		return entries.size();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -655,7 +669,7 @@ private String name;
 				}
 			}
 		}
-		
+
 		allDescriptors.addAll(availableGlobalDescriptors);
 		allDescriptors.addAll(availableLocalDescriptors);
 	}
@@ -701,6 +715,14 @@ private String name;
 	 */
 	public Set<String> getAllDescriptors() {
 		return allDescriptors;
+	}
+
+	public String getSignatureDirectory() {
+		return signatureDirectory;
+	}
+
+	public void setSignatureDirectory(String signatureDirectory) {
+		this.signatureDirectory = signatureDirectory;
 	}
 
 }

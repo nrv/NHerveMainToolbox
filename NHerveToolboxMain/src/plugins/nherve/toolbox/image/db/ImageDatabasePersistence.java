@@ -65,7 +65,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *            the db
 	 */
 	public ImageDatabasePersistence(ImageDatabase db) {
-		this(db.getRootDirectory());
+		this(db.getRootSignatureDirectory());
 		this.db = db;
 	}
 

@@ -226,7 +226,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			PrintStream ps = new PrintStream(baos);
 			tw.printStackTrace(ps);
-			setErrorMessage(baos.toString());
+			setErrorMessage(getName() + " - " + baos.toString());
 			ps.close();
 			
 			wa.stop();
