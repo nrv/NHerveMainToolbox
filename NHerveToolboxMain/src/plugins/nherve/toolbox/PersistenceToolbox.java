@@ -64,6 +64,9 @@ public class PersistenceToolbox {
 	
 	/** The Constant BAG_TYPE. */
 	private final static int BAG_TYPE = 2;
+	
+	/** The Constant BAG_TYPE. */
+	private final static int NULL_TYPE = 3;
 
 	/** The Constant cs. */
 	private final static Charset cs = Charset.forName("UTF-8");
@@ -212,7 +215,9 @@ public class PersistenceToolbox {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void dumpSignature(FileChannel fc, Signature s) throws IOException {
-		if (s instanceof DenseVectorSignature) {
+		if (s == null) {
+			dumpInt(fc, NULL_TYPE);
+		} else if (s instanceof DenseVectorSignature) {
 			dumpInt(fc, DENSE_TYPE);
 			dumpDenseVectorSignature(fc, (DenseVectorSignature) s);
 		} else if (s instanceof SparseVectorSignature) {
@@ -491,6 +496,8 @@ public class PersistenceToolbox {
 	public static VectorSignature loadVectorSignature(FileChannel fc) throws IOException {
 		int type = loadInt(fc);
 		switch (type) {
+		case NULL_TYPE:
+			return null;
 		case DENSE_TYPE:
 			return loadDenseVectorSignature(fc);
 		case SPARSE_TYPE:

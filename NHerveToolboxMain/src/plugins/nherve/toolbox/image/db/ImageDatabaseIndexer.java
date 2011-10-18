@@ -163,9 +163,9 @@ public class ImageDatabaseIndexer extends Algorithm {
 					db.unloadImage(e);
 				}
 				return 0;
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw e;
+			} catch (Exception error) {
+				e.setError(error);
+				return 1;
 			}
 		}
 

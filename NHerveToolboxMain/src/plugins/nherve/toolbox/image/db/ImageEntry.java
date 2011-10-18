@@ -61,6 +61,8 @@ public class ImageEntry implements Segmentable {
 	
 	/** The local signatures. */
 	private Map<String, BagOfSignatures<VectorSignature>> localSignatures;
+	
+	private transient Exception error;
 
 	/**
 	 * Instantiates a new image entry.
@@ -369,6 +371,14 @@ public class ImageEntry implements Segmentable {
 		e.localSignatures = this.localSignatures;
 		
 		return e;
+	}
+
+	public Exception getError() {
+		return error;
+	}
+
+	public void setError(Exception error) {
+		this.error = error;
 	}
 
 }

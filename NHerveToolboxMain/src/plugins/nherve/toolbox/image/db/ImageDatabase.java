@@ -42,7 +42,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenato
 public class ImageDatabase implements Iterable<ImageEntry> {
 
 	/** The Constant VERSION. */
-	public final static String VERSION = "ImageDatabase_v1.0.0";
+	public final static String VERSION = "ImageDatabase_v1.0.1";
 
 	/** The Constant DESC_SEPARATOR. */
 	public final static String DESC_SEPARATOR = "|";
