@@ -1,5 +1,7 @@
 package plugins.nherve.toolbox.image.db;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.SignatureDistance;
-import plugins.nherve.toolbox.image.feature.signature.L2Distance;
+import plugins.nherve.toolbox.image.feature.signature.L1Distance;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
 public class QueryManager extends Algorithm {
@@ -51,6 +53,13 @@ public class QueryManager extends Algorithm {
 			}
 			return r;
 		}
+		
+		public void dump(BufferedWriter w) throws IOException {
+			for (ResponseUnit ru : internal) {
+				w.write(ru.entry.getId() + " " + ru.distanceToQuery);
+				w.newLine();
+			}
+		}
 	}
 
 	private SignatureDistance<VectorSignature> distance;
@@ -58,7 +67,7 @@ public class QueryManager extends Algorithm {
 	public QueryManager(boolean display) {
 		super(display);
 
-		distance = new L2Distance();
+		distance = new L1Distance();
 	}
 
 	public Response knnQuery(final ImageDatabase db, final String desc, final VectorSignature query, final int k) throws FeatureException {
@@ -76,6 +85,10 @@ public class QueryManager extends Algorithm {
 		result.sortAndTruncate(k);
 
 		return result;
+	}
+
+	public void setDistance(SignatureDistance<VectorSignature> distance) {
+		this.distance = distance;
 	}
 
 }
