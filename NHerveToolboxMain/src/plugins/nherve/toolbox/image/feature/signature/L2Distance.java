@@ -40,7 +40,7 @@ public class L2Distance extends SignatureDistance<VectorSignature> {
 	@Override
 	public double computeDistance(VectorSignature vs1, VectorSignature vs2) throws SignatureException {
 		if ((vs1 == null) || (vs2 == null)) {
-			throw new SignatureException("Null signature in L1Distance.compute()");
+			throw new SignatureException("Null signature in L2Distance.compute()");
 		}
 		if (vs1.getSize() != vs2.getSize()) {
 			throw new SignatureException("VectorSignature dimensions mismatch");
