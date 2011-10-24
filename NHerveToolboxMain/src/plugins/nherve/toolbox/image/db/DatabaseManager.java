@@ -21,6 +21,10 @@ public class DatabaseManager extends Algorithm {
 		super(log);
 	}
 
+	public long getUniqueId(int imageId, int localDescriptorId) {
+		return imageId * 100000000l + localDescriptorId;
+	}
+
 	public ImageDatabase create(final DatabaseConfiguration conf) throws IOException {
 		log("Creating a new database : " + conf);
 		ImageDatabase db = new ImageDatabase(conf.getName(), conf.getRoot(), conf.getPictures(), conf.getSignatures());
@@ -106,7 +110,10 @@ public class DatabaseManager extends Algorithm {
 				BagOfSignatures<VectorSignature> bag = db.getLocalSignature(e, desc);
 				if (bag != null) {
 					for (VectorSignature s : bag) {
-						System.out.println(s.toString());
+						if (sigSize < 0) {
+							sigSize = s.getSize();
+						}
+						nbNonNullSignatures++;
 					}
 				}
 			}
@@ -121,17 +128,34 @@ public class DatabaseManager extends Algorithm {
 		w.write(Integer.toString(sigSize));
 		w.newLine();
 
-		for (ImageEntry e : db) {
-			VectorSignature s = db.getGlobalSignature(e, desc);
-			if (s != null) {
-				w.write(Integer.toString(e.getId()));
-				for (int d = 0; d < s.getSize(); d++) {
-					w.write(" " + s.get(d));
+		if (db.containsGlobalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				VectorSignature s = db.getGlobalSignature(e, desc);
+				if (s != null) {
+					w.write(Long.toString(e.getId()));
+					for (int d = 0; d < s.getSize(); d++) {
+						w.write(" " + s.get(d));
+					}
+					w.newLine();
 				}
-				w.newLine();
+			}
+		} else if (db.containsLocalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				BagOfSignatures<VectorSignature> bag = db.getLocalSignature(e, desc);
+				if (bag != null) {
+					int lid = 0;
+					for (VectorSignature s : bag) {
+						w.write(Long.toString(getUniqueId(e.getId(), lid)));
+						for (int d = 0; d < s.getSize(); d++) {
+							w.write(" " + s.get(d));
+						}
+						w.newLine();
+						lid++;
+					}
+				}
 			}
 		}
-
+		
 		w.close();
 	}
 }
