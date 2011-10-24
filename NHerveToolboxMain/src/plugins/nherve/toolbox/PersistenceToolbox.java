@@ -325,6 +325,9 @@ public class PersistenceToolbox {
 	 */
 	public static BagOfSignatures<VectorSignature> loadBagOfSignatures(FileChannel fc) throws IOException {
 		int type = loadInt(fc);
+		if (type == NULL_TYPE) {
+			return null;
+		}
 		if (type != BAG_TYPE) {
 			throw new IOException("Unknown BagOfSignatures type (" + type + ")");
 		}

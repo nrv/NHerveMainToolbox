@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.FeatureException;
+import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
 public class DatabaseManager extends Algorithm {
@@ -54,7 +55,7 @@ public class DatabaseManager extends Algorithm {
 	public ImageDatabase load(final DatabaseConfiguration conf) throws IOException {
 		return load(conf, false);
 	}
-	
+
 	public ImageDatabase load(final DatabaseConfiguration conf, boolean headersOnly) throws IOException {
 		ImageDatabasePersistence ptv = new ImageDatabasePersistence(conf.getRoot() + "/" + conf.getSignatures());
 		if (headersOnly) {
@@ -89,15 +90,28 @@ public class DatabaseManager extends Algorithm {
 
 		int nbNonNullSignatures = 0;
 		int sigSize = -1;
-		for (ImageEntry e : db) {
-			VectorSignature s = db.getGlobalSignature(e, desc);
-			if (s != null) {
-				if (sigSize < 0) {
-					sigSize = s.getSize();
+
+		if (db.containsGlobalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				VectorSignature s = db.getGlobalSignature(e, desc);
+				if (s != null) {
+					if (sigSize < 0) {
+						sigSize = s.getSize();
+					}
+					nbNonNullSignatures++;
 				}
-				nbNonNullSignatures++;
+			}
+		} else if (db.containsLocalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				BagOfSignatures<VectorSignature> bag = db.getLocalSignature(e, desc);
+				if (bag != null) {
+					for (VectorSignature s : bag) {
+						System.out.println(s.toString());
+					}
+				}
 			}
 		}
+
 		w.write(db.getName());
 		w.newLine();
 		w.write(desc);
@@ -106,7 +120,7 @@ public class DatabaseManager extends Algorithm {
 		w.newLine();
 		w.write(Integer.toString(sigSize));
 		w.newLine();
-		
+
 		for (ImageEntry e : db) {
 			VectorSignature s = db.getGlobalSignature(e, desc);
 			if (s != null) {
@@ -120,5 +134,4 @@ public class DatabaseManager extends Algorithm {
 
 		w.close();
 	}
-
 }
