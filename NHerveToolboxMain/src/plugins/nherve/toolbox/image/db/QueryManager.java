@@ -9,13 +9,20 @@ import java.util.List;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.SignatureDistance;
+import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.L1Distance;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
 public class QueryManager extends Algorithm {
 	public class ResponseUnit implements Comparable<ResponseUnit> {
 		ImageEntry entry;
+		int lid;
 		double distanceToQuery;
+
+		public ResponseUnit() {
+			super();
+			lid = -1;
+		}
 
 		@Override
 		public int compareTo(ResponseUnit o) {
@@ -24,7 +31,7 @@ public class QueryManager extends Algorithm {
 
 		@Override
 		public String toString() {
-			return "ResponseUnit [entry=" + entry.getId() + ", distanceToQuery=" + distanceToQuery + "]";
+			return "ResponseUnit [entry=" + entry.getId() + " (" + lid + "), distanceToQuery=" + distanceToQuery + "]";
 		}
 	}
 
@@ -53,10 +60,14 @@ public class QueryManager extends Algorithm {
 			}
 			return r;
 		}
-		
+
 		public void dump(BufferedWriter w) throws IOException {
 			for (ResponseUnit ru : internal) {
-				w.write(ru.entry.getId() + " " + ru.distanceToQuery);
+				if (ru.lid >= 0) {
+					w.write(DatabaseManager.getUniqueId(ru.entry.getId(), ru.lid) + " " + ru.distanceToQuery);
+				} else {
+					w.write(ru.entry.getId() + " " + ru.distanceToQuery);
+				}
 				w.newLine();
 			}
 		}
@@ -72,13 +83,30 @@ public class QueryManager extends Algorithm {
 
 	public Response knnQuery(final ImageDatabase db, final String desc, final VectorSignature query, final int k) throws FeatureException {
 		Response result = new Response();
-		for (ImageEntry e : db) {
-			VectorSignature s = db.getGlobalSignature(e, desc);
-			if (s != null) {
-				ResponseUnit ru = new ResponseUnit();
-				ru.entry = e;
-				ru.distanceToQuery = distance.computeDistance(s, query);
-				result.add(ru);
+		if (db.containsGlobalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				VectorSignature s = db.getGlobalSignature(e, desc);
+				if (s != null) {
+					ResponseUnit ru = new ResponseUnit();
+					ru.entry = e;
+					ru.distanceToQuery = distance.computeDistance(s, query);
+					result.add(ru);
+				}
+			}
+		} else if (db.containsLocalDescriptor(desc)) {
+			for (ImageEntry e : db) {
+				BagOfSignatures<VectorSignature> bag = db.getLocalSignature(e, desc);
+				if (bag != null) {
+					int lid = 0;
+					for (VectorSignature s : bag) {
+						ResponseUnit ru = new ResponseUnit();
+						ru.entry = e;
+						ru.lid = lid;
+						ru.distanceToQuery = distance.computeDistance(s, query);
+						result.add(ru);
+						lid++;
+					}
+				}
 			}
 		}
 

@@ -21,7 +21,7 @@ public class DatabaseManager extends Algorithm {
 		super(log);
 	}
 
-	public long getUniqueId(int imageId, int localDescriptorId) {
+	public static long getUniqueId(int imageId, int localDescriptorId) {
 		return imageId * 100000000l + localDescriptorId;
 	}
 
