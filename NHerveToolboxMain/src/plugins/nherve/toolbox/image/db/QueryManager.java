@@ -36,11 +36,13 @@ public class QueryManager extends Algorithm {
 	}
 
 	public class Response {
+		private String queryId;
 		private List<ResponseUnit> internal;
 
-		public Response() {
+		public Response(String queryId) {
 			super();
 			internal = new ArrayList<ResponseUnit>();
+			this.queryId = queryId;
 		}
 
 		public void sortAndTruncate(int k) {
@@ -54,7 +56,7 @@ public class QueryManager extends Algorithm {
 
 		@Override
 		public String toString() {
-			String r = "Response  : \n";
+			String r = "Response (" + queryId + ") : \n";
 			for (ResponseUnit ru : internal) {
 				r += " - " + ru.toString() + "\n";
 			}
@@ -62,6 +64,8 @@ public class QueryManager extends Algorithm {
 		}
 
 		public void dump(BufferedWriter w) throws IOException {
+			w.write("# " + queryId);
+			w.newLine();
 			for (ResponseUnit ru : internal) {
 				if (ru.lid >= 0) {
 					w.write(DatabaseManager.getUniqueId(ru.entry.getId(), ru.lid) + " " + ru.distanceToQuery);
@@ -81,8 +85,8 @@ public class QueryManager extends Algorithm {
 		distance = new L1Distance();
 	}
 
-	public Response knnQuery(final ImageDatabase db, final String desc, final VectorSignature query, final int k) throws FeatureException {
-		Response result = new Response();
+	public Response knnQuery(final String queryId, final ImageDatabase db, final String desc, final VectorSignature query, final int k) throws FeatureException {
+		Response result = new Response(queryId);
 		if (db.containsGlobalDescriptor(desc)) {
 			for (ImageEntry e : db) {
 				VectorSignature s = db.getGlobalSignature(e, desc);
