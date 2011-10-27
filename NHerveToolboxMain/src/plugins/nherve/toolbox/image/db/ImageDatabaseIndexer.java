@@ -341,9 +341,10 @@ public class ImageDatabaseIndexer extends Algorithm {
 			results.add(tm.submit(new SingleImageWorker(e)));
 		}
 
+		Thread partialDumpProcess = null;
 		if (doPartialDump) {
-			Thread t = new Thread(new PartialDumpProcess());
-			t.start();
+			partialDumpProcess = new Thread(new PartialDumpProcess());
+			partialDumpProcess.start();
 		}
 
 		try {
@@ -354,6 +355,14 @@ public class ImageDatabaseIndexer extends Algorithm {
 			e.printStackTrace();
 		}
 
+		if (doPartialDump) {
+			try {
+				partialDumpProcess.join();
+			} catch (InterruptedException e1) {
+				err(e1);
+			}
+		}
+		
 		running = false;
 	}
 
