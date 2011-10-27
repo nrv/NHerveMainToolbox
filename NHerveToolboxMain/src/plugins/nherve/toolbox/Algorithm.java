@@ -18,6 +18,9 @@
  */
 package plugins.nherve.toolbox;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * The Class Algorithm.
  * 
@@ -25,8 +28,11 @@ package plugins.nherve.toolbox;
  */
 public abstract class Algorithm implements AbleToLogMessages {
 	
+	private static final SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss.SSS");
+	
 	private boolean log;
 	private boolean uiDisplay;
+	private boolean logTime;
 	
 	/**
 	 * Instantiates a new algorithm.
@@ -37,6 +43,27 @@ public abstract class Algorithm implements AbleToLogMessages {
 	public Algorithm(boolean display) {
 		super();
 		setLogEnabled(display);
+		setLogTime(true);
+	}
+	
+	public static void out(String msg) {
+		System.out.println(msg);
+	}
+	
+	public static void err(String msg) {
+		System.err.println(msg);
+	}
+	
+	public static void err(Throwable e) {
+		err(e.getClass().getName() + " : " + e.getMessage());
+	}
+	
+	public static void outWithTime(String msg) {
+		out("[" + df.format(new Date()) + "] " + msg);
+	}
+	
+	public static void errWithTime(String msg) {
+		err("[" + df.format(new Date()) + "] " + msg);
 	}
 	
 	/**
@@ -62,7 +89,11 @@ public abstract class Algorithm implements AbleToLogMessages {
 	@Override
 	public void log(String message) {
 		if (isLogEnabled()) {
-			System.out.println(message);
+			if (isLogTime()) {
+				outWithTime(message);
+			} else {
+				out(message);
+			}
 		}
 	}
 	
@@ -78,7 +109,11 @@ public abstract class Algorithm implements AbleToLogMessages {
 	 */
 	@Override
 	public void logWarning(String message) {
-		System.err.println("WARNING : " + message);
+		if (isLogTime()) {
+			errWithTime("WARNING : " + message);
+		} else {
+			err("WARNING : " + message);
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -86,7 +121,11 @@ public abstract class Algorithm implements AbleToLogMessages {
 	 */
 	@Override
 	public void logError(String message) {
-		System.err.println("ERROR : " + message);
+		if (isLogTime()) {
+			errWithTime("ERROR : " + message);
+		} else {
+			err("ERROR : " + message);
+		}
 	}
 
 	@Override
@@ -106,8 +145,20 @@ public abstract class Algorithm implements AbleToLogMessages {
 	@Override
 	public void displayMessage(String message) {
 		if (isUIDisplayEnabled()) {
-			System.out.println(message);
+			if (isLogTime()) {
+				outWithTime(message);
+			} else {
+				out(message);
+			}
 		}
+	}
+
+	public boolean isLogTime() {
+		return logTime;
+	}
+
+	public void setLogTime(boolean logTime) {
+		this.logTime = logTime;
 	}
 	
 }

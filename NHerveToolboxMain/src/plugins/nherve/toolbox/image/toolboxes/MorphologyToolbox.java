@@ -23,6 +23,7 @@ import icy.sequence.Sequence;
 import java.util.Arrays;
 import java.util.Stack;
 
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
 import plugins.vannary.morphomaths.MorphOp;
 
@@ -183,7 +184,7 @@ public class MorphologyToolbox {
 				pixelsToVisit.add(i);
 
 		if (pixelsToVisit.isEmpty())
-			System.err.println("fillHoles_2D was unable to find a background pixel for flooding");
+			Algorithm.err("fillHoles_2D was unable to find a background pixel for flooding");
 
 		while (!pixelsToVisit.isEmpty()) {
 			int index = pixelsToVisit.pop();

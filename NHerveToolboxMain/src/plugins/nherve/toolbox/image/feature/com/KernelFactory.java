@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.region.Pixel;
 
 
@@ -163,11 +164,11 @@ public class KernelFactory {
 	 *            the kernel
 	 */
 	public static void log(String name, List<Pixel> kernel) {
-		System.out.println("------ Kernel " + name + " ------");
+		Algorithm.out("------ Kernel " + name + " ------");
 		for (Pixel shift : kernel) {
-			System.out.println("    (" + kdf.format(shift.x) + ", " + kdf.format(shift.y) + ")");
+			Algorithm.out("    (" + kdf.format(shift.x) + ", " + kdf.format(shift.y) + ")");
 		}
-		System.out.println("----------------------");
+		Algorithm.out("----------------------");
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class KernelFactory {
 		for (int k = 0; k <= 12; k++) {
 			log("" + k, getStandardKernel(k));
 			log("precise " + k, getStandardKernel(k, true));
-			System.out.println("");
+			Algorithm.out("");
 		}
 	}
 }

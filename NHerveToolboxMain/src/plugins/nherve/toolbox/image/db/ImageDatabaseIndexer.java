@@ -18,6 +18,7 @@
  */
 package plugins.nherve.toolbox.image.db;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,26 +38,25 @@ import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
-
 /**
  * The Class ImageDatabaseIndexer.
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
 public class ImageDatabaseIndexer extends Algorithm {
-	
+
 	/** The db. */
 	private ImageDatabase db;
-	
+
 	/** The global descriptors. */
 	private Map<String, GlobalDescriptor<SegmentableBufferedImage, VectorSignature>> globalDescriptors;
 
 	/** The region factories. */
 	private Map<String, SupportRegionFactory> regionFactories;
-	
+
 	/** The local descriptors. */
 	private Map<String, LocalDescriptor<SegmentableBufferedImage, VectorSignature>> localDescriptors;
-	
+
 	/** The factory for local descriptor. */
 	private Map<String, String> factoryForLocalDescriptor;
 
@@ -65,6 +65,10 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 	/** The load images. */
 	private boolean loadImages;
+
+	private boolean doPartialDump;
+	private long partialDumpSleep;
+	private boolean running;
 
 	/**
 	 * Instantiates a new image database indexer.
@@ -81,6 +85,32 @@ public class ImageDatabaseIndexer extends Algorithm {
 		this.localDescriptors = new HashMap<String, LocalDescriptor<SegmentableBufferedImage, VectorSignature>>();
 		this.factoryForLocalDescriptor = new HashMap<String, String>();
 		this.entryDescriptors = new HashMap<String, GlobalDescriptor<ImageEntry, VectorSignature>>();
+
+		setDoPartialDump(false);
+		setPartialDumpSleep(5 * 60 * 1000);
+		running = false;
+	}
+
+	private class PartialDumpProcess implements Runnable {
+		@Override
+		public void run() {
+			while (running) {
+				try {
+					Thread.sleep(getPartialDumpSleep());
+					if (db != null) {
+						ImageDatabasePersistence ptv = new ImageDatabasePersistence(db);
+						ptv.setLogEnabled(isLogEnabled());
+						try {
+							ptv.dump();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		}
 	}
 
 	/**
@@ -89,7 +119,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 	 * @author Nicolas HERVE - nicolas.herve@pasteur.fr
 	 */
 	private class SingleImageWorker implements Callable<Integer> {
-		
+
 		/** The e. */
 		private ImageEntry e;
 
@@ -104,7 +134,9 @@ public class ImageDatabaseIndexer extends Algorithm {
 			this.e = e;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.util.concurrent.Callable#call()
 		 */
 		@Override
@@ -148,7 +180,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 						VectorSignature sig = desc.extractGlobalSignature(sbi);
 						desc.postProcess(sbi);
 						e.putSignature(name, sig);
-						
+
 						// System.out.println(sig);
 					}
 
@@ -241,6 +273,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 	 * Launch.
 	 */
 	public synchronized void launch() {
+		running = true;
 		TaskManager tm = TaskManager.getMainInstance();
 
 		loadImages = !regionFactories.isEmpty();
@@ -268,7 +301,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 				}
 			}
 		}
-		
+
 		try {
 			for (LocalDescriptor<SegmentableBufferedImage, VectorSignature> d : localDescriptors.values()) {
 				d.initForDatabase(db);
@@ -287,6 +320,12 @@ public class ImageDatabaseIndexer extends Algorithm {
 		for (ImageEntry e : db) {
 			results.add(tm.submit(new SingleImageWorker(e)));
 		}
+		
+		if (doPartialDump) {
+			Thread t = new Thread(new PartialDumpProcess());
+			t.start();
+		}
+		
 		try {
 			tm.waitResults(results, "ImageDatabaseIndexer", 1000);
 		} catch (TaskException e) {
@@ -294,6 +333,24 @@ public class ImageDatabaseIndexer extends Algorithm {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		running = false;
+	}
+
+	public boolean isDoPartialDump() {
+		return doPartialDump;
+	}
+
+	public void setDoPartialDump(boolean doPartialDump) {
+		this.doPartialDump = doPartialDump;
+	}
+
+	public long getPartialDumpSleep() {
+		return partialDumpSleep;
+	}
+
+	public void setPartialDumpSleep(long partialDumpSleep) {
+		this.partialDumpSleep = partialDumpSleep;
 	}
 
 }

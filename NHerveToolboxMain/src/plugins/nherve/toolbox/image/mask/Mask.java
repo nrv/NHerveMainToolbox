@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.region.Pixel;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
@@ -396,7 +397,7 @@ public class Mask implements Serializable, Iterable<String> {
 			try {
 				binaryData.fillHole(x, y);
 			} catch (StackOverflowError e1) {
-				System.err.println(e1.getClass().getName() + " : hole is too big for me !");
+				Algorithm.err(e1.getClass().getName() + " : hole is too big for me !");
 			}
 			forceRedraw();
 		} else {

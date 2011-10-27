@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import plugins.nherve.matrix.Matrix;
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.PCA;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -524,7 +525,7 @@ public class ColorSpaceTools {
 				}
 				qtz.get(h).add(vs);
 			}
-			System.out.println("Quantizing before PCA - moving from " + rgbSigs.size() + " to " + qtz.size() + "(" + (int) Math.pow(sz, ColorSpaceTools.NB_COLOR_CHANNELS) + ") sigs");
+			Algorithm.out("Quantizing before PCA - moving from " + rgbSigs.size() + " to " + qtz.size() + "(" + (int) Math.pow(sz, ColorSpaceTools.NB_COLOR_CHANNELS) + ") sigs");
 			sigsForPCA = new ArrayList<VectorSignature>();
 			for (List<VectorSignature> sigs : qtz.values()) {
 				VectorSignature moy = new DenseVectorSignature(ColorSpaceTools.NB_COLOR_CHANNELS);

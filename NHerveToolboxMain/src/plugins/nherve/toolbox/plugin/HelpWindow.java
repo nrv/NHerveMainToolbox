@@ -13,6 +13,8 @@ import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
+import plugins.nherve.toolbox.Algorithm;
+
 public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameListener {
 	private static final String TAG_PLUGIN_NAME = "__PLUGIN_NAME__";
 	private static final String TAG_FULL_PLUGIN_NAME = "__FULL_PLUGIN_NAME__";
@@ -61,15 +63,15 @@ public class HelpWindow extends IcyFrame implements HyperlinkListener, IcyFrameL
 						URI uri = new URI(urlString);
 						Desktop.getDesktop().browse(uri);
 					} else {
-						System.err.println("Unable to open external browser for " + urlString);
+						Algorithm.err("Unable to open external browser for " + urlString);
 					}
 				}
 
 				catch (Throwable excep) {
-					System.err.println(excep.getClass().getName() + " : " + excep.getMessage());
+					Algorithm.err(excep);
 				}
 			} else {
-				System.err.println("No URL on this link");
+				Algorithm.err("No URL on this link");
 			}
 		}
 	}

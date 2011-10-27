@@ -40,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import loci.formats.FormatException;
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
 import plugins.nherve.toolbox.image.My2DConnectedComponent;
 import plugins.nherve.toolbox.image.My2DConnectedComponentFinder;
@@ -323,7 +324,7 @@ public class SomeImageTools {
 		return gs;
 	}
 
-	// TODO ˆ utiliser partout au lieu d'un appel direct ˆ
+	// TODO ï¿½ utiliser partout au lieu d'un appel direct ï¿½
 	// SectionConnectedComponentFinder
 	/**
 	 * Find connected components.
@@ -432,7 +433,7 @@ public class SomeImageTools {
 		try {
 			return a1 * data[x1 + y2 * w] + a2 * data[x2 + y2 * w] + a3 * data[x2 + y1 * w] + a4 * data[x1 + y1 * w];
 		} catch (ArrayIndexOutOfBoundsException e) {
-			System.err.println("Error for (" + x + ", " + y + ") : " + x1 + "-" + x2 + ", " + y1 + "-" + y2 + " / (" + w + ", " + h + ")");
+			Algorithm.err("Error for (" + x + ", " + y + ") : " + x1 + "-" + x2 + ", " + y1 + "-" + y2 + " / (" + w + ", " + h + ")");
 			return 0;
 		}
 	}
@@ -477,15 +478,14 @@ public class SomeImageTools {
 		for (Line2D l : lines) {
 			pct = done * 100 / total;
 			while (pct >= nextStep) {
-				System.out.println("Transforming : " + (int) pct + " % done");
-				System.out.flush();
+				Algorithm.out("Transforming : " + (int) pct + " % done");
 				nextStep += step;
 			}
 			Shape shape = new Rectangle2D.Float((float) l.getX1(), (float) l.getY1(), (float) l.getX2() - (float) l.getX1(), 1f);
 			area.add(new Area(shape));
 			done += 1;
 		}
-		System.out.println("Transforming : done");
+		Algorithm.out("Transforming : done");
 		return area;
 	}
 
@@ -525,8 +525,7 @@ public class SomeImageTools {
 		for (int y = 0; y < h; y++) {
 			pct = y * 100 / h;
 			while (pct >= nextStep) {
-				System.out.println("Transforming : " + (int) pct + " % done");
-				System.out.flush();
+				Algorithm.out("Transforming : " + (int) pct + " % done");
 				nextStep += step;
 			}
 			for (int x = 0; x < w; x++) {
@@ -536,7 +535,7 @@ public class SomeImageTools {
 				idx++;
 			}
 		}
-		System.out.println("Transforming : done");
+		Algorithm.out("Transforming : done");
 		return bin;
 	}
 

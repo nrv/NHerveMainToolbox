@@ -39,6 +39,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import plugins.nherve.toolbox.AbleToLogMessages;
+import plugins.nherve.toolbox.Algorithm;
 
 /**
  * The Class SingletonPlugin.
@@ -108,7 +109,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	@Override
 	public void displayMessage(String message) {
 		if (isUIDisplayEnabled()) {
-			System.out.println(message);
+			Algorithm.out(message);
 		}
 	}
 
@@ -309,7 +310,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	@Override
 	public void log(String message) {
 		if (isLogEnabled()) {
-			System.out.println(message);
+			Algorithm.out(message);
 		}
 	}
 
@@ -318,7 +319,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	 */
 	@Override
 	public void logError(String message) {
-		System.err.println("ERROR : " + message);
+		Algorithm.err("ERROR : " + message);
 	}
 
 	/* (non-Javadoc)
@@ -326,7 +327,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	 */
 	@Override
 	public void logWarning(String message) {
-		System.err.println("WARNING : " + message);
+		Algorithm.err("WARNING : " + message);
 	}
 	
 	protected void openHelpWindow(String text, int w, int h) {

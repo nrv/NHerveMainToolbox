@@ -411,7 +411,7 @@ public class TaskManager extends Algorithm {
 			Map<Key, Output> results = new TreeMap<Key, Output>();
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("Launched ...");
+					out("Launched ...");
 				}
 			}
 			DecimalFormat cf = new DecimalFormat("00");
@@ -429,7 +429,7 @@ public class TaskManager extends Algorithm {
 					if (slp > 0) {
 						double pct = count * 100d / poolResults.size();
 						if (isShowProgress()) {
-							System.out.println(" - working ("+msg+") : " + cf.format(pct) + " %");
+							out(" - working ("+msg+") : " + cf.format(pct) + " %");
 						}
 						Thread.sleep(slp);
 					}
@@ -441,7 +441,7 @@ public class TaskManager extends Algorithm {
 			}
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("... done");
+					out("... done");
 				}
 			}
 
@@ -457,7 +457,7 @@ public class TaskManager extends Algorithm {
 	public <Output> Output waitResult(Future<Output> tr, long slp) throws TaskException {
 		try {
 			while (!tr.isDone()) {
-				// System.out.println("   ... sleeping ...");
+				// out("   ... sleeping ...");
 				Thread.sleep(slp);
 			}
 			return tr.get();
@@ -489,7 +489,7 @@ public class TaskManager extends Algorithm {
 			List<Output> results = new ArrayList<Output>();
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("Launched ...");
+					out("Launched ...");
 				}
 			}
 			DecimalFormat cf = new DecimalFormat("00");
@@ -507,7 +507,7 @@ public class TaskManager extends Algorithm {
 					if (slp > 0) {
 						double pct = count * 100d / poolResults.size();
 						if (isShowProgress()) {
-							System.out.println(" - working ("+msg+") : " + cf.format(pct) + " %");
+							out(" - working ("+msg+") : " + cf.format(pct) + " %");
 						}
 						Thread.sleep(slp);
 					}
@@ -519,7 +519,7 @@ public class TaskManager extends Algorithm {
 			}
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("... done");
+					out("... done");
 				}
 			}
 
@@ -549,7 +549,7 @@ public class TaskManager extends Algorithm {
 			List<Output> results = new ArrayList<Output>();
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("Launched ...");
+					out("Launched ...");
 				}
 			}
 			DecimalFormat cf = new DecimalFormat("00");
@@ -567,7 +567,7 @@ public class TaskManager extends Algorithm {
 					if (slp > 0) {
 						double pct = count * 100d / poolResults.size();
 						if (isShowProgress()) {
-							System.out.println(" - working ("+msg+") : " + cf.format(pct) + " %");
+							out(" - working ("+msg+") : " + cf.format(pct) + " %");
 						}
 						Thread.sleep(slp);
 					}
@@ -579,7 +579,7 @@ public class TaskManager extends Algorithm {
 			}
 			if (slp > 0) {
 				if (isShowProgress()) {
-					System.out.println("... done");
+					out("... done");
 				}
 			}
 

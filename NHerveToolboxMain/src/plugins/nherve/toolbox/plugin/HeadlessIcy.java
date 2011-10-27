@@ -29,6 +29,8 @@ import icy.system.thread.ThreadUtil;
 
 import javax.swing.JFrame;
 
+import plugins.nherve.toolbox.Algorithm;
+
 
 public class HeadlessIcy extends IcyFrameAdapter {
 
@@ -37,7 +39,7 @@ public class HeadlessIcy extends IcyFrameAdapter {
 	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.err.println("Usage : HeadlessIcy singleton.plugin.class");
+			Algorithm.err("Usage : HeadlessIcy singleton.plugin.class");
 			return;
 		}
 		

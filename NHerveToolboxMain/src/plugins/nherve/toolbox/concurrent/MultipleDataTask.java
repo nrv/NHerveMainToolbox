@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import plugins.nherve.toolbox.Algorithm;
+
 /**
  * The Class MultipleDataTask.
  * 
@@ -135,7 +137,7 @@ public abstract class MultipleDataTask<Input, Output> implements Callable<Output
 			
 			return outputCall();
 		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + " : " + e.getMessage());
+			Algorithm.err(e);
 			return null;
 		}
 	}

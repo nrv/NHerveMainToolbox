@@ -21,6 +21,8 @@ package plugins.nherve.toolbox.image.feature.region;
 import java.awt.Point;
 import java.util.Vector;
 
+import plugins.nherve.toolbox.Algorithm;
+
 // http://www.cs.princeton.edu/~ah/alg_anim/version1/QuickHull.html
 
 /**
@@ -462,7 +464,7 @@ public class QuickHull
 		}
 		
 		qh = new QuickHull(dots);
-		System.out.println("hullPoints " + qh.hullPoints.size() + " fullSteps " + qh.fullSteps);
+		Algorithm.out("hullPoints " + qh.hullPoints.size() + " fullSteps " + qh.fullSteps);
 	}
 	
 	/**

@@ -467,7 +467,7 @@ public class KMeans extends DefaultClusteringAlgorithmImpl<VectorSignature> impl
 		for (int t = 0; t < nbTry; t++) {
 			double d = computeDistance(points.get(rd.nextInt(points.size())), points.get(rd.nextInt(points.size()))); 
 			if (d > 1E-10) {
-				System.out.println("sanityCheck - " + d);
+				out("sanityCheck - " + d);
 				return;
 			}
 		}

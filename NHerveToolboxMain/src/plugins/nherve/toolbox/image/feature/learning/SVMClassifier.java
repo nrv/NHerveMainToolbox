@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.db.ImageDatabaseSplit;
 import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -260,7 +261,7 @@ public class SVMClassifier extends LearningAlgorithm {
 					++total_correct;
 				}
 			}
-			System.out.println("C = " + param.C + ", gamma = " + param.gamma + " - " + 100.0 * total_correct / prob.l + "%");
+			out("C = " + param.C + ", gamma = " + param.gamma + " - " + 100.0 * total_correct / prob.l + "%");
 			// }
 		}
 

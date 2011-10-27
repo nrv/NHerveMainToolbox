@@ -74,10 +74,12 @@ public class DatabaseManager extends Algorithm {
 		return db;
 	}
 
-	public void index(final ImageDatabase db, final IndexingConfiguration conf) {
+	public void index(final ImageDatabase db, final IndexingConfiguration conf, final boolean partialDump, final int waitMinutesBetweenEachDump) {
 		db.clearDescriptors();
 
 		ImageDatabaseIndexer idxr = new ImageDatabaseIndexer(db);
+		idxr.setDoPartialDump(partialDump);
+		idxr.setPartialDumpSleep(waitMinutesBetweenEachDump * 60 * 1000);
 		idxr.setLogEnabled(isLogEnabled());
 		conf.populate(idxr);
 

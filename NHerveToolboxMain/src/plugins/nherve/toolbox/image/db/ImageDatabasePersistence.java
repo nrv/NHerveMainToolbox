@@ -89,6 +89,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void dump() throws IOException {
+		log("Dumping database " + db.getName());
 		dumpHeaders();
 		for (String d : db.getAvailableGlobalDescriptors()) {
 			dumpSignatures(d);
@@ -105,6 +106,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void dumpHeaders() throws IOException {
+		log("Dumping database headers for " + db.getName());
 		RandomAccessFile raf = null;
 		try {
 			raf = getHeadersFile(true);

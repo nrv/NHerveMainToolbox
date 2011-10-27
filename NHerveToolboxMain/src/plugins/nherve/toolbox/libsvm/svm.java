@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.StringTokenizer;
 
+import plugins.nherve.toolbox.Algorithm;
+
 //
 // Kernel Cache
 //
@@ -2812,7 +2814,7 @@ public class svm {
 		for (int i = 0; i < l; i++) {
 			String line = fp.readLine();
 			if (line == null) {
-				System.err.println("null line for i = " + i + " / " + l);
+				Algorithm.err("null line for i = " + i + " / " + l);
 				return null;
 			}
 			StringTokenizer st = new StringTokenizer(line, " \t\n\r\f:");
