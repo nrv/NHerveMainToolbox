@@ -31,7 +31,7 @@ public class DatabaseManager extends Algorithm {
 
 		File imagesDirectory = new File(db.getRootImageDirectory());
 		if (!imagesDirectory.exists()) {
-			throw new IOException("Unknown images directory + " + imagesDirectory.getAbsolutePath());
+			throw new IOException("Unknown images directory " + imagesDirectory.getAbsolutePath());
 		}
 
 		File[] images = imagesDirectory.listFiles(new FilenameFilter() {
