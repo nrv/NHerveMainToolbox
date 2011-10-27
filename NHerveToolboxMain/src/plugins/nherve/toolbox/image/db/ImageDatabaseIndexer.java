@@ -68,6 +68,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 	private boolean doPartialDump;
 	private long partialDumpSleep;
+	private boolean readyToDumpHeaders;
 	private boolean running;
 
 	/**
@@ -94,22 +95,38 @@ public class ImageDatabaseIndexer extends Algorithm {
 	private class PartialDumpProcess implements Runnable {
 		@Override
 		public void run() {
+			log("PartialDumpProcess started");
+			ImageDatabasePersistence ptv = new ImageDatabasePersistence(db);
+			ptv.setLogEnabled(isLogEnabled());
+			
+			while (!readyToDumpHeaders) {
+				try {
+					Thread.sleep(getPartialDumpSleep());
+				} catch (InterruptedException e) {
+					err(e);
+				}
+			}
+			
+			try {
+				ptv.dumpHeaders();
+			} catch (IOException e1) {
+				err(e1);
+			}
+			
 			while (running) {
 				try {
 					Thread.sleep(getPartialDumpSleep());
-					if (db != null) {
-						ImageDatabasePersistence ptv = new ImageDatabasePersistence(db);
-						ptv.setLogEnabled(isLogEnabled());
-						try {
-							ptv.dump();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					try {
+						ptv.dumpSignatures();
+					} catch (IOException e) {
+						err(e);
 					}
 				} catch (InterruptedException e) {
-					// ignore
+					err(e);
 				}
 			}
+			
+			log("PartialDumpProcess stopped");
 		}
 	}
 
@@ -194,6 +211,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 					db.unloadImage(e);
 				}
+				readyToDumpHeaders = true;
 				return 0;
 			} catch (Exception error) {
 				e.setError(error);
@@ -274,6 +292,8 @@ public class ImageDatabaseIndexer extends Algorithm {
 	 */
 	public synchronized void launch() {
 		running = true;
+		readyToDumpHeaders = false;
+		
 		TaskManager tm = TaskManager.getMainInstance();
 
 		loadImages = !regionFactories.isEmpty();
@@ -320,14 +340,14 @@ public class ImageDatabaseIndexer extends Algorithm {
 		for (ImageEntry e : db) {
 			results.add(tm.submit(new SingleImageWorker(e)));
 		}
-		
+
 		if (doPartialDump) {
 			Thread t = new Thread(new PartialDumpProcess());
 			t.start();
 		}
-		
+
 		try {
-			tm.waitResults(results, "ImageDatabaseIndexer", 1000);
+			tm.waitResults(results, "ImageDatabaseIndexer", 5000);
 		} catch (TaskException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

@@ -91,10 +91,16 @@ public class ImageDatabasePersistence extends Algorithm {
 	public void dump() throws IOException {
 		log("Dumping database " + db.getName());
 		dumpHeaders();
+		dumpSignatures();
+	}
+	
+	public void dumpSignatures() throws IOException {
 		for (String d : db.getAvailableGlobalDescriptors()) {
+			System.out.println("---- dump " + d + " //");
 			dumpSignatures(d);
 		}
 		for (String d : db.getAvailableLocalDescriptors()) {
+			System.out.println("---- dump " + d + " //");
 			dumpSignatures(d);
 		}
 	}
@@ -144,6 +150,7 @@ public class ImageDatabasePersistence extends Algorithm {
 				raf.close();
 			}
 		}
+		log("Dumping headers done");
 	}
 
 	/**
@@ -155,6 +162,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void dumpSignatures(String desc) throws IOException {
+		log("Dumping descriptor " + desc + " for " + db.getName());
 		boolean global = true;
 
 		if (db.containsLocalDescriptor(desc)) {
@@ -183,6 +191,7 @@ public class ImageDatabasePersistence extends Algorithm {
 				raf.close();
 			}
 		}
+		log("Dumping descriptor done");
 	}
 
 	/**
