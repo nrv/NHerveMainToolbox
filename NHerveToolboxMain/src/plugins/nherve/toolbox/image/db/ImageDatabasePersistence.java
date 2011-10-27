@@ -96,11 +96,9 @@ public class ImageDatabasePersistence extends Algorithm {
 	
 	public void dumpSignatures() throws IOException {
 		for (String d : db.getAvailableGlobalDescriptors()) {
-			System.out.println("---- dump " + d + " //");
 			dumpSignatures(d);
 		}
 		for (String d : db.getAvailableLocalDescriptors()) {
-			System.out.println("---- dump " + d + " //");
 			dumpSignatures(d);
 		}
 	}
