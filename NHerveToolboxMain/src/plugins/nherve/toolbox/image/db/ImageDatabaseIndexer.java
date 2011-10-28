@@ -72,6 +72,9 @@ public class ImageDatabaseIndexer extends Algorithm {
 	private boolean running;
 	private boolean doOnlyMissingStuff;
 
+	private int countIgnored;
+	private int countProcessed;
+
 	/**
 	 * Instantiates a new image database indexer.
 	 * 
@@ -101,6 +104,8 @@ public class ImageDatabaseIndexer extends Algorithm {
 			ImageDatabasePersistence ptv = new ImageDatabasePersistence(db);
 			ptv.setLogEnabled(isLogEnabled());
 
+			log("processed : " + countProcessed + " - ignored : " + countIgnored);
+
 			while (!readyToDumpHeaders) {
 				try {
 					Thread.sleep(getPartialDumpSleep());
@@ -110,6 +115,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 			}
 
 			try {
+				log("processed : " + countProcessed + " - ignored : " + countIgnored);
 				ptv.dumpHeaders();
 			} catch (IOException e1) {
 				err(e1);
@@ -119,6 +125,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 				try {
 					Thread.sleep(getPartialDumpSleep());
 					try {
+						log("processed : " + countProcessed + " - ignored : " + countIgnored);
 						ptv.dumpSignatures();
 					} catch (IOException e) {
 						err(e);
@@ -156,7 +163,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 			sbi = null;
 			imageLoaded = false;
 		}
-		
+
 		private void loadImage() throws IOException {
 			if (loadImages && !imageLoaded) {
 				db.loadImage(e);
@@ -167,10 +174,11 @@ public class ImageDatabaseIndexer extends Algorithm {
 				sbi.setName(e.getFile());
 			}
 		}
-		
+
 		private void unloadImage() {
 			if (imageLoaded) {
 				db.unloadImage(e);
+				sbi = null;
 			}
 		}
 
@@ -185,7 +193,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 				if (globalDescriptors.size() + localDescriptors.size() + entryDescriptors.size() > 0) {
 					Map<String, List<SupportRegion>> srCache = new HashMap<String, List<SupportRegion>>();
 					for (String name : localDescriptors.keySet()) {
-						if (!isDoOnlyMissingStuff() || e.getLocalSignatures().containsKey(name)) {
+						if (!isDoOnlyMissingStuff() || !e.getLocalSignatures().containsKey(name)) {
 							loadImage();
 							List<SupportRegion> sr = null;
 							String srn = factoryForLocalDescriptor.get(name);
@@ -212,18 +220,21 @@ public class ImageDatabaseIndexer extends Algorithm {
 					srCache = null;
 
 					for (String name : globalDescriptors.keySet()) {
-						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+						if (!isDoOnlyMissingStuff() || !e.getGlobalSignatures().containsKey(name)) {
 							loadImage();
 							GlobalDescriptor<SegmentableBufferedImage, VectorSignature> desc = globalDescriptors.get(name);
 							desc.preProcess(sbi);
 							VectorSignature sig = desc.extractGlobalSignature(sbi);
 							desc.postProcess(sbi);
 							e.putSignature(name, sig);
+							countProcessed++;
+						} else {
+							countIgnored++;
 						}
 					}
 
 					for (String name : entryDescriptors.keySet()) {
-						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+						if (!isDoOnlyMissingStuff() || !e.getGlobalSignatures().containsKey(name)) {
 							loadImage();
 							GlobalDescriptor<ImageEntry, VectorSignature> desc = entryDescriptors.get(name);
 							desc.preProcess(e);
@@ -360,15 +371,18 @@ public class ImageDatabaseIndexer extends Algorithm {
 			e1.printStackTrace();
 		}
 
-		List<Future<Integer>> results = new ArrayList<Future<Integer>>();
-		for (ImageEntry e : db) {
-			results.add(tm.submit(new SingleImageWorker(e)));
-		}
+		countIgnored = 0;
+		countProcessed = 0;
 
 		Thread partialDumpProcess = null;
 		if (doPartialDump) {
 			partialDumpProcess = new Thread(new PartialDumpProcess());
 			partialDumpProcess.start();
+		}
+
+		List<Future<Integer>> results = new ArrayList<Future<Integer>>();
+		for (ImageEntry e : db) {
+			results.add(tm.submit(new SingleImageWorker(e)));
 		}
 
 		try {
@@ -377,6 +391,12 @@ public class ImageDatabaseIndexer extends Algorithm {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		}
+
+		for (ImageEntry e : db) {
+			if (e.getError() != null) {
+				err(e.getFile() + " : " + e.getError().getClass().getName() + " - " + e.getError().getMessage());
+			}
 		}
 
 		if (doPartialDump) {

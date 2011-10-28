@@ -76,11 +76,13 @@ public class DatabaseManager extends Algorithm {
 	}
 
 	public void index(final ImageDatabase db, final IndexingConfiguration conf, final boolean partialDump, final double waitMinutesBetweenEachDump, final boolean doOnlyMissingStuff) {
-		db.clearDescriptors();
+		if (!doOnlyMissingStuff) {
+			db.clearDescriptors();
+		}
 
 		ImageDatabaseIndexer idxr = new ImageDatabaseIndexer(db);
 		idxr.setDoPartialDump(partialDump);
-		idxr.setPartialDumpSleep((long)(waitMinutesBetweenEachDump * 60 * 1000));
+		idxr.setPartialDumpSleep((long) (waitMinutesBetweenEachDump * 60 * 1000));
 		idxr.setDoOnlyMissingStuff(doOnlyMissingStuff);
 		idxr.setLogEnabled(isLogEnabled());
 		conf.populate(idxr);
@@ -164,7 +166,7 @@ public class DatabaseManager extends Algorithm {
 				}
 			}
 		}
-		
+
 		w.close();
 	}
 }

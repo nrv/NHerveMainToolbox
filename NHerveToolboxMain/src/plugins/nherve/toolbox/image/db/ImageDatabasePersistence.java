@@ -42,19 +42,19 @@ public class ImageDatabasePersistence extends Algorithm {
 
 	/** The Constant HEADERS_FILE. */
 	public final static String HEADERS_FILE = "db_headers";
-	
+
 	/** The Constant SIGNATURES_FILE. */
 	public final static String SIGNATURES_FILE = "sigs_";
-	
+
 	/** The Constant EXT. */
 	public final static String EXT = ".obj";
-	
+
 	/** The Constant EOL. */
 	public final static String EOL = "\n";
 
 	/** The root directory. */
 	private String rootDirectory;
-	
+
 	/** The db. */
 	private ImageDatabase db;
 
@@ -93,7 +93,7 @@ public class ImageDatabasePersistence extends Algorithm {
 		dumpHeaders();
 		dumpSignatures();
 	}
-	
+
 	public void dumpSignatures() throws IOException {
 		for (String d : db.getAvailableGlobalDescriptors()) {
 			dumpSignatures(d);
@@ -124,7 +124,7 @@ public class ImageDatabasePersistence extends Algorithm {
 			Set<String> alldescs = db.getAllDescriptors();
 			PersistenceToolbox.dumpInt(fc, alldescs.size());
 			for (String d : alldescs) {
-				PersistenceToolbox.dumpBoolean(fc, db.containsLocalDescriptor(d)); 
+				PersistenceToolbox.dumpBoolean(fc, db.containsLocalDescriptor(d));
 				PersistenceToolbox.dumpString(fc, d);
 			}
 
@@ -385,10 +385,14 @@ public class ImageDatabasePersistence extends Algorithm {
 					}
 					if (global) {
 						VectorSignature vs = PersistenceToolbox.loadVectorSignature(fc);
-						e.putSignature(desc, vs);
+						if (vs != null) {
+							e.putSignature(desc, vs);
+						}
 					} else {
 						BagOfSignatures<VectorSignature> bs = PersistenceToolbox.loadBagOfSignatures(fc);
-						e.putSignature(desc, bs);
+						if (bs != null) {
+							e.putSignature(desc, bs);
+						}
 					}
 				}
 			} catch (IOException e) {
