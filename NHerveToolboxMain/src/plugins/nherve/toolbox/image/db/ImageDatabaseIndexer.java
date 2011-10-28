@@ -70,6 +70,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 	private long partialDumpSleep;
 	private boolean readyToDumpHeaders;
 	private boolean running;
+	private boolean doOnlyMissingStuff;
 
 	/**
 	 * Instantiates a new image database indexer.
@@ -89,6 +90,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 		setDoPartialDump(false);
 		setPartialDumpSleep(5 * 60 * 1000);
+		setDoOnlyMissingStuff(false);
 		running = false;
 	}
 
@@ -98,7 +100,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 			log("PartialDumpProcess started");
 			ImageDatabasePersistence ptv = new ImageDatabasePersistence(db);
 			ptv.setLogEnabled(isLogEnabled());
-			
+
 			while (!readyToDumpHeaders) {
 				try {
 					Thread.sleep(getPartialDumpSleep());
@@ -106,13 +108,13 @@ public class ImageDatabaseIndexer extends Algorithm {
 					err(e);
 				}
 			}
-			
+
 			try {
 				ptv.dumpHeaders();
 			} catch (IOException e1) {
 				err(e1);
 			}
-			
+
 			while (running) {
 				try {
 					Thread.sleep(getPartialDumpSleep());
@@ -125,7 +127,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 					err(e);
 				}
 			}
-			
+
 			log("PartialDumpProcess stopped");
 		}
 	}
@@ -168,45 +170,49 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 					Map<String, List<SupportRegion>> srCache = new HashMap<String, List<SupportRegion>>();
 					for (String name : localDescriptors.keySet()) {
-						List<SupportRegion> sr = null;
-						String srn = factoryForLocalDescriptor.get(name);
-						if (srn != null) {
-							if (srCache.containsKey(srn)) {
-								sr = srCache.get(srn);
-							} else {
-								sr = regionFactories.get(srn).extractRegions(sbi);
-								srCache.put(srn, sr);
+						if (!isDoOnlyMissingStuff() || e.getLocalSignatures().containsKey(name)) {
+							List<SupportRegion> sr = null;
+							String srn = factoryForLocalDescriptor.get(name);
+							if (srn != null) {
+								if (srCache.containsKey(srn)) {
+									sr = srCache.get(srn);
+								} else {
+									sr = regionFactories.get(srn).extractRegions(sbi);
+									srCache.put(srn, sr);
+								}
 							}
+							LocalDescriptor<SegmentableBufferedImage, VectorSignature> desc = localDescriptors.get(name);
+							desc.preProcess(sbi);
+							BagOfSignatures<VectorSignature> bag = new BagOfSignatures<VectorSignature>();
+							for (SupportRegion reg : sr) {
+								VectorSignature sig = desc.extractLocalSignature(sbi, reg);
+								bag.add(sig);
+							}
+							desc.postProcess(sbi);
+							e.putSignature(name, bag);
 						}
-						LocalDescriptor<SegmentableBufferedImage, VectorSignature> desc = localDescriptors.get(name);
-						desc.preProcess(sbi);
-						BagOfSignatures<VectorSignature> bag = new BagOfSignatures<VectorSignature>();
-						for (SupportRegion reg : sr) {
-							VectorSignature sig = desc.extractLocalSignature(sbi, reg);
-							bag.add(sig);
-						}
-						desc.postProcess(sbi);
-						e.putSignature(name, bag);
 					}
 					srCache.clear();
 					srCache = null;
 
 					for (String name : globalDescriptors.keySet()) {
-						GlobalDescriptor<SegmentableBufferedImage, VectorSignature> desc = globalDescriptors.get(name);
-						desc.preProcess(sbi);
-						VectorSignature sig = desc.extractGlobalSignature(sbi);
-						desc.postProcess(sbi);
-						e.putSignature(name, sig);
-
-						// System.out.println(sig);
+						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+							GlobalDescriptor<SegmentableBufferedImage, VectorSignature> desc = globalDescriptors.get(name);
+							desc.preProcess(sbi);
+							VectorSignature sig = desc.extractGlobalSignature(sbi);
+							desc.postProcess(sbi);
+							e.putSignature(name, sig);
+						}
 					}
 
 					for (String name : entryDescriptors.keySet()) {
-						GlobalDescriptor<ImageEntry, VectorSignature> desc = entryDescriptors.get(name);
-						desc.preProcess(e);
-						VectorSignature sig = desc.extractGlobalSignature(e);
-						desc.postProcess(e);
-						e.putSignature(name, sig);
+						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+							GlobalDescriptor<ImageEntry, VectorSignature> desc = entryDescriptors.get(name);
+							desc.preProcess(e);
+							VectorSignature sig = desc.extractGlobalSignature(e);
+							desc.postProcess(e);
+							e.putSignature(name, sig);
+						}
 					}
 
 					db.unloadImage(e);
@@ -293,7 +299,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 	public synchronized void launch() {
 		running = true;
 		readyToDumpHeaders = false;
-		
+
 		TaskManager tm = TaskManager.getMainInstance();
 
 		loadImages = !regionFactories.isEmpty();
@@ -362,7 +368,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 				err(e1);
 			}
 		}
-		
+
 		running = false;
 	}
 
@@ -380,6 +386,14 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 	public void setPartialDumpSleep(long partialDumpSleep) {
 		this.partialDumpSleep = partialDumpSleep;
+	}
+
+	public boolean isDoOnlyMissingStuff() {
+		return doOnlyMissingStuff;
+	}
+
+	public void setDoOnlyMissingStuff(boolean doOnlyMissingStuff) {
+		this.doOnlyMissingStuff = doOnlyMissingStuff;
 	}
 
 }

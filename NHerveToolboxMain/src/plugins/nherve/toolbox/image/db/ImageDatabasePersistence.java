@@ -168,6 +168,7 @@ public class ImageDatabasePersistence extends Algorithm {
 		}
 
 		RandomAccessFile raf = null;
+		int count = 0;
 		try {
 			raf = getSignaturesFile(desc, true);
 			FileChannel fc = raf.getChannel();
@@ -176,9 +177,15 @@ public class ImageDatabasePersistence extends Algorithm {
 				PersistenceToolbox.dumpInt(fc, e.getId());
 				if (global) {
 					VectorSignature vs = e.getGlobalSignatures().get(desc);
+					if (vs != null) {
+						count++;
+					}
 					PersistenceToolbox.dumpSignature(fc, vs);
 				} else {
 					BagOfSignatures<VectorSignature> bs = e.getLocalSignatures().get(desc);
+					if (bs != null) {
+						count++;
+					}
 					PersistenceToolbox.dumpSignature(fc, bs);
 				}
 			}
@@ -189,7 +196,7 @@ public class ImageDatabasePersistence extends Algorithm {
 				raf.close();
 			}
 		}
-		log("Dumping descriptor done");
+		log("Dumping descriptor " + desc + " done (" + count + " / " + db.size() + ")");
 	}
 
 	/**

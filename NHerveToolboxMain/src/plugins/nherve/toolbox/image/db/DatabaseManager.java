@@ -61,6 +61,7 @@ public class DatabaseManager extends Algorithm {
 	}
 
 	public ImageDatabase load(final DatabaseConfiguration conf, boolean headersOnly) throws IOException {
+		log("Loading database " + conf.getName());
 		ImageDatabasePersistence ptv = new ImageDatabasePersistence(conf.getRoot() + "/" + conf.getSignatures());
 		if (headersOnly) {
 			ptv.loadHeaders();
@@ -74,16 +75,21 @@ public class DatabaseManager extends Algorithm {
 		return db;
 	}
 
-	public void index(final ImageDatabase db, final IndexingConfiguration conf, final boolean partialDump, final double waitMinutesBetweenEachDump) {
+	public void index(final ImageDatabase db, final IndexingConfiguration conf, final boolean partialDump, final double waitMinutesBetweenEachDump, final boolean doOnlyMissingStuff) {
 		db.clearDescriptors();
 
 		ImageDatabaseIndexer idxr = new ImageDatabaseIndexer(db);
 		idxr.setDoPartialDump(partialDump);
 		idxr.setPartialDumpSleep((long)(waitMinutesBetweenEachDump * 60 * 1000));
+		idxr.setDoOnlyMissingStuff(doOnlyMissingStuff);
 		idxr.setLogEnabled(isLogEnabled());
 		conf.populate(idxr);
 
-		log("Launching signatures extraction");
+		if (doOnlyMissingStuff) {
+			log("Launching missing signatures extraction");
+		} else {
+			log("Launching signatures extraction");
+		}
 
 		idxr.launch();
 
@@ -92,6 +98,7 @@ public class DatabaseManager extends Algorithm {
 
 	public void textDump(final ImageDatabase db, String desc) throws IOException, FeatureException {
 		File f = new File(db.getRootDirectory(), db.getName() + "_" + desc + ".export");
+		log("Dumping database " + db.getName() + " to " + f.getAbsolutePath());
 		BufferedWriter w = new BufferedWriter(new FileWriter(f));
 
 		int nbNonNullSignatures = 0;
