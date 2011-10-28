@@ -141,6 +141,8 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 		/** The e. */
 		private ImageEntry e;
+		private SegmentableBufferedImage sbi;
+		private boolean imageLoaded;
 
 		/**
 		 * Instantiates a new single image worker.
@@ -151,6 +153,25 @@ public class ImageDatabaseIndexer extends Algorithm {
 		public SingleImageWorker(ImageEntry e) {
 			super();
 			this.e = e;
+			sbi = null;
+			imageLoaded = false;
+		}
+		
+		private void loadImage() throws IOException {
+			if (loadImages && !imageLoaded) {
+				db.loadImage(e);
+				imageLoaded = true;
+			}
+			if (sbi == null) {
+				sbi = new SegmentableBufferedImage(e.getImage());
+				sbi.setName(e.getFile());
+			}
+		}
+		
+		private void unloadImage() {
+			if (imageLoaded) {
+				db.unloadImage(e);
+			}
 		}
 
 		/*
@@ -162,15 +183,10 @@ public class ImageDatabaseIndexer extends Algorithm {
 		public Integer call() throws Exception {
 			try {
 				if (globalDescriptors.size() + localDescriptors.size() + entryDescriptors.size() > 0) {
-					if (loadImages) {
-						db.loadImage(e);
-					}
-					SegmentableBufferedImage sbi = new SegmentableBufferedImage(e.getImage());
-					sbi.setName(e.getFile());
-
 					Map<String, List<SupportRegion>> srCache = new HashMap<String, List<SupportRegion>>();
 					for (String name : localDescriptors.keySet()) {
 						if (!isDoOnlyMissingStuff() || e.getLocalSignatures().containsKey(name)) {
+							loadImage();
 							List<SupportRegion> sr = null;
 							String srn = factoryForLocalDescriptor.get(name);
 							if (srn != null) {
@@ -197,6 +213,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 					for (String name : globalDescriptors.keySet()) {
 						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+							loadImage();
 							GlobalDescriptor<SegmentableBufferedImage, VectorSignature> desc = globalDescriptors.get(name);
 							desc.preProcess(sbi);
 							VectorSignature sig = desc.extractGlobalSignature(sbi);
@@ -207,6 +224,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 					for (String name : entryDescriptors.keySet()) {
 						if (!isDoOnlyMissingStuff() || e.getGlobalSignatures().containsKey(name)) {
+							loadImage();
 							GlobalDescriptor<ImageEntry, VectorSignature> desc = entryDescriptors.get(name);
 							desc.preProcess(e);
 							VectorSignature sig = desc.extractGlobalSignature(e);
@@ -215,7 +233,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 						}
 					}
 
-					db.unloadImage(e);
+					unloadImage();
 				}
 				readyToDumpHeaders = true;
 				return 0;
