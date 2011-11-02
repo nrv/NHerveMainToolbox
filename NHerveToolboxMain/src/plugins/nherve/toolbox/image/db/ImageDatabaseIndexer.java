@@ -71,6 +71,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 	private boolean readyToDumpHeaders;
 	private boolean running;
 	private boolean doOnlyMissingStuff;
+	private boolean useLoci;
 
 	private int countIgnored;
 	private int countProcessed;
@@ -94,6 +95,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 		setDoPartialDump(false);
 		setPartialDumpSleep(5 * 60 * 1000);
 		setDoOnlyMissingStuff(false);
+		setUseLoci(true);
 		running = false;
 	}
 
@@ -131,7 +133,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 						err(e);
 					}
 				} catch (InterruptedException e) {
-					err(e);
+					// err(e);
 				}
 			}
 
@@ -166,8 +168,12 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 		private void loadImage() throws IOException {
 			if (loadImages && !imageLoaded) {
-				db.loadImage(e);
-				imageLoaded = true;
+				try {
+					db.loadImage(e, useLoci);
+					imageLoaded = true;
+				} catch (Throwable t) {
+					throw new IOException(t);
+				}
 			}
 			if (sbi == null) {
 				sbi = new SegmentableBufferedImage(e.getImage());
@@ -403,6 +409,7 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 		if (doPartialDump) {
 			try {
+				partialDumpProcess.interrupt();
 				partialDumpProcess.join();
 			} catch (InterruptedException e1) {
 				err(e1);
@@ -432,6 +439,14 @@ public class ImageDatabaseIndexer extends Algorithm {
 
 	public void setDoOnlyMissingStuff(boolean doOnlyMissingStuff) {
 		this.doOnlyMissingStuff = doOnlyMissingStuff;
+	}
+
+	public boolean isUseLoci() {
+		return useLoci;
+	}
+
+	public void setUseLoci(boolean useLoci) {
+		this.useLoci = useLoci;
 	}
 
 }

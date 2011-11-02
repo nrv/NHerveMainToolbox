@@ -545,6 +545,10 @@ public class ImageDatabase implements Iterable<ImageEntry> {
 	public void loadImage(ImageEntry e) throws IOException {
 		e.loadImage(getRootImageDirectory());
 	}
+	
+	public void loadImage(ImageEntry e, boolean useLoci) throws IOException {
+		e.loadImage(getRootImageDirectory(), useLoci);
+	}
 
 	/**
 	 * Removes the.

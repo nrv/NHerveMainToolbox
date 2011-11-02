@@ -85,6 +85,8 @@ public class DatabaseManager extends Algorithm {
 		idxr.setPartialDumpSleep((long) (waitMinutesBetweenEachDump * 60 * 1000));
 		idxr.setDoOnlyMissingStuff(doOnlyMissingStuff);
 		idxr.setLogEnabled(isLogEnabled());
+		idxr.setUseLoci(false);
+		
 		conf.populate(idxr);
 
 		if (doOnlyMissingStuff) {

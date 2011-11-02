@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import loci.formats.FormatException;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
@@ -235,6 +237,18 @@ public class ImageEntry implements Segmentable {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void loadImage(String root) throws IOException {
+		loadImage(root, true);
+	}
+	
+	public void loadImage(String root, boolean useLoci) throws IOException {
+		if (useLoci) {
+			loadImageLoci(root);
+		} else {
+			loadImageImageIO(root);
+		}
+	}
+	
+	private void loadImageLoci(String root) throws IOException {
 		try {
 			if (image == null) {
 				image = Loader.loadImage(new File(root + "/" + file));
@@ -243,6 +257,14 @@ public class ImageEntry implements Segmentable {
 			}
 		} catch (FormatException e) {
 			throw new IOException(e);
+		}
+	}
+	
+	private void loadImageImageIO(String root) throws IOException {
+		if (image == null) {
+			image = IcyBufferedImage.createFrom(ImageIO.read(new File(root + "/" + file)));
+			width = image.getWidth();
+			height = image.getHeight();
 		}
 	}
 
