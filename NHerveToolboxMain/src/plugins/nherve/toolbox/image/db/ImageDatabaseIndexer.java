@@ -392,6 +392,8 @@ public class ImageDatabaseIndexer extends Algorithm {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		running = false;
 
 		for (ImageEntry e : db) {
 			if (e.getError() != null) {
@@ -406,8 +408,6 @@ public class ImageDatabaseIndexer extends Algorithm {
 				err(e1);
 			}
 		}
-
-		running = false;
 	}
 
 	public boolean isDoPartialDump() {

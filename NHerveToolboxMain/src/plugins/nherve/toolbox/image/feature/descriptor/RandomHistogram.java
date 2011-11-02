@@ -34,6 +34,8 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  */
 public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBufferedImage, VectorSignature> {
 	
+	private boolean needToLoadSegmentable;
+	
 	/** The rdm. */
 	private Random rdm;
 	
@@ -53,22 +55,15 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 		
 		this.sigSize = sigSize;
 		rdm = new Random(System.currentTimeMillis());
+		setNeedToLoadSegmentable(false);
 	}
 	
-	/**
-	 * Random signature.
-	 * 
-	 * @return the vector signature
-	 * @throws SignatureException
-	 *             the signature exception
+	/* (non-Javadoc)
+	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
-	public VectorSignature randomSignature() throws SignatureException {
-		VectorSignature s = getEmptySignature();
-		for (int d = 0; d < getSignatureSize(); d++) {
-			s.set(d, rdm.nextDouble());
-		}
-		s.normalizeSumToOne(true);
-		return s;
+	@Override
+	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+		return randomSignature();
 	}
 
 	/* (non-Javadoc)
@@ -80,19 +75,19 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 	}
 
 	/* (non-Javadoc)
-	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
-	 */
-	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
-		return randomSignature();
-	}
-
-	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl#getSignatureSize()
 	 */
 	@Override
 	public int getSignatureSize() {
 		return sigSize;
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.nherve.toolbox.image.feature.Descriptor#needToLoadSegmentable()
+	 */
+	@Override
+	public boolean needToLoadSegmentable() {
+		return needToLoadSegmentable;
 	}
 
 	/* (non-Javadoc)
@@ -109,20 +104,32 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
 	}
 
+	/**
+	 * Random signature.
+	 * 
+	 * @return the vector signature
+	 * @throws SignatureException
+	 *             the signature exception
+	 */
+	public VectorSignature randomSignature() throws SignatureException {
+		VectorSignature s = getEmptySignature();
+		for (int d = 0; d < getSignatureSize(); d++) {
+			s.set(d, rdm.nextDouble());
+		}
+		s.normalizeSumToOne(true);
+		return s;
+	}
+
+	public void setNeedToLoadSegmentable(boolean needToLoadSegmentable) {
+		this.needToLoadSegmentable = needToLoadSegmentable;
+	}
+
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl#toString()
 	 */
 	@Override
 	public String toString() {
 		return "RandomHistogram";
-	}
-
-	/* (non-Javadoc)
-	 * @see plugins.nherve.toolbox.image.feature.Descriptor#needToLoadSegmentable()
-	 */
-	@Override
-	public boolean needToLoadSegmentable() {
-		return false;
 	}
 
 }
