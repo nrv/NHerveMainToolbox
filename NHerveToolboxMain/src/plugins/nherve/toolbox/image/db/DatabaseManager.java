@@ -63,6 +63,7 @@ public class DatabaseManager extends Algorithm {
 	public ImageDatabase load(final DatabaseConfiguration conf, boolean headersOnly) throws IOException {
 		log("Loading database " + conf.getName());
 		ImageDatabasePersistence ptv = new ImageDatabasePersistence(conf.getRoot() + "/" + conf.getSignatures());
+		ptv.setLogEnabled(isLogEnabled());
 		if (headersOnly) {
 			ptv.loadHeaders();
 		} else {
@@ -72,6 +73,7 @@ public class DatabaseManager extends Algorithm {
 		db.setRootDirectory(conf.getRoot());
 		db.setImageDirectory(conf.getPictures());
 		db.setSignatureDirectory(conf.getSignatures());
+		log("Loading done");
 		return db;
 	}
 

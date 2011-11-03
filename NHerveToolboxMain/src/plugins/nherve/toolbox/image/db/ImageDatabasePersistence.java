@@ -257,6 +257,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void loadHeaders() throws IOException {
+		log("Loading headers");
 		RandomAccessFile raf = null;
 		try {
 			raf = getHeadersFile(false);
@@ -355,6 +356,7 @@ public class ImageDatabasePersistence extends Algorithm {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void loadSignatures(String desc, boolean allowPartialNameMatch) throws IOException {
+		log("Loading " + desc + " signatures");
 		boolean global = true;
 
 		if (allowPartialNameMatch) {
@@ -378,7 +380,9 @@ public class ImageDatabasePersistence extends Algorithm {
 				if (dbs != db.size()) {
 					throw new IOException("Wrong number of signatures for " + desc + " (" + dbs + "/" + db.size() + ")");
 				}
+				int count = 0;
 				for (ImageEntry e : db.getEntries()) {
+					count++;
 					int id = PersistenceToolbox.loadInt(fc);
 					if (id != e.getId()) {
 						throw new IOException("Wrong id of entry for " + desc + " (" + id + "/" + e.getId() + ")");
@@ -393,6 +397,9 @@ public class ImageDatabasePersistence extends Algorithm {
 						if (bs != null) {
 							e.putSignature(desc, bs);
 						}
+					}
+					if (count % 10000 == 0) {
+						log(" - " + count);
 					}
 				}
 			} catch (IOException e) {
