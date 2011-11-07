@@ -51,6 +51,8 @@ public interface AbleToLogMessages {
 	 *            the message
 	 */
 	public void logError(String message);
+	
+	public void logError(Throwable e);
 
 	
 	public boolean isUIDisplayEnabled();

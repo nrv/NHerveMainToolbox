@@ -39,6 +39,12 @@ public class GridCellCollection<T extends GridCell> implements Iterable<T>{
 		c.setThumbnailProvider(thumbnailProvider);
 		return cells.add(c);
 	}
+	
+	public void addAll(List<T> cl) {
+		for (T t : cl) {
+			add(t);
+		}
+	}
 
 	public T get(int arg0) {
 		return cells.get(arg0);

@@ -127,6 +127,15 @@ public abstract class Algorithm implements AbleToLogMessages {
 			err("ERROR : " + message);
 		}
 	}
+	
+	@Override
+	public void logError(Throwable e) {
+		if (isLogTime()) {
+			errWithTime("ERROR : " + e.getClass().getName() + " : " + e.getMessage());
+		} else {
+			err("ERROR : " + e.getClass().getName() + " : " + e.getMessage());
+		}
+	}
 
 	@Override
 	public boolean isUIDisplayEnabled() {

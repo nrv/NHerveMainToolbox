@@ -56,14 +56,14 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		return singletons.get(clazz);
 	}
 	
-	private boolean log;
-
-	private boolean uiDisplay;
-	private boolean runningHeadless;
 	private Sequence currentSequence;
-	private MyFrame myFrame;
-	
+
+	private boolean log;
 	private JPanel mainPanel;
+	private MyFrame myFrame;
+	private boolean runningHeadless;
+	
+	private boolean uiDisplay;
 //	private Cursor backupCursor;
 	public SingletonPlugin() {
 		super();
@@ -322,6 +322,11 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		Algorithm.err("ERROR : " + message);
 	}
 
+	@Override
+	public void logError(Throwable e) {
+		Algorithm.err("ERROR : " + e.getClass().getName() + " : " + e.getMessage());
+	}
+	
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.AbleToLogMessages#logWarning(java.lang.String)
 	 */
@@ -353,7 +358,6 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void painterRemoved(MainEvent event) {
 
 	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -363,6 +367,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void pluginClosed(MainEvent arg0) {
 
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -383,6 +388,8 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 
 	}
 	
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -393,8 +400,6 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 
 	}
 	
-
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -404,7 +409,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void sequenceClosed(MainEvent event) {
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -414,7 +419,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void sequenceFocused(MainEvent event) {
 		changeSequence();
 	}
-
+	
 	/**
 	 * Sequence has changed.
 	 */
@@ -434,7 +439,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	 * Sequence will change.
 	 */
 	public abstract void sequenceWillChange();
-	
+
 	/**
 	 * Sets the current sequence.
 	 * 
@@ -453,7 +458,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	public void setRunningHeadless(boolean runningHeadless) {
 		this.runningHeadless = runningHeadless;
 	}
-
+	
 	public void setTitle(String title) {
 		myFrame.setTitle(title);
 	}
@@ -505,7 +510,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		Icy.getMainInterface().addListener(this);
 		changeSequence();
 	}
-	
+
 	public abstract void stopInterface();
 
 	/**
