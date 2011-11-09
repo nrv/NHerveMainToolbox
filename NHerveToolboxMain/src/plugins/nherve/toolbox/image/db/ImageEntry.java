@@ -40,31 +40,31 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  */
 public class ImageEntry implements Segmentable {
 	
-	/** The id. */
-	private int id;
+	/** The classes. */
+	private Map<String, Double> classes;
+	
+	private transient Exception error;
 	
 	/** The file. */
 	private String file;
 	
-	/** The width. */
-	private transient int width;
+	/** The global signatures. */
+	private Map<String, VectorSignature> globalSignatures;
 	
 	/** The height. */
 	private transient int height;
 	
+	/** The id. */
+	private int id;
+	
 	/** The image. */
 	private transient IcyBufferedImage image;
-	
-	/** The classes. */
-	private Map<String, Double> classes;
-	
-	/** The global signatures. */
-	private Map<String, VectorSignature> globalSignatures;
 	
 	/** The local signatures. */
 	private Map<String, BagOfSignatures<VectorSignature>> localSignatures;
 	
-	private transient Exception error;
+	/** The width. */
+	private transient int width;
 
 	/**
 	 * Instantiates a new image entry.
@@ -93,41 +93,23 @@ public class ImageEntry implements Segmentable {
 	}
 
 	/**
-	 * Gets the file.
+	 * Clone for split.
 	 * 
-	 * @return the file
+	 * @return the image entry
 	 */
-	public String getFile() {
-		return file;
-	}
-
-	/**
-	 * Sets the file.
-	 * 
-	 * @param file
-	 *            the new file
-	 */
-	public void setFile(String file) {
-		this.file = file;
-	}
-
-	/**
-	 * Gets the classes.
-	 * 
-	 * @return the classes
-	 */
-	public Map<String, Double> getClasses() {
-		return classes;
-	}
-
-	/**
-	 * Sets the classes.
-	 * 
-	 * @param classes
-	 *            the classes
-	 */
-	public void setClasses(Map<String, Double> classes) {
-		this.classes = classes;
+	protected ImageEntry cloneForSplit() {
+		ImageEntry e = new ImageEntry();
+		
+		e.id = this.id;
+		e.file = this.file;
+		e.width = this.width;
+		e.height = this.height;
+		e.image = this.image;
+		e.classes = new HashMap<String, Double>(this.classes);
+		e.globalSignatures = this.globalSignatures;
+		e.localSignatures = this.localSignatures;
+		
+		return e;
 	}
 
 	/**
@@ -141,6 +123,134 @@ public class ImageEntry implements Segmentable {
 		return classes.containsKey(key);
 	}
 
+	/**
+	 * Gets the classes.
+	 * 
+	 * @return the classes
+	 */
+	public Map<String, Double> getClasses() {
+		return classes;
+	}
+
+	public Exception getError() {
+		return error;
+	}
+
+	/**
+	 * Gets the file.
+	 * 
+	 * @return the file
+	 */
+	public String getFile() {
+		return file;
+	}
+
+	/**
+	 * Gets the global signatures.
+	 * 
+	 * @return the global signatures
+	 */
+	public Map<String, VectorSignature> getGlobalSignatures() {
+		return globalSignatures;
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.nherve.toolbox.image.feature.Segmentable#getHeight()
+	 */
+	@Override
+	public int getHeight() {
+		return height;
+	}
+
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * Gets the image.
+	 * 
+	 * @return the image
+	 */
+	public IcyBufferedImage getImage() {
+		return image;
+	}
+
+	/**
+	 * Gets the local signatures.
+	 * 
+	 * @return the local signatures
+	 */
+	public Map<String, BagOfSignatures<VectorSignature>> getLocalSignatures() {
+		return localSignatures;
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.nherve.toolbox.image.feature.Segmentable#getWidth()
+	 */
+	@Override
+	public int getWidth() {
+		return width;
+	}
+	
+	public boolean isIndexedBy(String d) {
+		return getGlobalSignatures().containsKey(d) || getLocalSignatures().containsKey(d);
+	}
+
+	/**
+	 * Load image.
+	 * 
+	 * @param root
+	 *            the root
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public void loadImage(String root) throws IOException {
+		loadImage(root, true);
+	}
+	
+	public void loadImage(String root, boolean useLoci) throws IOException {
+		if (useLoci) {
+			loadImageLoci(root);
+		} else {
+			loadImageImageIO(root);
+		}
+	}
+	
+	private void loadImageImageIO(String root) throws IOException {
+		if (image == null) {
+			image = IcyBufferedImage.createFrom(ImageIO.read(new File(root + "/" + file)));
+			width = image.getWidth();
+			height = image.getHeight();
+		}
+	}
+	
+	private void loadImageLoci(String root) throws IOException {
+		try {
+			if (image == null) {
+				image = Loader.loadImage(new File(root + "/" + file));
+				width = image.getWidth();
+				height = image.getHeight();
+			}
+		} catch (FormatException e) {
+			throw new IOException(e);
+		}
+	}
+
+	/**
+	 * Put class.
+	 * 
+	 * @param key
+	 *            the key
+	 */
+	public void putClass(String key) {
+		putClass(key, 1d);
+	}
+	
 	/**
 	 * Put class.
 	 * 
@@ -161,9 +271,9 @@ public class ImageEntry implements Segmentable {
 	 * @param value
 	 *            the value
 	 */
-	public void putSignature(String key, VectorSignature value) {
-		synchronized (globalSignatures) {
-			globalSignatures.put(key, value);
+	public void putSignature(String key, BagOfSignatures<VectorSignature> value) {
+		synchronized (localSignatures) {
+			localSignatures.put(key, value);
 		}
 	}
 
@@ -175,10 +285,20 @@ public class ImageEntry implements Segmentable {
 	 * @param value
 	 *            the value
 	 */
-	public void putSignature(String key, BagOfSignatures<VectorSignature> value) {
-		synchronized (localSignatures) {
-			localSignatures.put(key, value);
+	public void putSignature(String key, VectorSignature value) {
+		synchronized (globalSignatures) {
+			globalSignatures.put(key, value);
 		}
+	}
+
+	/**
+	 * Removes the class.
+	 * 
+	 * @param key
+	 *            the key
+	 */
+	public void removeClass(String key) {
+		classes.remove(key);
 	}
 
 	/**
@@ -209,98 +329,27 @@ public class ImageEntry implements Segmentable {
 	}
 
 	/**
-	 * Put class.
+	 * Sets the classes.
 	 * 
-	 * @param key
-	 *            the key
+	 * @param classes
+	 *            the classes
 	 */
-	public void putClass(String key) {
-		putClass(key, 1d);
+	public void setClasses(Map<String, Double> classes) {
+		this.classes = classes;
 	}
-	
-	/**
-	 * Removes the class.
-	 * 
-	 * @param key
-	 *            the key
-	 */
-	public void removeClass(String key) {
-		classes.remove(key);
+
+	public void setError(Exception error) {
+		this.error = error;
 	}
 
 	/**
-	 * Load image.
+	 * Sets the file.
 	 * 
-	 * @param root
-	 *            the root
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
+	 * @param file
+	 *            the new file
 	 */
-	public void loadImage(String root) throws IOException {
-		loadImage(root, true);
-	}
-	
-	public void loadImage(String root, boolean useLoci) throws IOException {
-		if (useLoci) {
-			loadImageLoci(root);
-		} else {
-			loadImageImageIO(root);
-		}
-	}
-	
-	private void loadImageLoci(String root) throws IOException {
-		try {
-			if (image == null) {
-				image = Loader.loadImage(new File(root + "/" + file));
-				width = image.getWidth();
-				height = image.getHeight();
-			}
-		} catch (FormatException e) {
-			throw new IOException(e);
-		}
-	}
-	
-	private void loadImageImageIO(String root) throws IOException {
-		if (image == null) {
-			image = IcyBufferedImage.createFrom(ImageIO.read(new File(root + "/" + file)));
-			width = image.getWidth();
-			height = image.getHeight();
-		}
-	}
-
-	/**
-	 * Gets the image.
-	 * 
-	 * @return the image
-	 */
-	public IcyBufferedImage getImage() {
-		return image;
-	}
-	
-	/**
-	 * Sets the image.
-	 * 
-	 * @param i
-	 *            the new image
-	 */
-	public void setImage(IcyBufferedImage i) {
-		image = i;
-	}
-
-	/**
-	 * Unload image.
-	 */
-	public void unloadImage() {
-		image = null;
-	}
-
-	/**
-	 * Gets the global signatures.
-	 * 
-	 * @return the global signatures
-	 */
-	public Map<String, VectorSignature> getGlobalSignatures() {
-		return globalSignatures;
+	public void setFile(String file) {
+		this.file = file;
 	}
 
 	/**
@@ -314,12 +363,23 @@ public class ImageEntry implements Segmentable {
 	}
 
 	/**
-	 * Gets the local signatures.
+	 * Sets the id.
 	 * 
-	 * @return the local signatures
+	 * @param id
+	 *            the new id
 	 */
-	public Map<String, BagOfSignatures<VectorSignature>> getLocalSignatures() {
-		return localSignatures;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Sets the image.
+	 * 
+	 * @param i
+	 *            the new image
+	 */
+	public void setImage(IcyBufferedImage i) {
+		image = i;
 	}
 
 	/**
@@ -333,41 +393,6 @@ public class ImageEntry implements Segmentable {
 	}
 
 	/* (non-Javadoc)
-	 * @see plugins.nherve.toolbox.image.feature.Segmentable#getHeight()
-	 */
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	/* (non-Javadoc)
-	 * @see plugins.nherve.toolbox.image.feature.Segmentable#getWidth()
-	 */
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -376,31 +401,10 @@ public class ImageEntry implements Segmentable {
 	}
 
 	/**
-	 * Clone for split.
-	 * 
-	 * @return the image entry
+	 * Unload image.
 	 */
-	protected ImageEntry cloneForSplit() {
-		ImageEntry e = new ImageEntry();
-		
-		e.id = this.id;
-		e.file = this.file;
-		e.width = this.width;
-		e.height = this.height;
-		e.image = this.image;
-		e.classes = new HashMap<String, Double>(this.classes);
-		e.globalSignatures = this.globalSignatures;
-		e.localSignatures = this.localSignatures;
-		
-		return e;
-	}
-
-	public Exception getError() {
-		return error;
-	}
-
-	public void setError(Exception error) {
-		this.error = error;
+	public void unloadImage() {
+		image = null;
 	}
 
 }
