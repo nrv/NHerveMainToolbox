@@ -4,7 +4,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.FeatureException;
@@ -15,9 +19,9 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
 public class QueryManager extends Algorithm {
 	public class ResponseUnit implements Comparable<ResponseUnit> {
-		ImageEntry entry;
-		int lid;
-		double distanceToQuery;
+		private ImageEntry entry;
+		private int lid;
+		private double distanceToQuery;
 
 		public ResponseUnit() {
 			super();
@@ -33,9 +37,33 @@ public class QueryManager extends Algorithm {
 		public String toString() {
 			return "ResponseUnit [entry=" + entry.getId() + " (" + lid + "), distanceToQuery=" + distanceToQuery + "]";
 		}
+
+		public ImageEntry getEntry() {
+			return entry;
+		}
+
+		public void setEntry(ImageEntry entry) {
+			this.entry = entry;
+		}
+
+		public int getLid() {
+			return lid;
+		}
+
+		public void setLid(int lid) {
+			this.lid = lid;
+		}
+
+		public double getDistanceToQuery() {
+			return distanceToQuery;
+		}
+
+		public void setDistanceToQuery(double distanceToQuery) {
+			this.distanceToQuery = distanceToQuery;
+		}
 	}
 
-	public class Response {
+	public class Response implements Iterable<ResponseUnit> {
 		private String queryId;
 		private List<ResponseUnit> internal;
 
@@ -75,6 +103,15 @@ public class QueryManager extends Algorithm {
 				w.newLine();
 			}
 		}
+
+		public int size() {
+			return internal.size();
+		}
+
+		@Override
+		public Iterator<ResponseUnit> iterator() {
+			return internal.iterator();
+		}
 	}
 
 	private SignatureDistance<VectorSignature> distance;
@@ -85,6 +122,36 @@ public class QueryManager extends Algorithm {
 		distance = new L1Distance();
 	}
 
+	public Response randomQuery(final String queryId, final ImageDatabase db, int n) throws FeatureException {
+		Response result = new Response(queryId);
+
+		if (n > db.size()) {
+			n = db.size();
+		}
+
+		Set<ImageEntry> choosen = new HashSet<ImageEntry>();
+
+		Random rd = new Random(System.currentTimeMillis());
+
+		while (result.size() < n) {
+			ImageEntry e = db.get(rd.nextInt(db.size()));
+			if (!choosen.contains(e)) {
+				ResponseUnit u = new ResponseUnit();
+				u.entry = e;
+				u.distanceToQuery = 0;
+				result.add(u);
+				choosen.add(e);
+			}
+		}
+
+		return result;
+	}
+
+	public Response knnQuery(final String queryId, final ImageDatabase db, final String desc, final ImageEntry query, final int k) throws FeatureException {
+		VectorSignature vs = db.getGlobalSignature(query, desc);
+		return knnQuery(queryId, db, desc, vs, k);
+	}
+	
 	public Response knnQuery(final String queryId, final ImageDatabase db, final String desc, final VectorSignature query, final int k) throws FeatureException {
 		Response result = new Response(queryId);
 		if (db.containsGlobalDescriptor(desc)) {
