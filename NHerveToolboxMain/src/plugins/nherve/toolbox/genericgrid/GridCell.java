@@ -19,11 +19,13 @@
 
 package plugins.nherve.toolbox.genericgrid;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -49,7 +51,9 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private String errorMessage;
 	@SuppressWarnings("rawtypes")
 	private ThumbnailProvider thumbnailProvider;
+	private float borderWidth;
 
+	private Color bckBorderColor;
 	private int bckZoomWidth;
 	private int bckZoomHeight;
 	private int bckZoomZO;
@@ -65,6 +69,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		super();
 		setName(name);
 		setError(null);
+		setBorderWidth(1);
 		wa = new WaitingAnimation(this);
 
 		setBorderColor(null);
@@ -121,6 +126,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			zoomCenterX = r.getCenterX();
 			zoomCenterY = r.getCenterY();
 		} else {
+			bckBorderColor = borderColor;
 			setBorderColor(Color.GREEN);
 			repaint();
 		}
@@ -134,7 +140,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			getParent().setComponentZOrder(this, bckZoomZO);
 			createThumbnailCache();
 		} else {
-			setBorderColor(null);
+			setBorderColor(bckBorderColor);
 		}
 		repaint();
 	}
@@ -209,7 +215,10 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 		if (getBorderColor() != null) {
 			g2.setColor(getBorderColor());
+			Stroke s = g2.getStroke();
+			g2.setStroke(new BasicStroke(getBorderWidth()));
 			g2.drawRect(0, 0, w - 1, h - 1);
+			g2.setStroke(s);
 		}
 	}
 
@@ -278,5 +287,13 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		} else {
 			setToolTipText(getName());
 		}
+	}
+
+	public float getBorderWidth() {
+		return borderWidth;
+	}
+
+	public void setBorderWidth(float borderWidth) {
+		this.borderWidth = borderWidth;
 	}
 }
