@@ -83,36 +83,35 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		}
 	}
 
-	private static final long serialVersionUID = -3551019605947008673L;
-	private static final String EMPTY_LABEL = "nothing to display";
-	
 	public static final int DEFAULT_CELL_LENGTH = 150;
 	public static final int DEFAULT_CELL_SPACING = 10;
-	public static final int DEFAULT_MIN_ZOOM = 25;
-	public static final int DEFAULT_MAX_ZOOM = 200;
 	public static final int DEFAULT_ZOOM_SMOOTH = 100;
+	public static final int DEFAULT_MAX_ZOOM = 200;
 	public static final double DEFAULT_MAX_ZOOM_FACTOR = DEFAULT_MAX_ZOOM / DEFAULT_ZOOM_SMOOTH;
+	public static final int DEFAULT_MIN_ZOOM = 25;
+	private static final String EMPTY_LABEL = "nothing to display";
+	private static final long serialVersionUID = -3551019605947008673L;
+
+	private JCheckBox cbZoomOnFocus;
+	private int cellLength;
 
 	private GridCellCollection<T> cells;
-	private double zoomFactor;
-
+	private boolean cellsJustSet;
+	private int cellSpacing;
 	private InternalGrid grid;
-	private JScrollPane scroll;
-	private JSlider slZoom;
-	private JCheckBox cbZoomOnFocus;
 	private JLabel lbNbCells;
 
-	private int cellLength;
-	private int smoothZoom;
-	private int cellSpacing;
-	private boolean zoomOnFocus;
-
-	private int realFullLength;
 	private int pageLength;
+	private int realFullLength;
+	private JScrollPane scroll;
+	private JSlider slZoom;
+
+	private int smoothZoom;
+	private double zoomFactor;
 	
 //	private Rectangle viewportRectangle;
 
-	private boolean cellsJustSet;
+	private boolean zoomOnFocus;
 
 	public GridPanel() {
 		this(true);
@@ -171,26 +170,65 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		}
 	}
 
-	public GridCellCollection<T> getCells() {
-		return cells;
+	@Override
+	public void adjustmentValueChanged(AdjustmentEvent arg0) {
+//		updateViewport();
+		updateLbNbCells();
 	}
 
 //	private void updateViewport() {
 //		viewportRectangle = scroll.getViewport().getViewRect();
 //	}
 	
-	private void updateLbNbCells() {
-		if (lbNbCells != null) {
-			if (cells == null) {
-				lbNbCells.setText(EMPTY_LABEL);
-			} else {
-				int countVisible = 0;
-				for (GridCell cell : cells) {
-					if (cell.isOnScreen()) {
-						countVisible++;
-					}
+	@Override
+	public void componentHidden(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		organizeCells();
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+	}
+
+	public GridCellCollection<T> getCells() {
+		return cells;
+	}
+
+	public int getZoomValue() {
+		return slZoom.getValue();
+	}
+
+	public boolean isZoomOnFocus() {
+		return zoomOnFocus;
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		Object o = e.getSource();
+
+		if (o == null) {
+			return;
+		}
+
+		if (o instanceof JCheckBox) {
+			JCheckBox c = (JCheckBox) e.getSource();
+
+			if (c == cbZoomOnFocus) {
+				zoomOnFocus = cbZoomOnFocus.isSelected();
+				if (cells != null) {
+					cells.setZoomOnFocus(zoomOnFocus);
 				}
-				lbNbCells.setText(countVisible + " / " + cells.size() + " files");
+				organizeCells();
+				grid.revalidate();
+//				updateViewport();
+				grid.repaint();
 			}
 		}
 	}
@@ -257,45 +295,8 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		grid.repaint();
 	}
 
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		Object o = e.getSource();
-
-		if (o == null) {
-			return;
-		}
-
-		if (o instanceof JCheckBox) {
-			JCheckBox c = (JCheckBox) e.getSource();
-
-			if (c == cbZoomOnFocus) {
-				zoomOnFocus = cbZoomOnFocus.isSelected();
-				if (cells != null) {
-					cells.setZoomOnFocus(zoomOnFocus);
-				}
-				organizeCells();
-				grid.revalidate();
-//				updateViewport();
-				grid.repaint();
-			}
-		}
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		organizeCells();
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
+	public void setZoomValue(int n) {
+		slZoom.setValue(n);
 	}
 
 	@Override
@@ -323,14 +324,20 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 
 	}
 
-	@Override
-	public void adjustmentValueChanged(AdjustmentEvent arg0) {
-//		updateViewport();
-		updateLbNbCells();
-	}
-
-	public boolean isZoomOnFocus() {
-		return zoomOnFocus;
+	private void updateLbNbCells() {
+		if (lbNbCells != null) {
+			if (cells == null) {
+				lbNbCells.setText(EMPTY_LABEL);
+			} else {
+				int countVisible = 0;
+				for (GridCell cell : cells) {
+					if (cell.isOnScreen()) {
+						countVisible++;
+					}
+				}
+				lbNbCells.setText(countVisible + " / " + cells.size() + " files");
+			}
+		}
 	}
 	
 //	public boolean isOnScreen(T cell) {
