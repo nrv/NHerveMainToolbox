@@ -19,6 +19,8 @@
 
 package plugins.nherve.toolbox.genericgrid;
 
+import icy.system.SystemUtil;
+
 import java.awt.image.BufferedImage;
 import java.util.Collections;
 import java.util.HashMap;
@@ -82,13 +84,17 @@ public abstract class DefaultThumbnailProvider<T extends GridCell> extends Algor
 	private Map<T, ThumbnailWorker> thumbWorkers;
 
 	public DefaultThumbnailProvider() {
+		this(Math.max(2, SystemUtil.getAvailableProcessors() - 1));
+	}
+	
+	public DefaultThumbnailProvider(int nbt) {
 		super();
 
 		thumbWorkers = Collections.synchronizedMap(new HashMap<T, ThumbnailWorker>());
 		cacheWorkers = Collections.synchronizedMap(new HashMap<T, CacheWorker>());
 
-		thumbTM = new TaskManager();
-		cacheTM = new TaskManager();
+		thumbTM = new TaskManager(nbt);
+		cacheTM = new TaskManager(nbt);
 	}
 
 	/* (non-Javadoc)
