@@ -829,14 +829,24 @@ public class SomeImageTools {
 		return toSave;
 	}
 	
-	
-	public static BufferedImage resize(BufferedImage original, int w, int h) {
-		BufferedImage resized = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = (Graphics2D) resized.getGraphics();
+	public static BufferedImage resize(BufferedImage original, int w, int h, boolean keepOrigianlType) {
+		BufferedImage resized = null;
+		
+		if (keepOrigianlType) {
+			resized = new BufferedImage(w, h, original.getType());
+		} else {
+			resized = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		}
 
+		Graphics2D g2 = (Graphics2D) resized.getGraphics();
 		resizeAndDraw(original, g2, w, h);
+		g2.dispose();
 		
 		return resized;
+	}
+	
+	public static BufferedImage resize(BufferedImage original, int w, int h) {
+		return resize(original, w, h, false);
 	}
 	
 	public static void resizeAndDraw(BufferedImage original, Graphics2D g2, int w, int h) {
@@ -858,14 +868,6 @@ public class SomeImageTools {
 		t.scale(fr, fr);
 		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED ); 
 		g2.drawImage(original, t, null);
-		
-//		Graphics2D g3 = (Graphics2D) g2.create();
-//		g3.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//		g3.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-//		g3.translate(wo, ho);
-//		g3.scale(fr, fr);
-//		g3.drawImage(original, 0, 0, null);
-//		g3.dispose();
 	}
 
 }
