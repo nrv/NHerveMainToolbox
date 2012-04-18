@@ -249,11 +249,11 @@ public class SVMClassifier extends LearningAlgorithm {
 	public void crossValidation() {
 		double[] target = new double[prob.l];
 
-		for (int pc = -5; pc < 6; pc++) {
+		for (int pc = -10; pc < 16; pc++) {
 			param.C = Math.pow(2, pc);
 			// for (int pg = -5; pg < 6; pg++) {
 			// param.gamma = Math.pow(2, pg);
-			svm.svm_cross_validation(prob, param, 5, target);
+			svm.svm_cross_validation(prob, param, 50, target);
 
 			int total_correct = 0;
 			for (int i = 0; i < prob.l; i++) {
