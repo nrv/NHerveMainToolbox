@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 Institut Pasteur.
+ * Copyright 2012 Nicolas Hervé.
  * 
  * This file is part of NHerve Main Toolbox, which is an ICY plugin.
  * 
@@ -43,7 +44,7 @@ public class HeadlessIcy extends IcyFrameAdapter {
 			return;
 		}
 		
-		PluginLoader.JCLDisabled = true;
+		PluginLoader.setJCLDisabled(true);
 		
 		String className = args[0];
 		try {

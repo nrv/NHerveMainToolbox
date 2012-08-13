@@ -21,10 +21,13 @@ package plugins.nherve.toolbox.genericgrid;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -41,25 +44,31 @@ import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 public abstract class GridCell extends JComponent implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = -3822419525699981741L;
 
-	protected BufferedImage thumbnail;
-	private boolean needCacheRedraw;
-	private BufferedImage thumbnailCache;
-	private String name;
+	private Color bckBorderColor;
+	private int bckZoomHeight;
+	private Point bckZoomLocation;
+	private int bckZoomWidth;
+	private int bckZoomZO;
 	private Color borderColor;
-	private WaitingAnimation wa;
-	private boolean zoomOnFocus;
+	private float borderWidth;
+	private boolean displayName;
 	private String errorMessage;
+	private Font font;
+	
+	private int heightForThumb;
+	private String name;
+
+	private boolean needCacheRedraw;
+	protected BufferedImage thumbnail;
+	private BufferedImage thumbnailCache;
 	@SuppressWarnings("rawtypes")
 	private ThumbnailProvider thumbnailProvider;
-	private float borderWidth;
-
-	private Color bckBorderColor;
-	private int bckZoomWidth;
-	private int bckZoomHeight;
-	private int bckZoomZO;
-	private Point bckZoomLocation;
+	private WaitingAnimation wa;
+	private int widthForThumb;
 	private double zoomCenterX;
+	
 	private double zoomCenterY;
+	private boolean zoomOnFocus;
 
 	public GridCell() {
 		this(null);
@@ -83,7 +92,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			return;
 		}
 
-		thumbnailCache = SomeImageTools.resize(thumbnail, getWidth(), getHeight());
+		thumbnailCache = SomeImageTools.resize(thumbnail, getWidthForThumb(), getHeightForThumb());
 		needCacheRedraw = false;
 	}
 
@@ -91,8 +100,20 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		return borderColor;
 	}
 
+	public float getBorderWidth() {
+		return borderWidth;
+	}
+
+	public int getHeightForThumb() {
+		return heightForThumb;
+	}
+
 	public String getName() {
 		return name;
+	}
+
+	public int getWidthForThumb() {
+		return widthForThumb;
 	}
 
 	public boolean isError() {
@@ -212,6 +233,15 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		if (thumbnailCache != null) {
 			g2.drawImage(thumbnailCache, null, this);
 		}
+		
+		if (displayName) {
+			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g2.setColor(Color.BLACK);
+			g2.setFont(font);
+			FontMetrics fm = getGraphics().getFontMetrics(font);
+			g2.drawString(getName(), 0, getHeight() - fm.getMaxDescent());
+		}
 
 		if (getBorderColor() != null) {
 			g2.setColor(getBorderColor());
@@ -228,6 +258,14 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	public void setBorderColor(Color borderColor) {
 		this.borderColor = borderColor;
+	}
+
+	public void setBorderWidth(float borderWidth) {
+		this.borderWidth = borderWidth;
+	}
+
+	void setDisplayName(boolean displayName) {
+		this.displayName = displayName;
 	}
 
 	public void setError(Throwable tw) {
@@ -258,8 +296,16 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		}
 	}
 
+	public void setHeightForThumb(int heightForThumb) {
+		this.heightForThumb = heightForThumb;
+	}
+
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	void setNameFont(Font font) {
+		this.font = font;
 	}
 
 	public void setThumbnail(BufferedImage thumb) {
@@ -279,6 +325,10 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		this.thumbnailProvider = thumbnailProvider;
 	}
 
+	public void setWidthForThumb(int widthForThumb) {
+		this.widthForThumb = widthForThumb;
+	}
+
 	void setZoomOnFocus(boolean zoomOnFocus) {
 		this.zoomOnFocus = zoomOnFocus;
 
@@ -287,13 +337,5 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		} else {
 			setToolTipText(getName());
 		}
-	}
-
-	public float getBorderWidth() {
-		return borderWidth;
-	}
-
-	public void setBorderWidth(float borderWidth) {
-		this.borderWidth = borderWidth;
 	}
 }

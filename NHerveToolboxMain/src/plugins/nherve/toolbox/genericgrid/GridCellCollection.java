@@ -19,6 +19,7 @@
 
 package plugins.nherve.toolbox.genericgrid;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,8 +47,20 @@ public class GridCellCollection<T extends GridCell> implements Iterable<T>{
 		}
 	}
 
+	public void clear() {
+		for (GridCell cell : cells) {
+			cell.removedFromGrid();
+		}
+		cells.clear();
+		thumbnailProvider.stopCurrentWork();
+	}
+
 	public T get(int arg0) {
 		return cells.get(arg0);
+	}
+
+	public int indexOf(T arg0) {
+		return cells.indexOf(arg0);
 	}
 
 	public boolean isEmpty() {
@@ -58,21 +71,25 @@ public class GridCellCollection<T extends GridCell> implements Iterable<T>{
 		return cells.iterator();
 	}
 
-	public T remove(int arg0) {
-		return cells.remove(arg0);
-	}
-
-	public int size() {
-		return cells.size();
-	}
-
-	public List<T> subList(int arg0, int arg1) {
-		return cells.subList(arg0, arg1);
-	}
-	
 	void notifyDisplayParametersChanged() {
 		for (GridCell cell : cells) {
 			cell.notifyDisplayParametersChanged();
+		}
+	}
+	
+	public T remove(int arg0) {
+		return cells.remove(arg0);
+	}
+	
+	void setDisplayName(boolean displayName) {
+		for (GridCell cell : cells) {
+			cell.setDisplayName(displayName);
+		}
+	}
+	
+	void setNameFont(Font font) {
+		for (GridCell cell : cells) {
+			cell.setNameFont(font);
 		}
 	}
 	
@@ -82,15 +99,11 @@ public class GridCellCollection<T extends GridCell> implements Iterable<T>{
 		}
 	}
 
-	public void clear() {
-		for (GridCell cell : cells) {
-			cell.removedFromGrid();
-		}
-		cells.clear();
-		thumbnailProvider.stopCurrentWork();
+	public int size() {
+		return cells.size();
 	}
 
-	public int indexOf(T arg0) {
-		return cells.indexOf(arg0);
+	public List<T> subList(int arg0, int arg1) {
+		return cells.subList(arg0, arg1);
 	}
 }

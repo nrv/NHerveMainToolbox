@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 Institut Pasteur.
+ * Copyright 2012 Nicolas Hervé.
  * 
  * This file is part of NHerve Main Toolbox, which is an ICY plugin.
  * 
@@ -38,7 +39,7 @@ import javax.swing.Icon;
 public class NherveToolbox extends Plugin implements PluginLibrary {
 	private static final String DEV_NAME = "Nicolas HERVE";
 	private static final String DEV_NAME_HTML = "Maintained by <a href=\"http://www.herve.name\">Nicolas HERVE</a>";
-	private static final String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur.";
+	private static final String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur. Copyright 2012 Nicolas Hervé.";
 	private static final String LICENCE_HTML = "	is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
 	private static final String LICENCE_HTMLLINK = "See <a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses</a>.";
 	
@@ -66,6 +67,16 @@ public class NherveToolbox extends Plugin implements PluginLibrary {
 	public static final Icon handIcon = getIcon("hand.png");
 	public static final Image handImage = getImage("hand.png");
 	public static final Icon switchIcon = getIcon("switch.png");
+	
+	public static final Icon diDeleteIcon = getIcon("di_delete.png");
+	public static final Icon diFolderIcon = getIcon("di_folder.png");
+	public static final Icon diHelpIcon = getIcon("di_help.png");
+	public static final Icon diInfoIcon = getIcon("di_info.png");
+	public static final Icon diRefreshIcon = getIcon("di_refresh.png");
+	public static final Icon diRemoveIcon = getIcon("di_remove.png");
+	public static final Icon diRepeatIcon = getIcon("di_repeat.png");
+	public static final Icon diSearchIcon = getIcon("di_search.png");
+	public static final Icon diTrashIcon = getIcon("di_trash.png");
 	
 	private static Icon getIcon(String file) {
 		return ResourceUtil.getImageIcon(getImage(file));

@@ -23,6 +23,8 @@ import icy.gui.util.GuiUtil;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
@@ -69,7 +71,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 
 		@Override
 		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
-			return realFullLength / 2;
+			return realFullHeight / 2;
 		}
 
 		@Override
@@ -93,7 +95,11 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	private static final long serialVersionUID = -3551019605947008673L;
 
 	private JCheckBox cbZoomOnFocus;
-	private int cellLength;
+	private JCheckBox cbDisplayName;
+	private int cellWidth;
+	private int cellHeight;
+	
+	private Font font;
 
 	private GridCellCollection<T> cells;
 	private boolean cellsJustSet;
@@ -102,16 +108,16 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	private JLabel lbNbCells;
 
 	private int pageLength;
-	private int realFullLength;
+	private int realFullWidth;
+	private int realFullHeight;
 	private JScrollPane scroll;
 	private JSlider slZoom;
 
 	private int smoothZoom;
 	private double zoomFactor;
 	
-//	private Rectangle viewportRectangle;
-
 	private boolean zoomOnFocus;
+	private boolean displayName;
 
 	public GridPanel() {
 		this(true);
@@ -130,6 +136,10 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	}
 
 	public GridPanel(int cellLength, int cellSpacing, boolean zoomOnFocus, boolean showBottomLine, int minZoom, int maxZoom, int smoothZoom) {
+		this(cellLength, cellLength, cellSpacing, zoomOnFocus, showBottomLine, showBottomLine, minZoom, maxZoom, smoothZoom);
+	}
+	
+	public GridPanel(int cellWidth, int cellHeight, int cellSpacing, boolean zoomOnFocus, boolean displayName, boolean showBottomLine, int minZoom, int maxZoom, int smoothZoom) {
 		super();
 
 		zoomFactor = 1.0;
@@ -137,17 +147,22 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		lbNbCells = null;
 		cellsJustSet = false;
 
-		this.cellLength = cellLength;
+		this.cellWidth = cellWidth;
+		this.cellHeight = cellHeight;
 		this.smoothZoom = smoothZoom;
 		this.cellSpacing = cellSpacing;
 
-		realFullLength = cellLength + cellSpacing;
+		realFullWidth = cellWidth + cellSpacing;
+		realFullHeight = cellHeight + cellSpacing;
 
 		this.zoomOnFocus = zoomOnFocus;
+		this.displayName = displayName;
 
 		addComponentListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEtchedBorder());
+		
+		font = new Font("SansSerif", Font.PLAIN, 12);
 
 		grid = new InternalGrid();
 		grid.setLayout(null);
@@ -160,26 +175,25 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			cbZoomOnFocus = new JCheckBox("Zoom");
 			cbZoomOnFocus.setSelected(zoomOnFocus);
 			cbZoomOnFocus.addItemListener(this);
+			
+			cbDisplayName = new JCheckBox("Show names");
+			cbDisplayName.setSelected(displayName);
+			cbDisplayName.addItemListener(this);
 
 			slZoom = new JSlider(JSlider.HORIZONTAL, minZoom, maxZoom, smoothZoom);
 			slZoom.addChangeListener(this);
 			lbNbCells = new JLabel(EMPTY_LABEL);
 
-			JPanel bottom = GuiUtil.createLineBoxPanel(cbZoomOnFocus, Box.createHorizontalGlue(), slZoom, Box.createHorizontalGlue(), lbNbCells);
+			JPanel bottom = GuiUtil.createLineBoxPanel(cbDisplayName, Box.createHorizontalGlue(), cbZoomOnFocus, slZoom, Box.createHorizontalGlue(), lbNbCells);
 			add(bottom, BorderLayout.SOUTH);
 		}
 	}
 
 	@Override
 	public void adjustmentValueChanged(AdjustmentEvent arg0) {
-//		updateViewport();
 		updateLbNbCells();
 	}
 
-//	private void updateViewport() {
-//		viewportRectangle = scroll.getViewport().getViewRect();
-//	}
-	
 	@Override
 	public void componentHidden(ComponentEvent e) {
 	}
@@ -225,30 +239,50 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 				if (cells != null) {
 					cells.setZoomOnFocus(zoomOnFocus);
 				}
-				organizeCells();
-				grid.revalidate();
-//				updateViewport();
-				grid.repaint();
 			}
+			
+			if (c == cbDisplayName) {
+				displayName = cbDisplayName.isSelected();
+				if (cells != null) {
+					cells.setDisplayName(displayName);
+					cells.notifyDisplayParametersChanged();
+				}
+			}
+			
+			organizeCells();
+			grid.revalidate();
+			grid.repaint();
 		}
 	}
 
 	private synchronized void organizeCells() {
 		if (cells != null) {
-			int realCellLength = (int) (cellLength * zoomFactor);
-			int nbCol = (int) Math.floor((double) (getWidth() - cellSpacing) / (double) (realCellLength + cellSpacing));
-			realFullLength = realCellLength + cellSpacing;
+			int realCellWidth = (int) (cellWidth * zoomFactor);
+			int nbCol = (int) Math.floor((double) (getWidth() - cellSpacing) / (double) (realCellWidth + cellSpacing));
+			realFullWidth = realCellWidth + cellSpacing;
+			
+			int realCellHeight = (int) (cellHeight * zoomFactor);
+			realFullHeight = realCellHeight + cellSpacing;
 
 			int row = 0;
 			int col = 0;
+			
+			int spaceForName = 0;
+			
+			if (displayName) {
+				FontMetrics fm = getGraphics().getFontMetrics(font);
+				spaceForName = fm.getHeight() + fm.getMaxDescent();
+			}
 
 			for (GridCell cell : cells) {
 				if (col == nbCol) {
 					row++;
 					col = 0;
 				}
-				Rectangle bounds = new Rectangle(cellSpacing + col * realFullLength, cellSpacing + row * realFullLength, realCellLength, realCellLength);
+				Rectangle bounds = new Rectangle(cellSpacing + col * realFullWidth, cellSpacing + row * realFullHeight, realCellWidth, realCellHeight);
 				cell.setBounds(bounds);
+				cell.setWidthForThumb(realCellWidth);
+				cell.setHeightForThumb(realCellHeight - spaceForName);
 				col++;
 			}
 
@@ -258,9 +292,9 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 				row += 1;
 			}
 
-			pageLength = ((int) (getHeight() / realFullLength)) * realFullLength;
+			pageLength = ((int) (getHeight() / realFullHeight)) * realFullHeight;
 
-			grid.setPreferredSize(new Dimension(getWidth(), cellSpacing + row * realFullLength));
+			grid.setPreferredSize(new Dimension(getWidth(), cellSpacing + row * realFullHeight));
 
 			updateLbNbCells();
 		} else {
@@ -285,6 +319,8 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			}
 
 			cells.setZoomOnFocus(zoomOnFocus);
+			cells.setDisplayName(displayName);
+			cells.setNameFont(font);
 
 			organizeCells();
 		} else {
@@ -339,9 +375,4 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			}
 		}
 	}
-	
-//	public boolean isOnScreen(T cell) {
-//		return viewportRectangle.intersects(cell.getMyBounds());
-//	}
-
 }
