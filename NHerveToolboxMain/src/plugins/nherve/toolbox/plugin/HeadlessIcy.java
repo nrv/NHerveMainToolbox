@@ -46,6 +46,10 @@ public class HeadlessIcy extends IcyFrameAdapter {
 		
 		PluginLoader.setJCLDisabled(true);
 		
+		IcyPreferences.init();
+		LookAndFeelUtil.init();
+		PluginLoader.reload();
+		
 		String className = args[0];
 		try {
 			Class<?> clazz = Class.forName(className);
@@ -63,9 +67,6 @@ public class HeadlessIcy extends IcyFrameAdapter {
 	}
 
 	private void start(final SingletonPlugin myPlugin) {
-		IcyPreferences.init();
-		LookAndFeelUtil.init();
-		
 		ThreadUtil.invokeLater(new Runnable()
         {
             @Override

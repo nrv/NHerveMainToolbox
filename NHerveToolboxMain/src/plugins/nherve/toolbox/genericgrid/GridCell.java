@@ -40,6 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
+import plugins.nherve.toolbox.plugin.PluginHelper;
 
 public abstract class GridCell extends JComponent implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = -3822419525699981741L;
@@ -54,7 +55,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private boolean displayName;
 	private String errorMessage;
 	private Font font;
-	
+
 	private int heightForThumb;
 	private String name;
 
@@ -66,7 +67,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private WaitingAnimation wa;
 	private int widthForThumb;
 	private double zoomCenterX;
-	
+
 	private double zoomCenterY;
 	private boolean zoomOnFocus;
 
@@ -233,14 +234,15 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		if (thumbnailCache != null) {
 			g2.drawImage(thumbnailCache, null, this);
 		}
-		
+
 		if (displayName) {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g2.setColor(Color.BLACK);
 			g2.setFont(font);
 			FontMetrics fm = getGraphics().getFontMetrics(font);
-			g2.drawString(getName(), 0, getHeight() - fm.getMaxDescent());
+			String textToDraw = PluginHelper.clipString(fm, getWidth(), getName());
+			g2.drawString(textToDraw, 0, getHeight() - fm.getMaxDescent());
 		}
 
 		if (getBorderColor() != null) {
@@ -275,7 +277,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			tw.printStackTrace(ps);
 			setErrorMessage(getName() + " - " + baos.toString());
 			ps.close();
-			
+
 			wa.stop();
 			createThumbnailCache();
 			repaint();
