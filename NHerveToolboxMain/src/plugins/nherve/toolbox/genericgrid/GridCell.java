@@ -56,7 +56,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	private String errorMessage;
 	private Font font;
 
-	private int heightForThumb;
+	private int heightForName;
 	private String name;
 
 	private boolean needCacheRedraw;
@@ -65,7 +65,6 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 	@SuppressWarnings("rawtypes")
 	private ThumbnailProvider thumbnailProvider;
 	private WaitingAnimation wa;
-	private int widthForThumb;
 	private double zoomCenterX;
 
 	private double zoomCenterY;
@@ -93,7 +92,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			return;
 		}
 
-		thumbnailCache = SomeImageTools.resize(thumbnail, getWidthForThumb(), getHeightForThumb());
+		thumbnailCache = SomeImageTools.resize(thumbnail, getWidth(), getHeight() - getHeightForName());
 		needCacheRedraw = false;
 	}
 
@@ -105,16 +104,12 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		return borderWidth;
 	}
 
-	public int getHeightForThumb() {
-		return heightForThumb;
+	public int getHeightForName() {
+		return heightForName;
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	public int getWidthForThumb() {
-		return widthForThumb;
 	}
 
 	public boolean isError() {
@@ -298,8 +293,8 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		}
 	}
 
-	public void setHeightForThumb(int heightForThumb) {
-		this.heightForThumb = heightForThumb;
+	public void setHeightForName(int heightForName) {
+		this.heightForName = heightForName;
 	}
 
 	public void setName(String name) {
@@ -325,10 +320,6 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	void setThumbnailProvider(@SuppressWarnings("rawtypes") ThumbnailProvider thumbnailProvider) {
 		this.thumbnailProvider = thumbnailProvider;
-	}
-
-	public void setWidthForThumb(int widthForThumb) {
-		this.widthForThumb = widthForThumb;
 	}
 
 	void setZoomOnFocus(boolean zoomOnFocus) {

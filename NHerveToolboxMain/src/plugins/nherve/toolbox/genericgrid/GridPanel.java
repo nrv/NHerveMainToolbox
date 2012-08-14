@@ -281,8 +281,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 				}
 				Rectangle bounds = new Rectangle(cellSpacing + col * realFullWidth, cellSpacing + row * realFullHeight, realCellWidth, realCellHeight);
 				cell.setBounds(bounds);
-				cell.setWidthForThumb(realCellWidth);
-				cell.setHeightForThumb(realCellHeight - spaceForName);
+				cell.setHeightForName(spaceForName);
 				col++;
 			}
 
