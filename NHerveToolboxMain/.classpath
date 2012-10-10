@@ -7,6 +7,7 @@
 	<classpathentry kind="var" path="ICY_HOME/plugins/adufour/connectedcomponents/ConnectedComponents.jar"/>
 	<classpathentry kind="var" path="ICY_HOME/plugins/vannary/morphomaths/MorphoMaths.jar"/>
 	<classpathentry kind="var" path="ICY_HOME/plugins/adufour/ezplug/EzPlug.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/NHerveTools"/>
 	<classpathentry kind="output" path="bin"/>
 	<referencedentry kind="lib" path="/Users/nherve/icy/eclipse/lib/substance.jar" sourcepath="/Users/nherve/Travail/temp/substance/trunk/src"/>
 </classpath>
