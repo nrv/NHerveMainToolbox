@@ -35,7 +35,7 @@ import java.util.Queue;
 
 import javax.vecmath.Point3i;
 
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.mask.Mask;
 import plugins.nherve.toolbox.image.mask.MaskException;
 import plugins.nherve.toolbox.image.segmentation.Segmentation;
@@ -457,10 +457,10 @@ public class BinaryIcyBufferedImage extends IcyBufferedImage {
 		int width = getWidth();
 		int height = getHeight();
 
-		Queue<Pixel> todo = new ArrayDeque<Pixel>();
-		todo.offer(new Pixel(x, y));
+		Queue<IcyPixel> todo = new ArrayDeque<IcyPixel>();
+		todo.offer(new IcyPixel(x, y));
 
-		Pixel pix = null;
+		IcyPixel pix = null;
 		int idx = 0;
 		do {
 			pix = todo.poll();
@@ -470,10 +470,10 @@ public class BinaryIcyBufferedImage extends IcyBufferedImage {
 				idx = x + width * y;
 				if ((x >= 0) && (x < width) && (y >= 0) && (y < height) && (rawBinaryData[idx] == FALSE)) {
 					rawBinaryData[idx] = TRUE;
-					todo.offer(new Pixel(x + 1, y));
-					todo.offer(new Pixel(x - 1, y));
-					todo.offer(new Pixel(x, y + 1));
-					todo.offer(new Pixel(x, y - 1));
+					todo.offer(new IcyPixel(x + 1, y));
+					todo.offer(new IcyPixel(x - 1, y));
+					todo.offer(new IcyPixel(x, y + 1));
+					todo.offer(new IcyPixel(x, y - 1));
 				}
 			}
 		} while (pix != null);
@@ -498,7 +498,7 @@ public class BinaryIcyBufferedImage extends IcyBufferedImage {
 	 *            the px
 	 * @return true, if successful
 	 */
-	public boolean contains(Pixel px) {
+	public boolean contains(IcyPixel px) {
 		return contains((int) px.x, (int) px.y);
 	}
 

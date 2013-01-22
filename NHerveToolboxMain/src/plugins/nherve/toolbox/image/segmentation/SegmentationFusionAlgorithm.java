@@ -21,9 +21,9 @@ package plugins.nherve.toolbox.image.segmentation;
 import icy.image.IcyBufferedImage;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.MultiThreadedSignatureExtractor;
 import plugins.nherve.toolbox.image.feature.descriptor.SegmentationLabelHistogram;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -71,7 +71,7 @@ public class SegmentationFusionAlgorithm extends Algorithm {
 	 * @throws SegmentationException
 	 *             the segmentation exception
 	 */
-	public Segmentation segment(IcyBufferedImage img, SupportRegion[] regions, Segmentation[] segs) throws SegmentationException {
+	public Segmentation segment(IcyBufferedImage img, IcySupportRegion[] regions, Segmentation[] segs) throws SegmentationException {
 		try {
 			SegmentationLabelHistogram slh = new SegmentationLabelHistogram(true);
 			
@@ -93,9 +93,9 @@ public class SegmentationFusionAlgorithm extends Algorithm {
 			VectorSignature[] csigs = concat.concatenate();
 			sigs = null;
 			
-			DefaultSegmentationAlgorithm<SegmentableBufferedImage> algo = new DefaultSegmentationAlgorithm<SegmentableBufferedImage>(getClusteringAlgorithm());
+			DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage> algo = new DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage>(getClusteringAlgorithm());
 			algo.setLogEnabled(isLogEnabled());
-			return algo.segment(new SegmentableBufferedImage(img), regions, csigs);
+			return algo.segment(new SegmentableIcyBufferedImage(img), regions, csigs);
 		} catch (SignatureException e) {
 			throw new SegmentationException(e);
 		}

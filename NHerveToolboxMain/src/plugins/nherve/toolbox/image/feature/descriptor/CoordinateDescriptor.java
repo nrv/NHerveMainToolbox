@@ -22,7 +22,7 @@ import java.awt.Shape;
 
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
@@ -34,7 +34,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescriptorImpl<T, VectorSignature> implements LocalDescriptor<T, VectorSignature>{
+public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescriptorImpl<T, VectorSignature> implements LocalDescriptor<T, VectorSignature, IcyPixel>{
 	
 	/**
 	 * Instantiates a new coordinate descriptor.
@@ -53,9 +53,9 @@ public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescript
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(T img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		VectorSignature sig = getEmptySignature(SIZE);
-		Pixel px = reg.getCenter();
+		IcyPixel px = reg.getCenter();
 		sig.set(0, ((double)px.x / (double)img.getWidth()) - 0.5);
 		sig.set(1, ((double)px.y / (double)img.getHeight()) - 0.5);
 		return sig;

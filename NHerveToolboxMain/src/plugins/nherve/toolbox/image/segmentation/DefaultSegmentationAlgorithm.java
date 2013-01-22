@@ -27,12 +27,12 @@ import plugins.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.SegmentationAlgorithm;
 import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.SupportRegionFactory;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegionFactory;
 import plugins.nherve.toolbox.image.feature.clustering.ClusteringException;
 import plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
 import plugins.nherve.toolbox.image.feature.descriptor.MultiThreadedSignatureExtractor;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -57,7 +57,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	private DefaultDescriptorImpl<T, ? extends Signature> descriptor;
 	
 	/** The factory. */
-	private SupportRegionFactory factory;
+	private IcySupportRegionFactory factory;
 
 	/**
 	 * Instantiates a new default segmentation algorithm.
@@ -69,7 +69,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 * @param clustering
 	 *            the clustering
 	 */
-	public DefaultSegmentationAlgorithm(DefaultDescriptorImpl<T, ? extends Signature> descriptor, SupportRegionFactory factory, DefaultClusteringAlgorithmImpl<VectorSignature> clustering) {
+	public DefaultSegmentationAlgorithm(DefaultDescriptorImpl<T, ? extends Signature> descriptor, IcySupportRegionFactory factory, DefaultClusteringAlgorithmImpl<VectorSignature> clustering) {
 		super();
 		this.descriptor = descriptor;
 		this.clustering = clustering;
@@ -115,7 +115,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 * @throws MaskException
 	 *             the mask exception
 	 */
-	private Segmentation createSegmentation(int w, int h, int c, SupportRegion[] regions, int[] affectation) throws MaskException {
+	private Segmentation createSegmentation(int w, int h, int c, IcySupportRegion[] regions, int[] affectation) throws MaskException {
 		Segmentation seg = new Segmentation(w, h);
 		DifferentColorsMap colorMap = new DifferentColorsMap(c, 1);
 
@@ -124,9 +124,9 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 		}
 
 		int p = 0;
-		for (SupportRegion sr : regions) {
+		for (IcySupportRegion sr : regions) {
 			Mask mask = seg.getByIndex(affectation[p]);
-			Pixel px = sr.getCenter();
+			IcyPixel px = sr.getCenter();
 			mask.getBinaryData().set((int)px.x, (int)px.y, true);
 			p++;
 		}
@@ -145,8 +145,8 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 		try {
 			factory.setLogEnabled(isLogEnabled());
 
-			List<SupportRegion> regions = factory.extractRegions(img);
-			SupportRegion[] aRegions = (SupportRegion[])regions.toArray(new SupportRegion[regions.size()]);
+			List<IcySupportRegion> regions = factory.extractRegions(img);
+			IcySupportRegion[] aRegions = (IcySupportRegion[])regions.toArray(new IcySupportRegion[regions.size()]);
 
 			return segment(img, aRegions);
 
@@ -167,7 +167,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 *             the segmentation exception
 	 */
 	@SuppressWarnings("unchecked")
-	public Segmentation segment(T img, SupportRegion[] regions) throws SegmentationException {
+	public Segmentation segment(T img, IcySupportRegion[] regions) throws SegmentationException {
 		if (descriptor == null) {
 			throw new SegmentationException("DefaultSegmentationAlgorithm : Descriptor not initialized");
 		}
@@ -214,7 +214,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 * @throws SegmentationException
 	 *             the segmentation exception
 	 */
-	public Segmentation segment(T img, SupportRegion[] regions, VectorSignature[] sigs) throws SegmentationException {
+	public Segmentation segment(T img, IcySupportRegion[] regions, VectorSignature[] sigs) throws SegmentationException {
 		if (clustering == null) {
 			throw new SegmentationException("DefaultSegmentationAlgorithm : ClusteringAlgorithm not initialized");
 		}
@@ -246,7 +246,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 * @throws SegmentationException
 	 *             the segmentation exception
 	 */
-	public Segmentation segmentUsingPreviousQuantization(T img, SupportRegion[] regions, VectorSignature[] sigs) throws SegmentationException {
+	public Segmentation segmentUsingPreviousQuantization(T img, IcySupportRegion[] regions, VectorSignature[] sigs) throws SegmentationException {
 		if (clustering == null) {
 			throw new SegmentationException("DefaultSegmentationAlgorithm : ClusteringAlgorithm not initialized");
 		}
@@ -275,7 +275,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 	 * @throws SegmentationException
 	 *             the segmentation exception
 	 */
-	public Segmentation segmentBag(T img, SupportRegion[] regions, BagOfSignatures<VectorSignature>[] sigs) throws SegmentationException {
+	public Segmentation segmentBag(T img, IcySupportRegion[] regions, BagOfSignatures<VectorSignature>[] sigs) throws SegmentationException {
 		if (clustering == null) {
 			throw new SegmentationException("DefaultSegmentationAlgorithm : ClusteringAlgorithm not initialized");
 		}
@@ -319,7 +319,7 @@ public class DefaultSegmentationAlgorithm<T extends Segmentable> extends Segment
 					}
 				}
 				Mask mask = seg.getByIndex(affect);
-				Pixel px = regions[r].getCenter();
+				IcyPixel px = regions[r].getCenter();
 				mask.getBinaryData().set((int)px.x, (int)px.y, true);
 			}
 

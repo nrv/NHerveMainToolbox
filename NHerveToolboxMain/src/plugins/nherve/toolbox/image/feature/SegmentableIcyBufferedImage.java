@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 Institut Pasteur.
+ * Copyright 2012, 2013 Institut National de l'Audiovisuel.
  * 
  * This file is part of NHerve Main Toolbox, which is an ICY plugin.
  * 
@@ -23,15 +24,12 @@ import icy.image.IcyBufferedImage;
 /**
  * The Class SegmentableBufferedImage.
  * 
- * @author Nicolas HERVE - nicolas.herve@pasteur.fr
+ * @author Nicolas HERVE - nherve@ina.fr
  */
-public class SegmentableBufferedImage implements Segmentable {
+public class SegmentableIcyBufferedImage extends SegmentableImage {
 	
 	/** The image. */
 	private final IcyBufferedImage image;
-	
-	/** The name. */
-	private String name;
 	
 	/**
 	 * Instantiates a new segmentable buffered image.
@@ -39,11 +37,10 @@ public class SegmentableBufferedImage implements Segmentable {
 	 * @param image
 	 *            the image
 	 */
-	public SegmentableBufferedImage(IcyBufferedImage image) {
+	public SegmentableIcyBufferedImage(IcyBufferedImage image) {
 		super();
 		
 		this.image = image;
-		this.name = null;
 	}
 
 	/**
@@ -68,24 +65,4 @@ public class SegmentableBufferedImage implements Segmentable {
 	public int getWidth() {
 		return image.getWidth();
 	}
-
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name
-	 *            the new name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
 }

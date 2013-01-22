@@ -64,14 +64,14 @@ public class FullImageSupportRegion extends AreaSupportRegion {
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
-	public Iterator<Pixel> iterator() {
+	public Iterator<IcyPixel> iterator() {
 		if (area == null) {
 			initArea();
 		}
-		ArrayList<Pixel> px = new ArrayList<Pixel>();
+		ArrayList<IcyPixel> px = new ArrayList<IcyPixel>();
 		for (int x = 0; x < getOverallWidth(); x++) {
 			for (int y = 0; y < getOverallHeight(); y++) {
-				px.add(new Pixel(x, y));
+				px.add(new IcyPixel(x, y));
 			}
 		}
 		return px.iterator();
@@ -81,10 +81,10 @@ public class FullImageSupportRegion extends AreaSupportRegion {
 	 * @see plugins.nherve.toolbox.image.feature.SupportRegion#getCenter()
 	 */
 	@Override
-	public Pixel getCenter() {
+	public IcyPixel getCenter() {
 		if (area == null) {
 			initArea();
 		}
-		return new Pixel(getOverallWidth() / 2, getOverallHeight() / 2);
+		return new IcyPixel(getOverallWidth() / 2, getOverallHeight() / 2);
 	}
 }

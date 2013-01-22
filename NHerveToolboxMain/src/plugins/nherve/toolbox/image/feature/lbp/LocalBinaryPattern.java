@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.Map;
 
 import plugins.nherve.toolbox.Pair;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.GlobalAndLocalDescriptor;
 import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
@@ -21,7 +22,7 @@ import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 
 
-public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBufferedImage, VectorSignature> {
+public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
 	public final static int BINARY_ENCODING = 1;
 	public final static int TERNARY_ENCODING = 2;
 
@@ -36,10 +37,10 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 	private int fuzzyColorSpace;
 	private LBPToolbox pptbx;
 
-	private Map<SegmentableBufferedImage, IcyBufferedImage[]> cachePrecomputedLBP;
+	private Map<SegmentableIcyBufferedImage, IcyBufferedImage[]> cachePrecomputedLBP;
 	
-	private Map<SegmentableBufferedImage, List<Pair<Integer, Integer>>> cachePairs;
-	private Map<SegmentableBufferedImage, Map<Integer, IcyBufferedImage>> cacheGrays;
+	private Map<SegmentableIcyBufferedImage, List<Pair<Integer, Integer>>> cachePairs;
+	private Map<SegmentableIcyBufferedImage, Map<Integer, IcyBufferedImage>> cacheGrays;
 
 	public LocalBinaryPattern(int p, double r, int w, boolean ri, boolean uniform, int v, int encoding, boolean in, boolean display) {
 		super(display);
@@ -53,9 +54,9 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 		this.ri = ri;
 
 		tbx = new LBPToolbox(p, r, ri, uniform, v, encoding, in, display);
-		cachePrecomputedLBP = new HashMap<SegmentableBufferedImage, IcyBufferedImage[]>();
-		cacheGrays = new HashMap<SegmentableBufferedImage, Map<Integer,IcyBufferedImage>>();
-		cachePairs = new HashMap<SegmentableBufferedImage, List<Pair<Integer,Integer>>>();
+		cachePrecomputedLBP = new HashMap<SegmentableIcyBufferedImage, IcyBufferedImage[]>();
+		cacheGrays = new HashMap<SegmentableIcyBufferedImage, Map<Integer,IcyBufferedImage>>();
+		cachePairs = new HashMap<SegmentableIcyBufferedImage, List<Pair<Integer,Integer>>>();
 	}
 
 	public LocalBinaryPattern(int p, double r, int w, boolean ri, boolean uniform, int v, boolean in, boolean display) {
@@ -98,7 +99,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 		
 	}
 
-	public VectorSignature extractLocalSignature(IcyBufferedImage precomputedLBP, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(IcyBufferedImage precomputedLBP, SupportRegion<IcyPixel> reg) throws SignatureException {
 		VectorSignature sig = getEmptySignature(tbx.getTernarySingleSignatureSize());
 		int[] loc = precomputedLBP.getDataXYAsInt(0);
 
@@ -110,7 +111,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 			int imgW = precomputedLBP.getWidth();
 			int imgH = precomputedLBP.getHeight();
 
-			Pixel px = reg.getCenter();
+			IcyPixel px = reg.getCenter();
 			int cx = (int) px.x;
 			int cy = (int) px.y;
 			int x1 = Math.max(cx - w, 0);
@@ -135,7 +136,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 	}
 
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		if (fuzzy) {
 			int off = 0;
 
@@ -226,7 +227,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 	}
 
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shape) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shape) throws SignatureException {
 		throw new SignatureException("LocalBinaryPattern::extractLocalSignature not implemented for shape");
 	}
 
@@ -239,7 +240,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 	}
 
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		synchronized (cachePrecomputedLBP) {
 			cachePrecomputedLBP.remove(img);
 		}
@@ -252,7 +253,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableBuff
 	}
 
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		if (fuzzy) {
 			int maxCanal = 0;
 			int minCanal = 0;

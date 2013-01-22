@@ -21,8 +21,9 @@ package plugins.nherve.toolbox.image.feature.descriptor;
 import java.awt.Shape;
 import java.util.Random;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
@@ -32,7 +33,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBufferedImage, VectorSignature> {
+public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
 	
 	private boolean needToLoadSegmentable;
 	
@@ -62,7 +63,7 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		return randomSignature();
 	}
 
@@ -70,7 +71,7 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		return randomSignature();
 	}
 
@@ -94,14 +95,14 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableBuffere
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 	}
 
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 	}
 
 	/**

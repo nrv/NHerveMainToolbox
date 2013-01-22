@@ -12,14 +12,15 @@ import java.util.List;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.FeatureException;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.clustering.ClusteringException;
 import plugins.nherve.toolbox.image.feature.com.CooccurenceMatrixFactory;
 import plugins.nherve.toolbox.image.feature.com.KernelFactory;
 import plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringAlgorithm;
 import plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
@@ -101,7 +102,7 @@ public class LBPToolbox extends Algorithm {
 	private FuzzyClusteringProcessor proc;
 	private FuzzyFunction ff;
 
-	private List<Pixel> intKernel;
+	private List<IcyPixel> intKernel;
 
 	public LBPToolbox(int p, double r, boolean ri, boolean uniform, int v, int encoding, boolean in, boolean display) {
 		super(display);
@@ -162,7 +163,7 @@ public class LBPToolbox extends Algorithm {
 					long lbpidx = 0;
 					long p2 = 1;
 
-					for (Pixel px : intKernel) {
+					for (IcyPixel px : intKernel) {
 						int nx = x + (int) px.x;
 						int ny = y + (int) px.y;
 						if ((nx >= 0) && (nx < w) && (ny >= 0) && (ny < h) && (bin2[nx + w * ny] == BinaryIcyBufferedImage.TRUE)) {
@@ -230,7 +231,7 @@ public class LBPToolbox extends Algorithm {
 		return flbpsum;
 	}
 
-	public double[] computeFuzzyRegion(IcyBufferedImage center, IcyBufferedImage neighbours, SupportRegion reg) {
+	public double[] computeFuzzyRegion(IcyBufferedImage center, IcyBufferedImage neighbours, SupportRegion<IcyPixel> reg) {
 		double[] flbpsum = new double[(int) maxLBPIndex];
 		Arrays.fill(flbpsum, 0d);
 		Rectangle2D bb = reg.getBoundingBox();
@@ -534,7 +535,7 @@ public class LBPToolbox extends Algorithm {
 		this.fca = sm;
 	}
 
-	public IcyBufferedImage getIndexed(SegmentableBufferedImage simg) throws SignatureException {
+	public IcyBufferedImage getIndexed(SegmentableIcyBufferedImage simg) throws SignatureException {
 		try {
 			MaskStack seg = getSegmented(simg);
 			IcyBufferedImage indexed = CooccurenceMatrixFactory.getIndexedImage(seg);
@@ -551,9 +552,9 @@ public class LBPToolbox extends Algorithm {
 		}
 	}
 
-	public MaskStack getSegmented(SegmentableBufferedImage simg) throws SignatureException {
+	public MaskStack getSegmented(SegmentableIcyBufferedImage simg) throws SignatureException {
 		try {
-			SupportRegion[] regions = proc.getRegions(simg);
+			IcySupportRegion[] regions = proc.getRegions(simg);
 			VectorSignature[] sigs = proc.getSignatures(simg, regions);
 			MaskStack seg = new MaskStack(simg.getWidth(), simg.getHeight());
 			proc.addToMaskStack(fca, simg.getImage(), seg, regions, sigs);
@@ -569,12 +570,12 @@ public class LBPToolbox extends Algorithm {
 		}
 	}
 
-	public IcyBufferedImage[] getMembershipImages(SegmentableBufferedImage simg) throws SignatureException {
+	public IcyBufferedImage[] getMembershipImages(SegmentableIcyBufferedImage simg) throws SignatureException {
 		try {
 
 			IcyBufferedImage[] res = new IcyBufferedImage[fca.getNbClasses()];
 
-			SupportRegion[] regions = proc.getRegions(simg);
+			IcySupportRegion[] regions = proc.getRegions(simg);
 			VectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			for (int i = 0; i < fca.getNbClasses(); i++) {
@@ -592,12 +593,12 @@ public class LBPToolbox extends Algorithm {
 		}
 	}
 
-	public IcyBufferedImage[] getMembershipImages(SegmentableBufferedImage simg, List<Integer> workOnCanals) throws SignatureException {
+	public IcyBufferedImage[] getMembershipImages(SegmentableIcyBufferedImage simg, List<Integer> workOnCanals) throws SignatureException {
 		try {
 
 			IcyBufferedImage[] res = new IcyBufferedImage[fca.getNbClasses()];
 
-			SupportRegion[] regions = proc.getRegions(simg);
+			IcySupportRegion[] regions = proc.getRegions(simg);
 			VectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			for (int c : workOnCanals) {
@@ -615,9 +616,9 @@ public class LBPToolbox extends Algorithm {
 		}
 	}
 
-	public IcyBufferedImage getMembershipImage(SegmentableBufferedImage simg, int canal) throws SignatureException {
+	public IcyBufferedImage getMembershipImage(SegmentableIcyBufferedImage simg, int canal) throws SignatureException {
 		try {
-			SupportRegion[] regions = proc.getRegions(simg);
+			IcySupportRegion[] regions = proc.getRegions(simg);
 			VectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			double[] mb = fca.getMemberships(sigs, canal);

@@ -19,9 +19,9 @@
 package plugins.nherve.toolbox.image.feature.descriptor;
 
 import icy.image.IcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 
@@ -32,7 +32,7 @@ import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
  *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public abstract class ColorDescriptor<S extends Signature> extends GlobalAndLocalDescriptor<SegmentableBufferedImage, S> {
+public abstract class ColorDescriptor<S extends Signature> extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, S> {
 	
 	/** The color space. */
 	private int colorSpace;
@@ -123,7 +123,7 @@ public abstract class ColorDescriptor<S extends Signature> extends GlobalAndLoca
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public double[] getColorComponentsManageBorders(IcyBufferedImage img, Pixel npx, int w, int h) throws SignatureException {
+	public double[] getColorComponentsManageBorders(IcyBufferedImage img, IcyPixel npx, int w, int h) throws SignatureException {
 		double[] col = null;
 		int x = (int)npx.x;
 		int y = (int)npx.y;

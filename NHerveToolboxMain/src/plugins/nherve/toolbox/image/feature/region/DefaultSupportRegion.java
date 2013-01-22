@@ -22,7 +22,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import plugins.nherve.toolbox.image.feature.Segmentable;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 
 
 /**
@@ -30,7 +30,7 @@ import plugins.nherve.toolbox.image.feature.SupportRegion;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public abstract class DefaultSupportRegion implements SupportRegion {
+public abstract class DefaultSupportRegion implements IcySupportRegion {
 	
 	/** The obj. */
 	private final Segmentable obj;

@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import javax.vecmath.Point2d;
 
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.mask.Mask;
 
 
@@ -33,7 +33,7 @@ import plugins.nherve.toolbox.image.mask.Mask;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class Pixel extends Point2d implements SupportRegion {
+public class IcyPixel extends Point2d implements Pixel<IcyPixel>, IcySupportRegion {
 	private static final long serialVersionUID = -8821643927878896700L;
 
 	/**
@@ -44,7 +44,7 @@ public class Pixel extends Point2d implements SupportRegion {
 	 * @param y
 	 *            the y
 	 */
-	public Pixel(double x, double y) {
+	public IcyPixel(double x, double y) {
 		super(x, y);
 	}
 	
@@ -55,15 +55,15 @@ public class Pixel extends Point2d implements SupportRegion {
 	 *            the other
 	 * @return the pixel
 	 */
-	public Pixel plus(Pixel other) {
-		return new Pixel(this.x + other.x, this.y + other.y);
+	public IcyPixel plus(IcyPixel other) {
+		return new IcyPixel(this.x + other.x, this.y + other.y);
 	}
 
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.SupportRegion#getCenter()
 	 */
 	@Override
-	public Pixel getCenter() {
+	public IcyPixel getCenter() {
 		return this;
 	}
 
@@ -71,8 +71,8 @@ public class Pixel extends Point2d implements SupportRegion {
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
-	public Iterator<Pixel> iterator() {
-		ArrayList<Pixel> px = new ArrayList<Pixel>();
+	public Iterator<IcyPixel> iterator() {
+		ArrayList<IcyPixel> px = new ArrayList<IcyPixel>();
 		px.add(this);
 		return px.iterator();
 	}

@@ -34,8 +34,8 @@ import plugins.nherve.toolbox.concurrent.TaskManager;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.Signature;
 import plugins.nherve.toolbox.image.feature.SignatureExtractor;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 
 /**
@@ -74,11 +74,11 @@ public class MultiThreadedSignatureExtractor<T extends Segmentable> extends Sign
 	 * plugins.nherve.toolbox.image.feature.SupportRegion[], boolean)
 	 */
 	@SuppressWarnings("unchecked")
-	public Signature[] extractSignatures(T img, SupportRegion[] regions, boolean doPreprocess) throws SignatureException {
+	public Signature[] extractSignatures(T img, IcySupportRegion[] regions, boolean doPreprocess) throws SignatureException {
 		if (!(getDescriptor() instanceof LocalDescriptor)) {
 			throw new SignatureException("Unable to extract a local signatures with this descriptor");
 		}
-		LocalDescriptor<T, ? extends Signature> ld = (LocalDescriptor<T, ? extends Signature>) getDescriptor();
+		LocalDescriptor<T, ? extends Signature, IcyPixel> ld = (LocalDescriptor<T, ? extends Signature, IcyPixel>) getDescriptor();
 
 		if (regions != null) {
 			log("MultiThreadedSignatureExtractor() - Launching " + regions.length + " signatures extraction ...");
@@ -90,7 +90,7 @@ public class MultiThreadedSignatureExtractor<T extends Segmentable> extends Sign
 			getDescriptor().preProcess(img);
 		}
 
-		MultiThreadedExecutionContext f = new MultiThreadedExecutionContext(img, regions, (LocalDescriptor<Segmentable, ? extends Signature>) ld, tm, listeners);
+		MultiThreadedExecutionContext f = new MultiThreadedExecutionContext(img, regions, (LocalDescriptor<Segmentable, ? extends Signature, IcyPixel>) ld, tm, listeners);
 		f.start();
 
 		if (f.isInterrupted()) {
@@ -117,7 +117,7 @@ public class MultiThreadedSignatureExtractor<T extends Segmentable> extends Sign
 	 */
 	@Override
 	public Signature[] extractSignatures(T img) throws SignatureException {
-		return extractSignatures(img, (SupportRegion[]) null);
+		return extractSignatures(img, (IcySupportRegion[]) null);
 	}
 
 	public void setTm(TaskManager tm) {

@@ -23,10 +23,10 @@ import icy.image.IcyBufferedImage;
 import java.awt.Shape;
 import java.util.ArrayList;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.Signature;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -72,7 +72,7 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	private int signatureSize;
 	
 	/** The kernel. */
-	private ArrayList<Pixel> kernel;
+	private ArrayList<IcyPixel> kernel;
 	
 	/** The rotation invariance. */
 	private boolean rotationInvariance;
@@ -136,7 +136,7 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public Signature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+	public Signature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new RuntimeException("ColorPixel.extractSignature(SegmentableBufferedImage img, Shape shp) not implemented");
 	}
 
@@ -144,16 +144,16 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public Signature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public Signature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage bimg = img.getImage();
 
-		Pixel px = reg.getCenter();
+		IcyPixel px = reg.getCenter();
 		int w = img.getWidth();
 		int h = img.getHeight();
 
 		DenseVectorSignature sig = new DenseVectorSignature(getSignatureSize());
 		int d = 0;
-		for (Pixel shift : kernel) {
+		for (IcyPixel shift : kernel) {
 			double[] col = getColorComponentsManageBorders(bimg, px.plus(shift), w, h);
 			for (int c = 0; c < getNbColorChannels(); c++) {
 				sig.set(d++, col[c]);
@@ -202,7 +202,7 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 
 	}
 
@@ -210,7 +210,7 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 	}
 
 	/**
@@ -230,14 +230,14 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 	 */
 	public void setDescriptorType(int type) {
 		this.descriptorType = type;
-		kernel = new ArrayList<Pixel>();
+		kernel = new ArrayList<IcyPixel>();
 		
 		switch (type) {
 		case NO_NEIGHBOUR:
 		case CROSS_4_NEIGHBOUR:
 		case X_4_NEIGHBOUR:
 		case SQUARE_9_NEIGHBOUR:
-			kernel.add(new Pixel(0, 0));
+			kernel.add(new IcyPixel(0, 0));
 		}
 		
 		switch (type) {
@@ -245,10 +245,10 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 		case CROSS_4_NEIGHBOUR_ONLY:
 		case SQUARE_9_NEIGHBOUR:
 		case SQUARE_9_NEIGHBOUR_ONLY:
-			kernel.add(new Pixel(-1, 0));
-			kernel.add(new Pixel(+1, 0));
-			kernel.add(new Pixel(0, -1));
-			kernel.add(new Pixel(0, +1));
+			kernel.add(new IcyPixel(-1, 0));
+			kernel.add(new IcyPixel(+1, 0));
+			kernel.add(new IcyPixel(0, -1));
+			kernel.add(new IcyPixel(0, +1));
 		}
 		
 		switch (type) {
@@ -256,10 +256,10 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 		case X_4_NEIGHBOUR_ONLY:
 		case SQUARE_9_NEIGHBOUR:
 		case SQUARE_9_NEIGHBOUR_ONLY:
-			kernel.add(new Pixel(-1, -1));
-			kernel.add(new Pixel(-1, +1));
-			kernel.add(new Pixel(+1, -1));
-			kernel.add(new Pixel(+1, +1));
+			kernel.add(new IcyPixel(-1, -1));
+			kernel.add(new IcyPixel(-1, +1));
+			kernel.add(new IcyPixel(+1, -1));
+			kernel.add(new IcyPixel(+1, +1));
 		}
 		
 		signatureSize = getNbColorChannels() * kernel.size();

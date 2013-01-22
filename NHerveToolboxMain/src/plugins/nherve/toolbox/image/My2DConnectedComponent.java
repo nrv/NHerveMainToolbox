@@ -32,7 +32,7 @@ import java.util.List;
 import javax.vecmath.Point3i;
 
 import plugins.adufour.connectedcomponents.ConnectedComponent;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.toolboxes.MorphologyToolbox;
 
 /**
@@ -225,7 +225,7 @@ public class My2DConnectedComponent implements PointsEnsemble {
 	 *            the px
 	 * @return true, if successful
 	 */
-	public boolean contains(Pixel px) {
+	public boolean contains(IcyPixel px) {
 		return contains((int) px.x, (int) px.y);
 	}
 

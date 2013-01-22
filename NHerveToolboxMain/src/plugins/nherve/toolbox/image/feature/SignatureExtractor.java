@@ -109,7 +109,7 @@ public abstract class SignatureExtractor<T extends Segmentable> extends Algorith
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public abstract Signature[] extractSignatures(T img, SupportRegion[] regions, boolean doPreprocess) throws SignatureException;
+	public abstract Signature[] extractSignatures(T img, IcySupportRegion[] regions, boolean doPreprocess) throws SignatureException;
 	
 	/**
 	 * Extract signatures.
@@ -122,7 +122,7 @@ public abstract class SignatureExtractor<T extends Segmentable> extends Algorith
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public Signature[] extractSignatures(T img, SupportRegion[] regions) throws SignatureException {
+	public Signature[] extractSignatures(T img, IcySupportRegion[] regions) throws SignatureException {
 		return extractSignatures(img, regions, true);
 	}
 	
@@ -137,8 +137,8 @@ public abstract class SignatureExtractor<T extends Segmentable> extends Algorith
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public List<Signature> extractSignatures(T img, List<? extends SupportRegion> regions) throws SignatureException {
-		SupportRegion[] aRegions = (SupportRegion[])regions.toArray(new SupportRegion[regions.size()]);
+	public List<Signature> extractSignatures(T img, List<? extends IcySupportRegion> regions) throws SignatureException {
+		IcySupportRegion[] aRegions = (IcySupportRegion[])regions.toArray(new IcySupportRegion[regions.size()]);
 		Signature[] sigs = extractSignatures(img, aRegions);
 		if (sigs == null) {
 			return null;
@@ -158,8 +158,8 @@ public abstract class SignatureExtractor<T extends Segmentable> extends Algorith
 	public Signature[] extractSignatures(T img) throws SignatureException {
 		try {
 			GridFactory factory = new GridFactory(GridFactory.ALGO_ONLY_PIXELS);
-			List<SupportRegion> regions = factory.extractRegions(img);
-			SupportRegion[] aRegions = (SupportRegion[])regions.toArray(new SupportRegion[regions.size()]);
+			List<IcySupportRegion> regions = factory.extractRegions(img);
+			IcySupportRegion[] aRegions = (IcySupportRegion[])regions.toArray(new IcySupportRegion[regions.size()]);
 			return extractSignatures(img, aRegions);
 		} catch (SupportRegionException e) {
 			throw new SignatureException(e);

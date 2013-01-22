@@ -21,7 +21,7 @@ package plugins.nherve.toolbox.image.feature.descriptor;
 import java.awt.Shape;
 
 import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.mask.MaskException;
@@ -62,7 +62,7 @@ public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segment
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(Segmentation seg, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(Segmentation seg, SupportRegion<IcyPixel> reg) throws SignatureException {
 		try {
 			int w = seg.getWidth();
 			int h = seg.getHeight();
@@ -74,7 +74,7 @@ public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segment
 			
 			VectorSignature sig = getEmptySignature(dim);
 			
-			for (Pixel p : reg) {
+			for (IcyPixel p : reg) {
 				x = (int)p.x;
 				y = (int)p.y;
 				if ((x >= 0) && (x < w) && (y >= 0) && (y < h)) {

@@ -18,10 +18,11 @@
  */
 package plugins.nherve.toolbox.image.feature.descriptor;
 
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.Signature;
 import plugins.nherve.toolbox.image.feature.SignatureExtractor;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 
 /**
@@ -47,11 +48,11 @@ public class StandardSignatureExtractor<T extends Segmentable> extends Signature
 	 * @see plugins.nherve.toolbox.image.feature.SignatureExtractor#extractSignatures(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion[], boolean)
 	 */
 	@SuppressWarnings("unchecked")
-	public Signature[] extractSignatures(T img, SupportRegion[] regions, boolean doPreprocess) throws SignatureException {
+	public Signature[] extractSignatures(T img, IcySupportRegion[] regions, boolean doPreprocess) throws SignatureException {
 		if (!(getDescriptor() instanceof LocalDescriptor)) {
 			throw new SignatureException("Unable to extract a local signatures with this descriptor");
 		}
-		LocalDescriptor<T, ? extends Signature> ld = (LocalDescriptor<T, ? extends Signature>) getDescriptor();
+		LocalDescriptor<T, ? extends Signature, IcyPixel> ld = (LocalDescriptor<T, ? extends Signature, IcyPixel>) getDescriptor();
 		
 		log("StandardSignatureExtractor - Launching " + regions.length + " signatures extraction ...");
 

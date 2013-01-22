@@ -40,7 +40,7 @@ import java.util.Set;
 
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.nherve.toolbox.image.toolboxes.MorphologyToolbox;
 
@@ -278,7 +278,7 @@ public class Mask implements Serializable, Iterable<String> {
 	 *            the px
 	 * @return true, if successful
 	 */
-	public boolean contains(Pixel px) {
+	public boolean contains(IcyPixel px) {
 		return binaryData.contains(px);
 	}
 

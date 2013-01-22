@@ -23,9 +23,9 @@ import java.util.List;
 
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegionFactory;
 import plugins.nherve.toolbox.image.feature.Segmentable;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.SupportRegionFactory;
 import plugins.nherve.toolbox.image.mask.Mask;
 
 
@@ -34,7 +34,7 @@ import plugins.nherve.toolbox.image.mask.Mask;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class GridFactory extends Algorithm implements SupportRegionFactory {
+public class GridFactory extends Algorithm implements IcySupportRegionFactory {
 	
 	/** The Constant ALGO_FIXED_SIZE. */
 	public final static int ALGO_FIXED_SIZE = 1;
@@ -83,7 +83,7 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 * @throws SupportRegionException
 	 *             the support region exception
 	 */
-	private List<SupportRegion> extractRegionsAllPixels(Segmentable img) throws SupportRegionException {
+	private List<IcySupportRegion> extractRegionsAllPixels(Segmentable img) throws SupportRegionException {
 		if (length <= 0) {
 			throw new SupportRegionException("Invalid region length (" + length + ")");
 		}
@@ -91,7 +91,7 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 		int nbCol = img.getWidth();
 		int nbRow = img.getHeight();
 
-		ArrayList<SupportRegion> result = new ArrayList<SupportRegion>();
+		ArrayList<IcySupportRegion> result = new ArrayList<IcySupportRegion>();
 
 		int x = 0;
 		int y = 0;
@@ -116,15 +116,15 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 * @throws SupportRegionException
 	 *             the support region exception
 	 */
-	private List<SupportRegion> extractAllPixels(Segmentable img) throws SupportRegionException {
+	private List<IcySupportRegion> extractAllPixels(Segmentable img) throws SupportRegionException {
 		int nbCol = img.getWidth();
 		int nbRow = img.getHeight();
 
-		ArrayList<SupportRegion> result = new ArrayList<SupportRegion>();
+		ArrayList<IcySupportRegion> result = new ArrayList<IcySupportRegion>();
 
 		for (int i = 0; i < nbCol; i+=length) {
 			for (int j = 0; j < nbRow; j+=length) {
-				result.add(new Pixel(i, j));
+				result.add(new IcyPixel(i, j));
 			}
 		}
 
@@ -140,7 +140,7 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 * @throws SupportRegionException
 	 *             the support region exception
 	 */
-	private List<SupportRegion> extractRegionsFixedSize(Segmentable img) throws SupportRegionException {
+	private List<IcySupportRegion> extractRegionsFixedSize(Segmentable img) throws SupportRegionException {
 		if (length <= 0) {
 			throw new SupportRegionException("Invalid region length (" + length + ")");
 		}
@@ -162,7 +162,7 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 			yOffset += (img.getHeight() - nbRow * uniqueLength) / 2;
 		}
 
-		ArrayList<SupportRegion> result = new ArrayList<SupportRegion>();
+		ArrayList<IcySupportRegion> result = new ArrayList<IcySupportRegion>();
 
 		int x = xOffset;
 		int y = yOffset;
@@ -182,9 +182,9 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 * @see plugins.nherve.toolbox.image.feature.SupportRegionFactory#extractRegions(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public List<SupportRegion> extractRegions(Segmentable img) throws SupportRegionException {
+	public List<IcySupportRegion> extractRegions(Segmentable img) throws SupportRegionException {
 		log("Launching regions extraction ...");
-		List<SupportRegion> res = null;
+		List<IcySupportRegion> res = null;
 		switch (algorithm) {
 		case ALGO_FIXED_SIZE:
 			res = extractRegionsFixedSize(img);
@@ -245,11 +245,11 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 * @see plugins.nherve.toolbox.image.feature.SupportRegionFactory#extractRegions(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.mask.Mask)
 	 */
 	@Override
-	public List<SupportRegion> extractRegions(Segmentable img, Mask mask) throws SupportRegionException {
+	public List<IcySupportRegion> extractRegions(Segmentable img, Mask mask) throws SupportRegionException {
 		log("Launching regions extraction ...");
-		List<SupportRegion> allRegions = extractRegions(img);
-		List<SupportRegion> filteredRegions = new ArrayList<SupportRegion>();
-		for (SupportRegion sr : allRegions) {
+		List<IcySupportRegion> allRegions = extractRegions(img);
+		List<IcySupportRegion> filteredRegions = new ArrayList<IcySupportRegion>();
+		for (IcySupportRegion sr : allRegions) {
 			if (sr.intersects(mask)) {
 				filteredRegions.add(sr);
 			}
@@ -265,18 +265,18 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 	 *            the m
 	 * @return the mask as pixels
 	 */
-	public static List<Pixel> getMaskAsPixels(Mask m) {
+	public static List<IcyPixel> getMaskAsPixels(Mask m) {
 		byte[] b = m.getBinaryData().getRawData();
 		int w = m.getWidth();
 		int h = m.getHeight();
 
-		ArrayList<Pixel> result = new ArrayList<Pixel>();
+		ArrayList<IcyPixel> result = new ArrayList<IcyPixel>();
 
 		int idx = 0;
 		for (int y = 0; y < h; y++) {
 			for (int x = 0; x < w; x++) {
 				if (b[idx] == BinaryIcyBufferedImage.TRUE) {
-					result.add(new Pixel(x, y));
+					result.add(new IcyPixel(x, y));
 				}
 				idx++;
 			}
@@ -285,15 +285,15 @@ public class GridFactory extends Algorithm implements SupportRegionFactory {
 		return result;
 	}
 	
-	public static List<Pixel> getAllPixels(Segmentable img) {
+	public static List<IcyPixel> getAllPixels(Segmentable img) {
 		int w = img.getWidth();
 		int h = img.getHeight();
 
-		ArrayList<Pixel> result = new ArrayList<Pixel>();
+		ArrayList<IcyPixel> result = new ArrayList<IcyPixel>();
 
 		for (int y = 0; y < h; y++) {
 			for (int x = 0; x < w; x++) {
-				result.add(new Pixel(x, y));
+				result.add(new IcyPixel(x, y));
 			}
 		}
 

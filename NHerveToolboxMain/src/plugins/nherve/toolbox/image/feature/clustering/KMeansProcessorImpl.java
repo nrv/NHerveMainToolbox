@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
 import plugins.nherve.toolbox.image.feature.descriptor.MultiThreadedSignatureExtractor;
 import plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringAlgorithm;
@@ -85,8 +85,8 @@ public class KMeansProcessorImpl extends FuzzyClusteringProcessorDefaultImpl imp
 			for (IcyBufferedImage img : imgs) {
 				i++;
 				//System.out.println(" ..*.. image " + i + " / " + imgs.size() + " - " + img.getWidth() + "x" + img.getHeight());
-				SegmentableBufferedImage simg = new SegmentableBufferedImage(img);
-				SupportRegion[] regions = getRegions(simg);
+				SegmentableIcyBufferedImage simg = new SegmentableIcyBufferedImage(img);
+				IcySupportRegion[] regions = getRegions(simg);
 				VectorSignature[] sigs = getSignatures(simg, regions);
 				allSigs.addAll(Arrays.asList(sigs));
 			}
@@ -107,9 +107,9 @@ public class KMeansProcessorImpl extends FuzzyClusteringProcessorDefaultImpl imp
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#getSignatures(plugins.nherve.toolbox.image.feature.SegmentableBufferedImage, plugins.nherve.toolbox.image.feature.SupportRegion[])
 	 */
 	@Override
-	public VectorSignature[] getSignatures(SegmentableBufferedImage simg, SupportRegion[] regions) throws SignatureException {
+	public VectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException {
 		ColorPixel col2 = new ColorPixel(ColorSpaceTools.RGB_TO_I1H2H3, isLogEnabled());
-		MultiThreadedSignatureExtractor<SegmentableBufferedImage> mex2 = new MultiThreadedSignatureExtractor<SegmentableBufferedImage>(col2);
+		MultiThreadedSignatureExtractor<SegmentableIcyBufferedImage> mex2 = new MultiThreadedSignatureExtractor<SegmentableIcyBufferedImage>(col2);
 		mex2.setLogEnabled(isLogEnabled());
 		Signature[] sigs = mex2.extractSignatures(simg, regions);
 		VectorSignature[] vsigs = new VectorSignature[sigs.length];

@@ -16,9 +16,9 @@ import plugins.nherve.toolbox.concurrent.TaskException;
 import plugins.nherve.toolbox.concurrent.TaskManager;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.MultiThreadedSignatureExtractor.Listener;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 
 public class MultiThreadedExecutionContext extends Algorithm {
@@ -40,10 +40,10 @@ public class MultiThreadedExecutionContext extends Algorithm {
 	private int stepPct;
 
 	/** The ld. */
-	private LocalDescriptor<Segmentable, ? extends Signature> ld;
+	private LocalDescriptor<Segmentable, ? extends Signature, IcyPixel> ld;
 
 	/** The regions. */
-	private SupportRegion[] regions;
+	private IcySupportRegion[] regions;
 
 	/** The result. */
 	private Signature[] result;
@@ -67,7 +67,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 	 * 
 	 * @author Nicolas HERVE - nicolas.herve@pasteur.fr
 	 */
-	public class SignatureExtractionWorker extends MultipleDataTask<SupportRegion, Integer> {
+	public class SignatureExtractionWorker extends MultipleDataTask<IcySupportRegion, Integer> {
 
 		/**
 		 * Instantiates a new signature extraction worker.
@@ -79,7 +79,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 		 * @param idx2
 		 *            the idx2
 		 */
-		public SignatureExtractionWorker(List<SupportRegion> allData, int idx1, int idx2) {
+		public SignatureExtractionWorker(List<IcySupportRegion> allData, int idx1, int idx2) {
 			super(allData, idx1, idx2);
 		}
 
@@ -91,7 +91,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 		 * lang.Object, int)
 		 */
 		@Override
-		public void call(SupportRegion data, int idx) throws Exception {
+		public void call(IcySupportRegion data, int idx) throws Exception {
 			try {
 				Signature sig = null;
 				sig = ld.extractLocalSignature(getImage(), data);
@@ -159,7 +159,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 
 			for (int x = 0; x < width; x++) {
 				try {
-					sig = ld.extractLocalSignature(getImage(), new Pixel(x, line));
+					sig = ld.extractLocalSignature(getImage(), new IcyPixel(x, line));
 					setResult(idx, sig);
 				} catch (SignatureException e) {
 					logError("On pixel " + x + "x" + line + " : " + e.getMessage());
@@ -182,7 +182,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 	 * @param descriptor
 	 *            the descriptor
 	 */
-	public MultiThreadedExecutionContext(Segmentable image, SupportRegion[] regions, LocalDescriptor<Segmentable, ? extends Signature> descriptor, TaskManager tm, List<Listener> listeners) {
+	public MultiThreadedExecutionContext(Segmentable image, IcySupportRegion[] regions, LocalDescriptor<Segmentable, ? extends Signature, IcyPixel> descriptor, TaskManager tm, List<Listener> listeners) {
 		super();
 		
 		this.tm =tm;
@@ -206,7 +206,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 	 * @param descriptor
 	 *            the descriptor
 	 */
-	public MultiThreadedExecutionContext(Segmentable image, LocalDescriptor<Segmentable, ? extends Signature> descriptor, TaskManager tm, List<Listener> listeners) {
+	public MultiThreadedExecutionContext(Segmentable image, LocalDescriptor<Segmentable, ? extends Signature, IcyPixel> descriptor, TaskManager tm, List<Listener> listeners) {
 		this(image, null, descriptor, tm, listeners);
 	}
 
@@ -306,7 +306,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 	 * 
 	 * @return the descriptor
 	 */
-	public LocalDescriptor<Segmentable, ? extends Signature> getDescriptor() {
+	public LocalDescriptor<Segmentable, ? extends Signature, IcyPixel> getDescriptor() {
 		return ld;
 	}
 

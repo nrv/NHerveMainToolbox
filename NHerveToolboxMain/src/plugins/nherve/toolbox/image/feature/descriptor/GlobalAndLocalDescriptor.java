@@ -21,6 +21,7 @@ package plugins.nherve.toolbox.image.feature.descriptor;
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.Signature;
 import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 
 /**
@@ -32,7 +33,7 @@ import plugins.nherve.toolbox.image.feature.signature.SignatureException;
  *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public abstract class GlobalAndLocalDescriptor<T extends Segmentable, S extends Signature> extends DefaultDescriptorImpl<T, S> implements GlobalDescriptor<T, S>, LocalDescriptor<T, S> {
+public abstract class GlobalAndLocalDescriptor<T extends Segmentable, S extends Signature> extends DefaultDescriptorImpl<T, S> implements GlobalDescriptor<T, S>, LocalDescriptor<T, S, IcyPixel> {
 	
 	/**
 	 * Instantiates a new global and local descriptor.

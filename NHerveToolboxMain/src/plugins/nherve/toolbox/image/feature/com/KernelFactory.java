@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import plugins.nherve.toolbox.Algorithm;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 
 
 /**
@@ -38,17 +38,17 @@ public class KernelFactory {
 	private final static DecimalFormat kdf = new DecimalFormat("+0.00;-0.00");
 
 	/** The Constant KERNEL_2. */
-	private static final List<Pixel> KERNEL_2;
+	private static final List<IcyPixel> KERNEL_2;
 	static {
-		KERNEL_2 = new ArrayList<Pixel>();
-		KERNEL_2.add(new Pixel(-2, 0));
-		KERNEL_2.add(new Pixel(+2, 0));
-		KERNEL_2.add(new Pixel(0, -2));
-		KERNEL_2.add(new Pixel(0, +2));
-		KERNEL_2.add(new Pixel(-2, -2));
-		KERNEL_2.add(new Pixel(+2, +2));
-		KERNEL_2.add(new Pixel(+2, -2));
-		KERNEL_2.add(new Pixel(-2, +2));
+		KERNEL_2 = new ArrayList<IcyPixel>();
+		KERNEL_2.add(new IcyPixel(-2, 0));
+		KERNEL_2.add(new IcyPixel(+2, 0));
+		KERNEL_2.add(new IcyPixel(0, -2));
+		KERNEL_2.add(new IcyPixel(0, +2));
+		KERNEL_2.add(new IcyPixel(-2, -2));
+		KERNEL_2.add(new IcyPixel(+2, +2));
+		KERNEL_2.add(new IcyPixel(+2, -2));
+		KERNEL_2.add(new IcyPixel(-2, +2));
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class KernelFactory {
 	 *            the id
 	 * @return the standard kernel
 	 */
-	public static List<Pixel> getStandardKernel(int id) {
+	public static List<IcyPixel> getStandardKernel(int id) {
 		return getStandardKernel(id, false);
 	}
 
@@ -71,7 +71,7 @@ public class KernelFactory {
 	 *            the precise
 	 * @return the standard kernel
 	 */
-	public static List<Pixel> getStandardKernel(int id, boolean precise) {
+	public static List<IcyPixel> getStandardKernel(int id, boolean precise) {
 		switch (id) {
 		case 0:
 			return getKernel(1, 0d, precise);
@@ -119,12 +119,12 @@ public class KernelFactory {
 	 *            the precise
 	 * @return the kernel
 	 */
-	public static List<Pixel> getKernel(final int nbn, final double r, boolean precise) {
-		List<Pixel> kernel = new ArrayList<Pixel>();
+	public static List<IcyPixel> getKernel(final int nbn, final double r, boolean precise) {
+		List<IcyPixel> kernel = new ArrayList<IcyPixel>();
 
-		HashMap<String, Pixel> avoidDuplicates = null;
+		HashMap<String, IcyPixel> avoidDuplicates = null;
 		if (!precise) {
-			avoidDuplicates = new HashMap<String, Pixel>();
+			avoidDuplicates = new HashMap<String, IcyPixel>();
 		}
 		double x, y, c;
 		final double cst = 2 * Math.PI / (double)nbn;
@@ -141,9 +141,9 @@ public class KernelFactory {
 			}
 
 			if (precise) {
-				kernel.add(new Pixel(x, y));
+				kernel.add(new IcyPixel(x, y));
 			} else {
-				Pixel px = new Pixel((int) x, (int) y);
+				IcyPixel px = new IcyPixel((int) x, (int) y);
 				String k = px.toString();
 				if (!avoidDuplicates.containsKey(k)) {
 					avoidDuplicates.put(k, px);
@@ -163,9 +163,9 @@ public class KernelFactory {
 	 * @param kernel
 	 *            the kernel
 	 */
-	public static void log(String name, List<Pixel> kernel) {
+	public static void log(String name, List<IcyPixel> kernel) {
 		Algorithm.out("------ Kernel " + name + " ------");
-		for (Pixel shift : kernel) {
+		for (IcyPixel shift : kernel) {
 			Algorithm.out("    (" + kdf.format(shift.x) + ", " + kdf.format(shift.y) + ")");
 		}
 		Algorithm.out("----------------------");

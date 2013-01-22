@@ -24,6 +24,7 @@ import java.util.List;
 
 import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
@@ -95,12 +96,12 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public VectorSignature extractLocalSignature(T img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
 		int dsc = 0;
 		double cf = 1;
 		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
-			LocalDescriptor<T, VectorSignature> ld = (LocalDescriptor<T, VectorSignature>) d;
+			LocalDescriptor<T, VectorSignature, IcyPixel> ld = (LocalDescriptor<T, VectorSignature, IcyPixel>) d;
 			cf = coef.get(dsc);
 			VectorSignature vs = (VectorSignature)(ld.extractLocalSignature(img, reg));
 			concatenator.add(new VectorSignature[]{vs}, cf);
@@ -119,7 +120,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 		int dsc = 0;
 		double cf = 1;
 		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
-			LocalDescriptor<T, VectorSignature> ld = (LocalDescriptor<T, VectorSignature>) d;
+			LocalDescriptor<T, VectorSignature, IcyPixel> ld = (LocalDescriptor<T, VectorSignature, IcyPixel>) d;
 			cf = coef.get(dsc);
 			VectorSignature vs = (VectorSignature)(ld.extractLocalSignature(img, shp));
 			concatenator.add(new VectorSignature[]{vs}, cf);

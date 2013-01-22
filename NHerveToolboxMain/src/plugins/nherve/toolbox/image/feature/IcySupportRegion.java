@@ -18,9 +18,7 @@
  */
 package plugins.nherve.toolbox.image.feature;
 
-import java.awt.geom.Rectangle2D;
-
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.mask.Mask;
 
@@ -30,14 +28,7 @@ import plugins.nherve.toolbox.image.mask.Mask;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public interface SupportRegion extends Iterable<Pixel> {
-	
-	/**
-	 * Gets the center.
-	 * 
-	 * @return the center
-	 */
-	Pixel getCenter();
+public interface IcySupportRegion extends SupportRegion<IcyPixel> {
 	
 	/**
 	 * Intersects.
@@ -50,21 +41,4 @@ public interface SupportRegion extends Iterable<Pixel> {
 	 */
 	boolean intersects(Mask mask) throws SupportRegionException;
 	
-	/**
-	 * Contains.
-	 * 
-	 * @param x
-	 *            the x
-	 * @param y
-	 *            the y
-	 * @return true, if successful
-	 */
-	boolean contains(double x, double y);
-	
-	/**
-	 * Gets the bounding box.
-	 * 
-	 * @return the bounding box
-	 */
-	Rectangle2D getBoundingBox();
 }

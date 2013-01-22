@@ -112,13 +112,13 @@ public class RectangleSupportRegion extends AreaSupportRegion {
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
-	public Iterator<Pixel> iterator() {
-		ArrayList<Pixel> px = new ArrayList<Pixel>();
+	public Iterator<IcyPixel> iterator() {
+		ArrayList<IcyPixel> px = new ArrayList<IcyPixel>();
 		int startX = centerX - width / 2;
 		int startY = centerY - height / 2;
 		for (int x = startX; x < startX + width; x++) {
 			for (int y = startY; y < startY + height; y++) {
-				px.add(new Pixel(x, y));
+				px.add(new IcyPixel(x, y));
 			}
 		}
 		return px.iterator();
@@ -128,7 +128,7 @@ public class RectangleSupportRegion extends AreaSupportRegion {
 	 * @see plugins.nherve.toolbox.image.feature.SupportRegion#getCenter()
 	 */
 	@Override
-	public Pixel getCenter() {
-		return new Pixel(centerX, centerY);
+	public IcyPixel getCenter() {
+		return new IcyPixel(centerX, centerY);
 	}
 }

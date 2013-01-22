@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import plugins.nherve.toolbox.Algorithm;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 
 
 /**
@@ -123,7 +123,7 @@ public class HysteresisThresholder extends Algorithm {
 	 * @return the icy buffered image
 	 */
 	public IcyBufferedImage work(IcyBufferedImage gray) {
-		LinkedList<Pixel> wf = new LinkedList<Pixel>();
+		LinkedList<IcyPixel> wf = new LinkedList<IcyPixel>();
 		
 		int w = gray.getWidth();
 		int h = gray.getHeight();
@@ -142,13 +142,13 @@ public class HysteresisThresholder extends Algorithm {
 				if ((done[idx] == false) && (table[idx] >= highThreshold)) {
 					table[idx] = highValue;
 					done[idx] = true;
-					wf.addFirst(new Pixel(x, y));
+					wf.addFirst(new IcyPixel(x, y));
 				}
 			}
 		}
 		
 		while (!wf.isEmpty()) {
-			Pixel px = wf.removeLast();
+			IcyPixel px = wf.removeLast();
 			int x = (int)px.x;
 			int y = (int)px.y;
 			for (int dx = -1; dx <= 1; dx++) {
@@ -160,7 +160,7 @@ public class HysteresisThresholder extends Algorithm {
 						if ((!done[idx]) && (table[idx] >= lowThreshold)) {
 							table[idx] = highValue;
 							done[idx] = true;
-							wf.addFirst(new Pixel(nx, ny));
+							wf.addFirst(new IcyPixel(nx, ny));
 						}
 					}
 				}

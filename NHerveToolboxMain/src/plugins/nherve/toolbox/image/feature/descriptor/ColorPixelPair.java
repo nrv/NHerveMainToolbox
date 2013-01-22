@@ -23,11 +23,11 @@ import icy.image.IcyBufferedImage;
 import java.awt.Shape;
 import java.util.List;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.Signature;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.com.KernelFactory;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
@@ -42,7 +42,7 @@ import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 public class ColorPixelPair extends ColorDescriptor<Signature> {
 	
 	/** The kernel. */
-	private List<Pixel> kernel;
+	private List<IcyPixel> kernel;
 	
 	/** The Constant K1. */
 	public static final int K1 = 1;
@@ -105,7 +105,7 @@ public class ColorPixelPair extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public Signature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+	public Signature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new RuntimeException("ColorPixelPair.extractSignature(SegmentableBufferedImage img, Shape shp) not implemented");
 	}
 	
@@ -113,18 +113,18 @@ public class ColorPixelPair extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public Signature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public Signature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage bimg = img.getImage();
 
 		BagOfSignatures<VectorSignature> sigs = new BagOfSignatures<VectorSignature>();
 
-		Pixel px = reg.getCenter();
+		IcyPixel px = reg.getCenter();
 		int w = bimg.getWidth();
 		int h = bimg.getHeight();
 
 		double[] center = getColorComponentsManageBorders(bimg, px, w, h);
 
-		for (Pixel shift : kernel) {
+		for (IcyPixel shift : kernel) {
 			int d = 0;
 			double[] col = getColorComponentsManageBorders(bimg, px.plus(shift), w, h);
 			VectorSignature sig = getEmptySignature();
@@ -152,14 +152,14 @@ public class ColorPixelPair extends ColorDescriptor<Signature> {
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 	}
 
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 	}
 
 }

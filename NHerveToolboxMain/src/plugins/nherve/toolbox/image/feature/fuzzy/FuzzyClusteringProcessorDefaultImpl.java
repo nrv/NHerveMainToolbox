@@ -28,11 +28,11 @@ import java.util.List;
 
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.clustering.ClusteringException;
 import plugins.nherve.toolbox.image.feature.region.GridFactory;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
@@ -52,7 +52,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#addToMaskStack(plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringAlgorithm, icy.image.IcyBufferedImage, plugins.nherve.toolbox.image.mask.MaskStack, plugins.nherve.toolbox.image.feature.SupportRegion[], plugins.nherve.toolbox.image.feature.signature.VectorSignature[])
 	 */
 	@Override
-	public void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, SupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException {
+	public void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException {
 		int offset = seg.size();
 
 		for (int i = 0; i < sm.getNbClasses(); i++) {
@@ -61,10 +61,10 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 
 		int[] aff = sm.getAffectations(sigs);
 		int i = 0;
-		for (SupportRegion sr : regions) {
+		for (IcySupportRegion sr : regions) {
 			Mask m = seg.getByIndex(aff[i] + offset);
 			BinaryIcyBufferedImage bin = m.getBinaryData();
-			Pixel px = sr.getCenter();
+			IcyPixel px = sr.getCenter();
 			bin.set((int) px.x, (int) px.y, true);
 			i++;
 		}
@@ -74,12 +74,12 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#getRegions(plugins.nherve.toolbox.image.feature.SegmentableBufferedImage)
 	 */
 	@Override
-	public SupportRegion[] getRegions(SegmentableBufferedImage simg) throws SupportRegionException {
+	public IcySupportRegion[] getRegions(SegmentableIcyBufferedImage simg) throws SupportRegionException {
 		GridFactory factory = new GridFactory(GridFactory.ALGO_ONLY_PIXELS);
-		List<SupportRegion> lRegions = factory.extractRegions(simg);
-		SupportRegion[] regions = new SupportRegion[lRegions.size()];
+		List<IcySupportRegion> lRegions = factory.extractRegions(simg);
+		IcySupportRegion[] regions = new IcySupportRegion[lRegions.size()];
 		int r = 0;
-		for (SupportRegion sr : lRegions) {
+		for (IcySupportRegion sr : lRegions) {
 			regions[r++] = sr;
 		}
 
@@ -90,7 +90,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#getAsImage(double[], plugins.nherve.toolbox.image.feature.SupportRegion[], int, int)
 	 */
 	@Override
-	public IcyBufferedImage getAsImage(double[] data, SupportRegion[] regions, int w, int h) {
+	public IcyBufferedImage getAsImage(double[] data, IcySupportRegion[] regions, int w, int h) {
 		IcyBufferedImage segImg = new IcyBufferedImage(w, h, 1, TypeUtil.TYPE_DOUBLE);
 		int i = 0;
 
@@ -98,8 +98,8 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 		monitor.start();
 
 		double[] id = segImg.getDataXYAsDouble(0);
-		for (SupportRegion sr : regions) {
-			Pixel px = sr.getCenter();
+		for (IcySupportRegion sr : regions) {
+			IcyPixel px = sr.getCenter();
 			id[(int) px.x + (int) px.y * w] = data[i];
 			i++;
 		}
@@ -125,7 +125,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#doClustering(icy.image.IcyBufferedImage, plugins.nherve.toolbox.image.mask.MaskStack, plugins.nherve.toolbox.image.feature.SupportRegion[], plugins.nherve.toolbox.image.feature.signature.VectorSignature[])
 	 */
 	@Override
-	public FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, SupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException {
+	public FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException {
 		FuzzyClusteringAlgorithm sm = createFuzzyClusteringAlgorithm(img);
 
 		addToMaskStack(sm, img, seg, regions, sigs);
@@ -139,8 +139,8 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	@Override
 	public FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg) {
 		try {
-			SegmentableBufferedImage simg = new SegmentableBufferedImage(img);
-			SupportRegion[] regions = getRegions(simg);
+			SegmentableIcyBufferedImage simg = new SegmentableIcyBufferedImage(img);
+			IcySupportRegion[] regions = getRegions(simg);
 			VectorSignature[] sigs = getSignatures(simg, regions);
 
 			return doClustering(img, seg, regions, sigs);

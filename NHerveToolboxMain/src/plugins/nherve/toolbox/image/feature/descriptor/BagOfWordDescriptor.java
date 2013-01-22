@@ -20,6 +20,7 @@ package plugins.nherve.toolbox.image.feature.descriptor;
 
 import plugins.nherve.toolbox.image.db.ImageEntry;
 import plugins.nherve.toolbox.image.feature.FeatureException;
+import plugins.nherve.toolbox.image.feature.SegmentableImage;
 import plugins.nherve.toolbox.image.feature.com.VocabularyOfObjects;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
@@ -29,7 +30,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class BagOfWordDescriptor extends DefaultDescriptorImpl<ImageEntry, VectorSignature> implements GlobalDescriptor<ImageEntry, VectorSignature> {
+public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDescriptorImpl<ImageEntry<T>, VectorSignature> implements GlobalDescriptor<ImageEntry<T>, VectorSignature> {
 	
 	/** The vocabulary. */
 	private VocabularyOfObjects<Integer, VectorSignature> vocabulary;
@@ -67,7 +68,7 @@ public class BagOfWordDescriptor extends DefaultDescriptorImpl<ImageEntry, Vecto
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.GlobalDescriptor#extractGlobalSignature(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public VectorSignature extractGlobalSignature(ImageEntry img) throws SignatureException {
+	public VectorSignature extractGlobalSignature(ImageEntry<T> img) throws SignatureException {
 		try {
 			VectorSignature bow = getEmptySignature();
 
@@ -94,14 +95,14 @@ public class BagOfWordDescriptor extends DefaultDescriptorImpl<ImageEntry, Vecto
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(ImageEntry img) throws SignatureException {
+	public void postProcess(ImageEntry<T> img) throws SignatureException {
 	}
 
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(ImageEntry img) throws SignatureException {
+	public void preProcess(ImageEntry<T> img) throws SignatureException {
 	}
 
 	/**

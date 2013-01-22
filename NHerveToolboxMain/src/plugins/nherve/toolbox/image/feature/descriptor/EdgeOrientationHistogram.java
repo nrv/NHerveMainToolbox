@@ -25,9 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import plugins.nherve.toolbox.image.feature.ConvolutionKernel2D;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 
@@ -37,7 +38,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<SegmentableBufferedImage, VectorSignature> {
+public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
 	
 	/** The Constant DEFAULT_DIMENSION. */
 	public final static int DEFAULT_DIMENSION = 7;
@@ -61,13 +62,13 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	private boolean doLinearSmoothing;
 
 	/** The cache image contour. */
-	private Map<SegmentableBufferedImage, boolean[]> cacheImageContour;
+	private Map<SegmentableIcyBufferedImage, boolean[]> cacheImageContour;
 	
 	/** The cache image gradient amplitude. */
-	private Map<SegmentableBufferedImage, double[]> cacheImageGradientAmplitude;
+	private Map<SegmentableIcyBufferedImage, double[]> cacheImageGradientAmplitude;
 	
 	/** The cache image gradient orientation. */
-	private Map<SegmentableBufferedImage, double[]> cacheImageGradientOrientation;
+	private Map<SegmentableIcyBufferedImage, double[]> cacheImageGradientOrientation;
 
 	/** The p dimension. */
 	private int pDimension;
@@ -91,9 +92,9 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 */
 	public EdgeOrientationHistogram(boolean doLinearSmoothing, boolean display) {
 		super(display);
-		cacheImageContour = new HashMap<SegmentableBufferedImage, boolean[]>();
-		cacheImageGradientAmplitude = new HashMap<SegmentableBufferedImage, double[]>();
-		cacheImageGradientOrientation = new HashMap<SegmentableBufferedImage, double[]>();
+		cacheImageContour = new HashMap<SegmentableIcyBufferedImage, boolean[]>();
+		cacheImageGradientAmplitude = new HashMap<SegmentableIcyBufferedImage, double[]>();
+		cacheImageGradientOrientation = new HashMap<SegmentableIcyBufferedImage, double[]>();
 		this.doLinearSmoothing = doLinearSmoothing;
 
 		setpDimension(DEFAULT_DIMENSION);
@@ -131,7 +132,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new RuntimeException("EdgeOrientationHistogram.extractSignature(SegmentableBufferedImage img, Shape shp) not implemented");
 	}
 
@@ -139,7 +140,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		boolean[] currentImageContour = null;
 		double[] currentImageGradientAmplitude = null;
 		double[] currentImageGradientOrientation = null;
@@ -167,7 +168,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 		int h = img.getHeight();
 
 		int x, y;
-		for (Pixel p : reg) {
+		for (IcyPixel p : reg) {
 			x = (int)p.x;
 			y = (int)p.y;
 			idx = x + y * w;
@@ -222,7 +223,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		synchronized (cacheImageContour) {
 			// log("postProcess(" + img.getName() + ") : " +
 			// cacheImageContour.size());
@@ -236,7 +237,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		// log("preProcess(" + img.getName() + ") : " +
 		// cacheImageContour.size());
 		IcyBufferedImage bimg = img.getImage();

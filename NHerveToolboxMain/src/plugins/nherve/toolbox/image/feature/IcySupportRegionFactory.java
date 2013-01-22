@@ -18,52 +18,29 @@
  */
 package plugins.nherve.toolbox.image.feature;
 
-import plugins.nherve.toolbox.image.db.ImageDatabase;
-import plugins.nherve.toolbox.image.feature.signature.SignatureException;
+import java.util.List;
+
+import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
+import plugins.nherve.toolbox.image.mask.Mask;
+
 
 /**
- * The Interface Descriptor.
+ * The Interface SupportRegionFactory.
  * 
- * @param <T>
- *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public interface Descriptor<T extends Segmentable> {
-	
+public interface IcySupportRegionFactory extends SupportRegionFactory<IcySupportRegion> {
 	/**
-	 * Inits the for database.
-	 * 
-	 * @param db
-	 *            the db
-	 * @throws SignatureException
-	 *             the signature exception
-	 */
-	void initForDatabase(ImageDatabase db) throws SignatureException;
-	
-	/**
-	 * Need to load segmentable.
-	 * 
-	 * @return true, if successful
-	 */
-	boolean needToLoadSegmentable();
-	
-	/**
-	 * Pre process.
+	 * Extract regions.
 	 * 
 	 * @param img
 	 *            the img
-	 * @throws SignatureException
-	 *             the signature exception
+	 * @param mask
+	 *            the mask
+	 * @return the list
+	 * @throws SupportRegionException
+	 *             the support region exception
 	 */
-	void preProcess(T img) throws SignatureException;
-	
-	/**
-	 * Post process.
-	 * 
-	 * @param img
-	 *            the img
-	 * @throws SignatureException
-	 *             the signature exception
-	 */
-	void postProcess(T img) throws SignatureException;
+	public abstract List<IcySupportRegion> extractRegions(Segmentable img, Mask mask) throws SupportRegionException;
+
 }

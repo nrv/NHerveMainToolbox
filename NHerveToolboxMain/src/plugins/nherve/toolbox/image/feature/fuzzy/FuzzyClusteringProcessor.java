@@ -22,8 +22,8 @@ import icy.image.IcyBufferedImage;
 
 import java.util.List;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
-import plugins.nherve.toolbox.image.feature.SupportRegion;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.clustering.ClusteringException;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
@@ -56,7 +56,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws ClusteringException
 	 *             the clustering exception
 	 */
-	void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, SupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException;
+	void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException;
 	
 	/**
 	 * Gets the regions.
@@ -67,7 +67,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws SupportRegionException
 	 *             the support region exception
 	 */
-	SupportRegion[] getRegions(SegmentableBufferedImage simg) throws SupportRegionException;
+	IcySupportRegion[] getRegions(SegmentableIcyBufferedImage simg) throws SupportRegionException;
 	
 	/**
 	 * Gets the signatures.
@@ -80,7 +80,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	VectorSignature[] getSignatures(SegmentableBufferedImage simg, SupportRegion[] regions) throws SignatureException;
+	VectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException;
 	
 	/**
 	 * Gets the as image.
@@ -95,7 +95,7 @@ public interface FuzzyClusteringProcessor {
 	 *            the h
 	 * @return the as image
 	 */
-	IcyBufferedImage getAsImage(double[] data, SupportRegion[] regions, int w, int h);
+	IcyBufferedImage getAsImage(double[] data, IcySupportRegion[] regions, int w, int h);
 	
 	/**
 	 * Creates the fuzzy clustering algorithm.
@@ -140,7 +140,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws ClusteringException
 	 *             the clustering exception
 	 */
-	FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, SupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException;
+	FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException;
 	
 	/**
 	 * Do clustering.

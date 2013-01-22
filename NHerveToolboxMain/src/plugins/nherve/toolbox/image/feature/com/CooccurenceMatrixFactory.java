@@ -26,9 +26,9 @@ import java.util.List;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.BinaryIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.FeatureException;
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.mask.Mask;
 import plugins.nherve.toolbox.image.mask.MaskStack;
@@ -43,7 +43,7 @@ import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 public class CooccurenceMatrixFactory extends Algorithm {
 	
 	/** The kernel. */
-	private List<Pixel> kernel;
+	private List<IcyPixel> kernel;
 	
 	/**
 	 * Instantiates a new cooccurence matrix factory.
@@ -66,7 +66,7 @@ public class CooccurenceMatrixFactory extends Algorithm {
 	 *            the h
 	 * @return the index manage borders
 	 */
-	private int getIndexManageBorders(int[] data, Pixel px, int w, int h) {
+	private int getIndexManageBorders(int[] data, IcyPixel px, int w, int h) {
 		int x = (int)px.x;
 		int y = (int)px.y;
 
@@ -167,10 +167,10 @@ public class CooccurenceMatrixFactory extends Algorithm {
 		int[] data = img.getDataXYAsInt(0);
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				Pixel ct = new Pixel(x, y);
+				IcyPixel ct = new IcyPixel(x, y);
 				int center = vocabulary.getIndex(getIndexManageBorders(data, ct, w, h));
-				for (Pixel shift : kernel) {
-					Pixel nb = ct.plus(shift);
+				for (IcyPixel shift : kernel) {
+					IcyPixel nb = ct.plus(shift);
 					int neihbour = vocabulary.getIndex(getIndexManageBorders(data, nb, w, h));
 					result.add(center, neihbour, 1);
 				}
@@ -193,7 +193,7 @@ public class CooccurenceMatrixFactory extends Algorithm {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public CooccurenceMatrix<Integer> buildFromIndexedImage(IcyBufferedImage idxImg, SegmentableBufferedImage oriImg, VocabularyOfObjects<Integer, VectorSignature> vocabulary) throws FeatureException {
+	public CooccurenceMatrix<Integer> buildFromIndexedImage(IcyBufferedImage idxImg, SegmentableIcyBufferedImage oriImg, VocabularyOfObjects<Integer, VectorSignature> vocabulary) throws FeatureException {
 		if (idxImg.getDataType() != TypeUtil.TYPE_INT) {
 			throw new FeatureException("Only TYPE_INT IcyBufferedImage supported in CooccurenceMatrix.buildFromIndexedImage()");
 		}
@@ -211,13 +211,13 @@ public class CooccurenceMatrixFactory extends Algorithm {
 		int[] idxData = idxImg.getDataXYAsInt(0);
 		for (int x = 0; x < w; x++) {
 			for (int y = 0; y < h; y++) {
-				Pixel ct = new Pixel(x, y);
+				IcyPixel ct = new IcyPixel(x, y);
 				int center = vocabulary.getIndex(getIndexManageBorders(idxData, ct, w, h));
 				VectorSignature vs = (VectorSignature) colpix.extractLocalSignature(oriImg, ct);
 				vs.multiply(256);
 				double sct = vocabulary.similarity(center, vs);
-				for (Pixel shift : kernel) {
-					Pixel nb = ct.plus(shift);
+				for (IcyPixel shift : kernel) {
+					IcyPixel nb = ct.plus(shift);
 					VectorSignature vs2 = (VectorSignature) colpix.extractLocalSignature(oriImg, nb);
 					vs2.multiply(256);
 					int neihbour = vocabulary.getIndex(getIndexManageBorders(idxData, nb, w, h));
@@ -274,7 +274,7 @@ public class CooccurenceMatrixFactory extends Algorithm {
 	 * 
 	 * @return the kernel
 	 */
-	public List<Pixel> getKernel() {
+	public List<IcyPixel> getKernel() {
 		return kernel;
 	}
 
@@ -284,7 +284,7 @@ public class CooccurenceMatrixFactory extends Algorithm {
 	 * @param kernel
 	 *            the new kernel
 	 */
-	public void setKernel(List<Pixel> kernel) {
+	public void setKernel(List<IcyPixel> kernel) {
 		this.kernel = kernel;
 	}
 	

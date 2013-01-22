@@ -29,10 +29,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import plugins.nherve.toolbox.image.feature.SegmentableBufferedImage;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
-import plugins.nherve.toolbox.image.feature.region.Pixel;
+import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.RectangleSupportRegion;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
@@ -44,7 +44,7 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_2D;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBufferedImage, VectorSignature> {
+public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
 	
 	/** The Constant df. */
 	private final static DecimalFormat df = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -71,7 +71,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	private int canal;
 
 	/** The cache gray. */
-	private Map<SegmentableBufferedImage, IcyBufferedImage> cacheGray;
+	private Map<SegmentableIcyBufferedImage, IcyBufferedImage> cacheGray;
 
 	/**
 	 * Instantiates a new fourier histogram.
@@ -90,7 +90,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	public FourierHistogram(int nbDisks, int nbWedges, boolean disksHaveSameSurface, boolean display, int canal) {
 		super(display);
 
-		cacheGray = new HashMap<SegmentableBufferedImage, IcyBufferedImage>();
+		cacheGray = new HashMap<SegmentableIcyBufferedImage, IcyBufferedImage>();
 
 		this.nbDisks = nbDisks;
 		this.nbWedges = nbWedges;
@@ -155,7 +155,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, Shape shp) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new SignatureException("Not implemented yet");
 	}
 	
@@ -163,7 +163,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableBufferedImage img, SupportRegion reg) throws SignatureException {
+	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage gray = null;
 
 		synchronized (cacheGray) {
@@ -213,7 +213,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 			y1 = rect.y;
 			y2 = y1 + nws;
 		} else {
-			Pixel px = reg.getCenter();
+			IcyPixel px = reg.getCenter();
 			int cx = (int) px.x;
 			int cy = (int) px.y;
 
@@ -385,7 +385,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#postProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void postProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void postProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		synchronized (cacheGray) {
 			cacheGray.remove(img);
 		}
@@ -395,7 +395,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableBuffer
 	 * @see plugins.nherve.toolbox.image.feature.Descriptor#preProcess(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public void preProcess(SegmentableBufferedImage img) throws SignatureException {
+	public void preProcess(SegmentableIcyBufferedImage img) throws SignatureException {
 		IcyBufferedImage gray = SomeImageTools.computeGrayScale(img.getImage(), canal, 1);
 		synchronized (cacheGray) {
 			cacheGray.put(img, gray);
