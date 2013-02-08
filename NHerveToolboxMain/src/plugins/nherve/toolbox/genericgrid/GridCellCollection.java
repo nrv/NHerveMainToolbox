@@ -106,4 +106,12 @@ public class GridCellCollection<T extends GridCell> implements Iterable<T>{
 	public List<T> subList(int arg0, int arg1) {
 		return cells.subList(arg0, arg1);
 	}
+	
+	public void truncate (int max) {
+		if (max < cells.size()) {
+			List<T> sub = cells.subList(0, max);
+			cells = Collections.synchronizedList(new ArrayList<T>());
+			cells.addAll(sub);
+		}
+	}
 }
