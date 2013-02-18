@@ -69,6 +69,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	private double zoomCenterY;
 	private boolean zoomOnFocus;
+	private String ttt;
 
 	public GridCell() {
 		this(null);
@@ -299,6 +300,9 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 
 	public void setName(String name) {
 		this.name = name;
+		if (ttt == null) {
+			ttt = name;
+		}
 	}
 
 	void setNameFont(Font font) {
@@ -328,7 +332,15 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 		if (zoomOnFocus) {
 			setToolTipText(null);
 		} else {
-			setToolTipText(getName());
+			setToolTipText(ttt);
 		}
+	}
+
+	public String getTtt() {
+		return ttt;
+	}
+
+	public void setTtt(String ttt) {
+		this.ttt = ttt;
 	}
 }
