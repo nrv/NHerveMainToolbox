@@ -90,7 +90,7 @@ public class WaitingAnimation {
 		super();
 
 		currentStep = 0;
-		
+
 		this.comp = cell;
 
 		timer = new Timer(ANIM_SLEEP, new ActionListener() {
@@ -111,7 +111,7 @@ public class WaitingAnimation {
 		super();
 
 		currentStep = 0;
-		
+
 		this.comp = comp;
 
 		timer = new Timer(ANIM_SLEEP, new ActionListener() {
@@ -144,10 +144,6 @@ public class WaitingAnimation {
 
 	public void stop() {
 		timer.stop();
-		
-		if (comp != null) {
-			comp.repaint();
-		}
 	}
 
 	public boolean isRunning() {
