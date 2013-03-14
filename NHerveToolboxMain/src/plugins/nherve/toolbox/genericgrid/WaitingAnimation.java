@@ -20,11 +20,13 @@
 package plugins.nherve.toolbox.genericgrid;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JComponent;
 import javax.swing.Timer;
 
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
@@ -36,17 +38,21 @@ public class WaitingAnimation {
 
 	private int currentStep;
 	private Timer timer;
-	private final GridCell cell;
 
-	static {
-		anim = new BufferedImage[NB_ANIM_STEP];
+	// private final GridCell cell;
+	// private final JComponent comp;
 
-		for (int cs = 0; cs < NB_ANIM_STEP; cs++) {
-			anim[cs] = waitingImage(cs, NB_ANIM_STEP, 1.25, SomeStandardThumbnails.NICE_WIDTH);
+	public static void initAnimationImages(Color col) {
+		if (anim == null) {
+			anim = new BufferedImage[NB_ANIM_STEP];
+
+			for (int cs = 0; cs < NB_ANIM_STEP; cs++) {
+				anim[cs] = waitingImage(cs, NB_ANIM_STEP, 1.25, SomeStandardThumbnails.NICE_WIDTH, col);
+			}
 		}
 	}
 
-	public static BufferedImage waitingImage(int startingStep, int nbStep, double fade, int w) {
+	public static BufferedImage waitingImage(int startingStep, int nbStep, double fade, int w, Color col) {
 		BufferedImage img = new BufferedImage(w, w, BufferedImage.TYPE_INT_ARGB);
 
 		final double s = w / 10.;
@@ -71,6 +77,7 @@ public class WaitingAnimation {
 			}
 
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, gray));
+			g2.setColor(col);
 			g2.fillOval((int) x, (int) y, (int) s, (int) s);
 			gray -= gs;
 			if (gray < 0) {
@@ -81,11 +88,10 @@ public class WaitingAnimation {
 		return img;
 	}
 
-	public WaitingAnimation(GridCell c) {
+	public WaitingAnimation(final GridCell cell) {
 		super();
 
 		currentStep = 0;
-		this.cell = c;
 
 		timer = new Timer(ANIM_SLEEP, new ActionListener() {
 			@Override
@@ -94,8 +100,27 @@ public class WaitingAnimation {
 				if (currentStep == NB_ANIM_STEP) {
 					currentStep = 0;
 				}
-				if (cell.isOnScreen()) {
+				if (cell != null && cell.isOnScreen()) {
 					cell.repaint();
+				}
+			}
+		});
+	}
+
+	public WaitingAnimation(final JComponent comp) {
+		super();
+
+		currentStep = 0;
+
+		timer = new Timer(ANIM_SLEEP, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				currentStep++;
+				if (currentStep == NB_ANIM_STEP) {
+					currentStep = 0;
+				}
+				if (comp != null) {
+					comp.repaint();
 				}
 			}
 		});
@@ -103,11 +128,12 @@ public class WaitingAnimation {
 
 	public void paintAnimation(final Graphics2D g2, final GridCell c) {
 		if (c.isOnScreen()) {
-			int w = c.getWidth();
-			int h = c.getHeight();
-			
-			SomeImageTools.resizeAndDraw(anim[currentStep], g2, w, h);
+			paintAnimation(g2, c.getWidth(), c.getHeight(), 0, 0);
 		}
+	}
+
+	public void paintAnimation(final Graphics2D g2, final int w, final int h, final int x, final int y) {
+		SomeImageTools.resizeAndDraw(anim[currentStep], g2, w, h, x, y);
 	}
 
 	public void start() {

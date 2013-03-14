@@ -1,5 +1,6 @@
 /*
  * Copyright 2010, 2011 Institut Pasteur.
+ * Copyright 2012, 2013 Nicolas Hervé.
  * 
  * This file is part of NHerve Main Toolbox, which is an ICY plugin.
  * 
@@ -26,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
@@ -41,13 +43,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class GridPanel<T extends GridCell> extends JPanel implements ComponentListener, ChangeListener, ItemListener, AdjustmentListener {
 	private class InternalGrid extends JPanel implements Scrollable {
 		private static final long serialVersionUID = -4811144385819002930L;
+
+		public InternalGrid() {
+			super();
+		}
 
 		@Override
 		public Dimension getPreferredScrollableViewportSize() {
@@ -75,7 +83,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		}
 
 		@Override
-		protected void paintComponent(Graphics g) {
+		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 
 			if (cellsJustSet) {
@@ -83,6 +91,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 				cellsJustSet = false;
 			}
 		}
+
 	}
 
 	public static final int DEFAULT_CELL_LENGTH = 150;
@@ -98,7 +107,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	private JCheckBox cbDisplayName;
 	private int cellWidth;
 	private int cellHeight;
-	
+
 	private Font font;
 
 	private GridCellCollection<T> cells;
@@ -115,18 +124,20 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 
 	private int smoothZoom;
 	private double zoomFactor;
-	
+
 	private boolean zoomOnFocus;
 	private boolean displayName;
+
+	private WaitingAnimation wa;
 
 	public GridPanel() {
 		this(true);
 	}
-	
+
 	public GridPanel(boolean zoomOnFocus) {
 		this(zoomOnFocus, true);
 	}
-	
+
 	public GridPanel(boolean zoomOnFocus, boolean showBottomLine) {
 		this(DEFAULT_CELL_LENGTH, DEFAULT_CELL_SPACING, zoomOnFocus, showBottomLine, DEFAULT_MIN_ZOOM, DEFAULT_MAX_ZOOM, DEFAULT_ZOOM_SMOOTH);
 	}
@@ -138,7 +149,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	public GridPanel(int cellLength, int cellSpacing, boolean zoomOnFocus, boolean showBottomLine, int minZoom, int maxZoom, int smoothZoom) {
 		this(cellLength, cellLength, cellSpacing, zoomOnFocus, showBottomLine, showBottomLine, minZoom, maxZoom, smoothZoom);
 	}
-	
+
 	public GridPanel(int cellWidth, int cellHeight, int cellSpacing, boolean zoomOnFocus, boolean displayName, boolean showBottomLine, int minZoom, int maxZoom, int smoothZoom) {
 		super();
 
@@ -146,6 +157,8 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		slZoom = null;
 		lbNbCells = null;
 		cellsJustSet = false;
+
+		wa = new WaitingAnimation(this);
 
 		this.cellWidth = cellWidth;
 		this.cellHeight = cellHeight;
@@ -161,13 +174,13 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		addComponentListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEtchedBorder());
-		
+
 		font = new Font("SansSerif", Font.PLAIN, 12);
 
 		grid = new InternalGrid();
 		grid.setLayout(null);
 
-		scroll = new JScrollPane(grid, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll = new JScrollPane(grid, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scroll, BorderLayout.CENTER);
 		scroll.getVerticalScrollBar().addAdjustmentListener(this);
 
@@ -175,12 +188,12 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			cbZoomOnFocus = new JCheckBox("Zoom");
 			cbZoomOnFocus.setSelected(zoomOnFocus);
 			cbZoomOnFocus.addItemListener(this);
-			
+
 			cbDisplayName = new JCheckBox("Show names");
 			cbDisplayName.setSelected(displayName);
 			cbDisplayName.addItemListener(this);
 
-			slZoom = new JSlider(JSlider.HORIZONTAL, minZoom, maxZoom, smoothZoom);
+			slZoom = new JSlider(SwingConstants.HORIZONTAL, minZoom, maxZoom, smoothZoom);
 			slZoom.addChangeListener(this);
 			lbNbCells = new JLabel(EMPTY_LABEL);
 
@@ -219,6 +232,10 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		return slZoom.getValue();
 	}
 
+	public boolean isWaitingAnimation() {
+		return wa.isRunning();
+	}
+
 	public boolean isZoomOnFocus() {
 		return zoomOnFocus;
 	}
@@ -240,7 +257,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 					cells.setZoomOnFocus(zoomOnFocus);
 				}
 			}
-			
+
 			if (c == cbDisplayName) {
 				displayName = cbDisplayName.isSelected();
 				if (cells != null) {
@@ -248,7 +265,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 					cells.notifyDisplayParametersChanged();
 				}
 			}
-			
+
 			organizeCells();
 			grid.revalidate();
 			grid.repaint();
@@ -260,15 +277,15 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			int realCellWidth = (int) (cellWidth * zoomFactor);
 			int nbCol = (int) Math.floor((double) (getWidth() - cellSpacing) / (double) (realCellWidth + cellSpacing));
 			realFullWidth = realCellWidth + cellSpacing;
-			
+
 			int realCellHeight = (int) (cellHeight * zoomFactor);
 			realFullHeight = realCellHeight + cellSpacing;
 
 			int row = 0;
 			int col = 0;
-			
+
 			int spaceForName = 0;
-			
+
 			if (displayName) {
 				FontMetrics fm = getGraphics().getFontMetrics(font);
 				spaceForName = fm.getHeight() + fm.getMaxDescent();
@@ -279,7 +296,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 					row++;
 					col = 0;
 				}
-				Rectangle bounds = new Rectangle(cellSpacing + col * realFullWidth, cellSpacing + row * realFullHeight, realCellWidth, realCellHeight);
+				Rectangle bounds = new Rectangle(cellSpacing + (col * realFullWidth), cellSpacing + (row * realFullHeight), realCellWidth, realCellHeight);
 				cell.setBounds(bounds);
 				cell.setHeightForName(spaceForName);
 				col++;
@@ -291,13 +308,27 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 				row += 1;
 			}
 
-			pageLength = ((int) (getHeight() / realFullHeight)) * realFullHeight;
+			pageLength = (getHeight() / realFullHeight) * realFullHeight;
 
-			grid.setPreferredSize(new Dimension(getWidth(), cellSpacing + row * realFullHeight));
+			grid.setPreferredSize(new Dimension(getWidth(), cellSpacing + (row * realFullHeight)));
 
 			updateLbNbCells();
 		} else {
 			grid.setPreferredSize(null);
+		}
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		
+		if (wa.isRunning()) {
+			Graphics2D g2 = (Graphics2D) g;
+			int w = getWidth() / 4;
+			int h = getHeight() / 4;
+			int x = (getWidth() - w) / 2;
+			int y = (getHeight() - h) / 2;
+			wa.paintAnimation(g2, w, h, x, y);
 		}
 	}
 
@@ -330,6 +361,18 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		grid.repaint();
 	}
 
+	public void setWaitingAnimation(boolean waiting) {
+		if (waiting) {
+			if (!wa.isRunning()) {
+				wa.start();
+			}
+		} else {
+			if (wa.isRunning()) {
+				wa.stop();
+			}
+		}
+	}
+
 	public void setZoomValue(int n) {
 		slZoom.setValue(n);
 	}
@@ -352,7 +395,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 					cells.notifyDisplayParametersChanged();
 				}
 				grid.revalidate();
-//				updateViewport();
+				// updateViewport();
 				grid.repaint();
 			}
 		}

@@ -850,6 +850,10 @@ public class SomeImageTools {
 	}
 	
 	public static void resizeAndDraw(BufferedImage original, Graphics2D g2, int w, int h) {
+		resizeAndDraw(original, g2, w,h, 0, 0);
+	}
+	
+	public static void resizeAndDraw(BufferedImage original, Graphics2D g2, int w, int h, int x, int y) {
 		int ow = original.getWidth();
 		int oh = original.getHeight();
 
@@ -860,8 +864,8 @@ public class SomeImageTools {
 		int nw = (int) (fr * ow);
 		int nh = (int) (fr * oh);
 
-		int wo = (w - nw) / 2;
-		int ho = (h - nh) / 2;
+		int wo = x + (w - nw) / 2;
+		int ho = y + (h - nh) / 2;
 
 		AffineTransform t = new AffineTransform();
 		t.translate(wo, ho);

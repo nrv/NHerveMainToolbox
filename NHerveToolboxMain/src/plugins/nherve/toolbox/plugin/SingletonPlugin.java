@@ -30,6 +30,7 @@ import icy.preferences.PluginsPreferences;
 import icy.preferences.XMLPreferences;
 import icy.sequence.Sequence;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -38,8 +39,14 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import org.pushingpixels.substance.api.DecorationAreaType;
+import org.pushingpixels.substance.api.SubstanceColorScheme;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.SubstanceSkin;
+
 import plugins.nherve.toolbox.AbleToLogMessages;
 import plugins.nherve.toolbox.Algorithm;
+import plugins.nherve.toolbox.genericgrid.WaitingAnimation;
 
 /**
  * The Class SingletonPlugin.
@@ -476,6 +483,12 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 		} else {
 			myFrame = MyFrame.create(this, true, true, true, true);
 		}
+		
+		SubstanceSkin skin = SubstanceLookAndFeel.getCurrentSkin();
+		DecorationAreaType deco = SubstanceLookAndFeel.getDecorationType(getFrame().getInternalFrame());
+		SubstanceColorScheme cs = skin.getActiveColorScheme(deco);
+		Color darkColor = cs.getUltraDarkColor();
+		WaitingAnimation.initAnimationImages(darkColor);
 		
 		mainPanel= myFrame.getMainPanel();
 		addIcyFrame(myFrame);
