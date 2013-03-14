@@ -1,6 +1,6 @@
 /*
  * Copyright 2010, 2011 Institut Pasteur.
- * Copyright 2012 Nicolas Hervé.
+ * Copyright 2012, 2013 Nicolas Hervé.
  * 
  * This file is part of NHerve Main Toolbox, which is an ICY plugin.
  * 
@@ -39,7 +39,7 @@ import javax.swing.Icon;
 public class NherveToolbox extends Plugin implements PluginLibrary {
 	private static final String DEV_NAME = "Nicolas HERVE";
 	private static final String DEV_NAME_HTML = "Maintained by <a href=\"http://www.herve.name\">Nicolas HERVE</a>";
-	private static final String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur. Copyright 2012 Nicolas Hervé.";
+	private static final String COPYRIGHT_HTML = "Copyright 2010, 2011 Institut Pasteur. Copyright 2012, 2013 Nicolas Hervé.";
 	private static final String LICENCE_HTML = "	is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.";
 	private static final String LICENCE_HTMLLINK = "See <a href=\"http://www.gnu.org/licenses\">http://www.gnu.org/licenses</a>.";
 	
