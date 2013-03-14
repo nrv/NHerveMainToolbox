@@ -38,9 +38,7 @@ public class WaitingAnimation {
 
 	private int currentStep;
 	private Timer timer;
-
-	// private final GridCell cell;
-	// private final JComponent comp;
+	private JComponent comp;
 
 	public static void initAnimationImages(Color col) {
 		if (anim == null) {
@@ -92,6 +90,8 @@ public class WaitingAnimation {
 		super();
 
 		currentStep = 0;
+		
+		this.comp = cell;
 
 		timer = new Timer(ANIM_SLEEP, new ActionListener() {
 			@Override
@@ -111,6 +111,8 @@ public class WaitingAnimation {
 		super();
 
 		currentStep = 0;
+		
+		this.comp = comp;
 
 		timer = new Timer(ANIM_SLEEP, new ActionListener() {
 			@Override
@@ -142,6 +144,10 @@ public class WaitingAnimation {
 
 	public void stop() {
 		timer.stop();
+		
+		if (comp != null) {
+			comp.repaint();
+		}
 	}
 
 	public boolean isRunning() {
