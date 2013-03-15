@@ -35,12 +35,15 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.ScrollPaneConstants;
@@ -49,12 +52,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class GridPanel<T extends GridCell> extends JPanel implements ComponentListener, ChangeListener, ItemListener, AdjustmentListener {
-	private class InternalGrid extends JPanel implements Scrollable {
+public class GridPanel<T extends GridCell> extends JPanel implements ComponentListener, ChangeListener, ItemListener, AdjustmentListener, MouseWheelListener {
+	private class InternalGrid extends JPanel implements Scrollable, MouseWheelListener {
 		private static final long serialVersionUID = -4811144385819002930L;
 
 		public InternalGrid() {
 			super();
+			addMouseWheelListener(this);
 		}
 
 		@Override
@@ -89,6 +93,19 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 			if (cellsJustSet) {
 				updateLbNbCells();
 				cellsJustSet = false;
+			}
+		}
+
+		@Override
+		public void mouseWheelMoved(MouseWheelEvent e) {
+			if (e.isControlDown()) {
+				GridPanel.this.mouseWheelMoved(e);
+			} else {
+				JScrollBar bar = GridPanel.this.scroll.getVerticalScrollBar();
+				if (bar != null) {
+					bar.setValue(bar.getValue() + e.getWheelRotation() * realFullHeight / 2);
+					e.consume();
+				}
 			}
 		}
 
@@ -172,6 +189,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		this.displayName = displayName;
 
 		addComponentListener(this);
+		addMouseWheelListener(this);
 		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEtchedBorder());
 
@@ -272,6 +290,12 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 		}
 	}
 
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		slZoom.setValue(slZoom.getValue() + e.getWheelRotation() * 5);
+		e.consume();
+	}
+
 	private synchronized void organizeCells() {
 		if (cells != null) {
 			int realCellWidth = (int) (cellWidth * zoomFactor);
@@ -321,7 +345,7 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		
+
 		if (wa.isRunning()) {
 			Graphics2D g2 = (Graphics2D) g;
 			int w = getWidth() / 4;
