@@ -26,7 +26,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
-import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
+import plugins.nherve.toolbox.image.toolboxes.ImageTools;
 
 public class SomeStandardThumbnails {
 	static final int NICE_WIDTH = 1024;
@@ -40,7 +40,7 @@ public class SomeStandardThumbnails {
 		int w = c.getWidth();
 		int h = c.getHeight();
 		
-		SomeImageTools.resizeAndDraw(error, g2, w, h);
+		ImageTools.resizeAndDraw(error, g2, w, h);
 	}
 
 	private static void createErrorImage() {

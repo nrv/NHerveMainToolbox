@@ -29,7 +29,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.Timer;
 
-import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
+import plugins.nherve.toolbox.image.toolboxes.ImageTools;
 
 public class WaitingAnimation {
 	private static final int NB_ANIM_STEP = 12;
@@ -135,7 +135,7 @@ public class WaitingAnimation {
 	}
 
 	public void paintAnimation(final Graphics2D g2, final int w, final int h, final int x, final int y) {
-		SomeImageTools.resizeAndDraw(anim[currentStep], g2, w, h, x, y);
+		ImageTools.resizeAndDraw(anim[currentStep], g2, w, h, x, y);
 	}
 
 	public void start() {

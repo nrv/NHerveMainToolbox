@@ -39,7 +39,7 @@ import java.io.PrintStream;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
-import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
+import plugins.nherve.toolbox.image.toolboxes.ImageTools;
 import plugins.nherve.toolbox.plugin.PluginHelper;
 
 public abstract class GridCell extends JComponent implements MouseListener, MouseMotionListener {
@@ -93,7 +93,7 @@ public abstract class GridCell extends JComponent implements MouseListener, Mous
 			return;
 		}
 
-		thumbnailCache = SomeImageTools.resize(thumbnail, getWidth(), getHeight() - getHeightForName());
+		thumbnailCache = ImageTools.resize(thumbnail, getWidth(), getHeight() - getHeightForName());
 		needCacheRedraw = false;
 	}
 

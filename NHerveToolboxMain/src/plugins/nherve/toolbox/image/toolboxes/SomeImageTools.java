@@ -830,48 +830,19 @@ public class SomeImageTools {
 	}
 	
 	public static BufferedImage resize(BufferedImage original, int w, int h, boolean keepOrigianlType) {
-		BufferedImage resized = null;
-		
-		if (keepOrigianlType) {
-			resized = new BufferedImage(w, h, original.getType());
-		} else {
-			resized = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-		}
-
-		Graphics2D g2 = (Graphics2D) resized.getGraphics();
-		resizeAndDraw(original, g2, w, h);
-		g2.dispose();
-		
-		return resized;
+		return ImageTools.resize(original, w, h, keepOrigianlType);
 	}
 	
 	public static BufferedImage resize(BufferedImage original, int w, int h) {
-		return resize(original, w, h, false);
+		return ImageTools.resize(original, w, h);
 	}
 	
 	public static void resizeAndDraw(BufferedImage original, Graphics2D g2, int w, int h) {
-		resizeAndDraw(original, g2, w,h, 0, 0);
+		ImageTools.resizeAndDraw(original, g2, w, h);
 	}
 	
 	public static void resizeAndDraw(BufferedImage original, Graphics2D g2, int w, int h, int x, int y) {
-		int ow = original.getWidth();
-		int oh = original.getHeight();
-
-		double wr = (double) w / (double) ow;
-		double hr = (double) h / (double) oh;
-
-		double fr = Math.min(wr, hr);
-		int nw = (int) (fr * ow);
-		int nh = (int) (fr * oh);
-
-		int wo = x + (w - nw) / 2;
-		int ho = y + (h - nh) / 2;
-
-		AffineTransform t = new AffineTransform();
-		t.translate(wo, ho);
-		t.scale(fr, fr);
-		g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED ); 
-		g2.drawImage(original, t, null);
+		ImageTools.resizeAndDraw(original, g2, w, h, x, y);
 	}
 
 }

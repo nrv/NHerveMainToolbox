@@ -10,7 +10,6 @@ import java.util.Map;
 
 import plugins.nherve.toolbox.Pair;
 import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.GlobalAndLocalDescriptor;
 import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
@@ -19,6 +18,7 @@ import plugins.nherve.toolbox.image.feature.signature.SignatureException;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
+import plugins.nherve.toolbox.image.toolboxes.ImageTools;
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 
 
