@@ -292,8 +292,10 @@ public class GridPanel<T extends GridCell> extends JPanel implements ComponentLi
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		slZoom.setValue(slZoom.getValue() + e.getWheelRotation() * 5);
-		e.consume();
+		if (slZoom != null) {
+			slZoom.setValue(slZoom.getValue() + e.getWheelRotation() * 5);
+			e.consume();
+		}
 	}
 
 	private synchronized void organizeCells() {
