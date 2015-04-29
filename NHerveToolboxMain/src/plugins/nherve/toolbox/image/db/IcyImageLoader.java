@@ -1,5 +1,6 @@
 package plugins.nherve.toolbox.image.db;
 
+import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
 import icy.image.IcyBufferedImage;
 
@@ -7,8 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import loci.formats.FormatException;
 
 import plugins.nherve.toolbox.image.ImageLoader;
 import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
@@ -28,7 +27,7 @@ public class IcyImageLoader extends ImageLoader<SegmentableIcyBufferedImage> {
 		if (isUseLoci()) {
 			 try {
 				ibi = Loader.loadImage(f);
-			} catch (FormatException e) {
+			} catch (UnsupportedFormatException e) {
 				throw new IOException(e);
 			}
 		} else {
