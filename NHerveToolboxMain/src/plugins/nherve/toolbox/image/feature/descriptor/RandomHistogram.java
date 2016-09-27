@@ -25,7 +25,7 @@ import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -33,7 +33,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
+public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, DefaultVectorSignature> {
 	
 	private boolean needToLoadSegmentable;
 	
@@ -63,7 +63,7 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuff
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		return randomSignature();
 	}
 
@@ -71,7 +71,7 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuff
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		return randomSignature();
 	}
 
@@ -112,8 +112,8 @@ public class RandomHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuff
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public VectorSignature randomSignature() throws SignatureException {
-		VectorSignature s = getEmptySignature();
+	public DefaultVectorSignature randomSignature() throws SignatureException {
+		DefaultVectorSignature s = getEmptySignature();
 		for (int d = 0; d < getSignatureSize(); d++) {
 			s.set(d, rdm.nextDouble());
 		}

@@ -27,7 +27,7 @@ import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.descriptor.MultiThreadedSignatureExtractor;
 import plugins.nherve.toolbox.image.feature.descriptor.SegmentationLabelHistogram;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
 
 /**
@@ -77,20 +77,20 @@ public class SegmentationFusionAlgorithm extends Algorithm {
 			
 			MultiThreadedSignatureExtractor<Segmentation> mex = new MultiThreadedSignatureExtractor<Segmentation>(slh);
 			mex.setLogEnabled(isLogEnabled());
-			VectorSignature[][] sigs = new VectorSignature[segs.length][regions.length];
+			DefaultVectorSignature[][] sigs = new DefaultVectorSignature[segs.length][regions.length];
 			
 			for (int s = 0; s < segs.length; s++) {
 				Signature[] segSigs = mex.extractSignatures(segs[s], regions);
 				for (int r = 0; r < regions.length; r++) {
-					sigs[s][r] = (VectorSignature) segSigs[r];
+					sigs[s][r] = (DefaultVectorSignature) segSigs[r];
 				}
 			}
 			
-			VectorSignatureConcatenator concat = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, true);
+			VectorSignatureConcatenator concat = new VectorSignatureConcatenator(DefaultVectorSignature.DENSE_VECTOR_SIGNATURE, true);
 			for (int s = 0; s < segs.length; s++) {
 				concat.add(sigs[s]);
 			}
-			VectorSignature[] csigs = concat.concatenate();
+			DefaultVectorSignature[] csigs = concat.concatenate();
 			sigs = null;
 			
 			DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage> algo = new DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage>(getClusteringAlgorithm());

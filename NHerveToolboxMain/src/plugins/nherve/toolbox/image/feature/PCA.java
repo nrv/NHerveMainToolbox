@@ -25,7 +25,7 @@ import plugins.nherve.matrix.EigenvalueDecomposition;
 import plugins.nherve.matrix.Matrix;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class PCA.
@@ -43,7 +43,7 @@ public class PCA extends DimensionReductionAlgorithm {
 	 * @param signatures
 	 *            the signatures
 	 */
-	public PCA(List<VectorSignature> signatures) {
+	public PCA(List<DefaultVectorSignature> signatures) {
 		super(signatures);
 	}
 
@@ -81,10 +81,10 @@ public class PCA extends DimensionReductionAlgorithm {
 	 * @see plugins.nherve.toolbox.image.feature.DimensionReductionAlgorithm#project(java.util.List)
 	 */
 	@Override
-	public List<VectorSignature> project(List<VectorSignature> toProject) throws SignatureException {
+	public List<DefaultVectorSignature> project(List<DefaultVectorSignature> toProject) throws SignatureException {
 		Matrix tp = getCenteredMatrix(toProject);
 		Matrix p = tp.times(evd.getV());
-		ArrayList<VectorSignature> proj = new ArrayList<VectorSignature>();
+		ArrayList<DefaultVectorSignature> proj = new ArrayList<DefaultVectorSignature>();
 		for (int s = 0; s < toProject.size(); s++) {
 			DenseVectorSignature vs = new DenseVectorSignature(p.getColumnDimension());
 			for (int d = 0; d < p.getColumnDimension(); d++) {
@@ -106,7 +106,7 @@ public class PCA extends DimensionReductionAlgorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public List<VectorSignature> project(List<VectorSignature> toProject, int upToDim) throws SignatureException {
+	public List<DefaultVectorSignature> project(List<DefaultVectorSignature> toProject, int upToDim) throws SignatureException {
 		Matrix tp = getCenteredMatrix(toProject);
 		Matrix p = tp.times(evd.getV());
 		
@@ -114,7 +114,7 @@ public class PCA extends DimensionReductionAlgorithm {
 			throw new SignatureException("Can not project up to dimension " + upToDim + " / " + p.getColumnDimension());
 		}
 		
-		ArrayList<VectorSignature> proj = new ArrayList<VectorSignature>();
+		ArrayList<DefaultVectorSignature> proj = new ArrayList<DefaultVectorSignature>();
 		for (int s = 0; s < toProject.size(); s++) {
 			DenseVectorSignature vs = new DenseVectorSignature(upToDim);
 			for (int d = 0; d < upToDim; d++) {

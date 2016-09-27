@@ -35,7 +35,7 @@ import plugins.nherve.toolbox.image.feature.region.GridFactory;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.mask.Mask;
 import plugins.nherve.toolbox.image.mask.MaskException;
 import plugins.nherve.toolbox.image.mask.MaskStack;
@@ -52,7 +52,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#addToMaskStack(plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringAlgorithm, icy.image.IcyBufferedImage, plugins.nherve.toolbox.image.mask.MaskStack, plugins.nherve.toolbox.image.feature.SupportRegion[], plugins.nherve.toolbox.image.feature.signature.VectorSignature[])
 	 */
 	@Override
-	public void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException {
+	public void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, DefaultVectorSignature[] sigs) throws MaskException, ClusteringException {
 		int offset = seg.size();
 
 		for (int i = 0; i < sm.getNbClasses(); i++) {
@@ -125,7 +125,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#doClustering(icy.image.IcyBufferedImage, plugins.nherve.toolbox.image.mask.MaskStack, plugins.nherve.toolbox.image.feature.SupportRegion[], plugins.nherve.toolbox.image.feature.signature.VectorSignature[])
 	 */
 	@Override
-	public FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException {
+	public FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, DefaultVectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException {
 		FuzzyClusteringAlgorithm sm = createFuzzyClusteringAlgorithm(img);
 
 		addToMaskStack(sm, img, seg, regions, sigs);
@@ -141,7 +141,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 		try {
 			SegmentableIcyBufferedImage simg = new SegmentableIcyBufferedImage(img);
 			IcySupportRegion[] regions = getRegions(simg);
-			VectorSignature[] sigs = getSignatures(simg, regions);
+			DefaultVectorSignature[] sigs = getSignatures(simg, regions);
 
 			return doClustering(img, seg, regions, sigs);
 		} catch (Exception e) {

@@ -28,7 +28,7 @@ import plugins.nherve.toolbox.image.feature.descriptor.GlobalDescriptor;
 import plugins.nherve.toolbox.image.feature.region.GridFactory;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -53,13 +53,13 @@ public abstract class SignatureExtractor<T extends Segmentable> extends Algorith
 	 *            the l
 	 * @return the list
 	 */
-	public static List<VectorSignature> cast(List<Signature> l) {
+	public static List<DefaultVectorSignature> cast(List<Signature> l) {
 		if (l == null) {
 			return null;
 		}
-		List<VectorSignature> l2 = new ArrayList<VectorSignature>();
+		List<DefaultVectorSignature> l2 = new ArrayList<DefaultVectorSignature>();
 		for (Signature s : l) {
-			l2.add((VectorSignature)s);
+			l2.add((DefaultVectorSignature)s);
 		}
 		return l2;
 	}

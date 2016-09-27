@@ -23,7 +23,7 @@ import java.awt.Shape;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.mask.MaskException;
 import plugins.nherve.toolbox.image.segmentation.Segmentation;
 
@@ -34,7 +34,7 @@ import plugins.nherve.toolbox.image.segmentation.Segmentation;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segmentation, VectorSignature> {
+public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segmentation, DefaultVectorSignature> {
 	
 	/** The dim. */
 	private int dim;
@@ -54,7 +54,7 @@ public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segment
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(Segmentation img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(Segmentation img, Shape shp) throws SignatureException {
 		throw new RuntimeException("SegmentationLabelHistogram.extractSignature(Segmentation img, Shape shp) not implemented");
 	}
 	
@@ -62,7 +62,7 @@ public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segment
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(Segmentation seg, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(Segmentation seg, SupportRegion<IcyPixel> reg) throws SignatureException {
 		try {
 			int w = seg.getWidth();
 			int h = seg.getHeight();
@@ -72,7 +72,7 @@ public class SegmentationLabelHistogram extends GlobalAndLocalDescriptor<Segment
 				throw new SignatureException("SegmentationLabelHistogram : initialization problem, dim == 0");
 			}
 			
-			VectorSignature sig = getEmptySignature(dim);
+			DefaultVectorSignature sig = getEmptySignature(dim);
 			
 			for (IcyPixel p : reg) {
 				x = (int)p.x;

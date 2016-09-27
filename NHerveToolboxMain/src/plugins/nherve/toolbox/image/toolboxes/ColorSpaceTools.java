@@ -30,7 +30,7 @@ import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.PCA;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class ColorSpaceTools.
@@ -373,7 +373,7 @@ public class ColorSpaceTools {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public static VectorSignature getColorSignature(IcyBufferedImage icyb, int colorSpace, int x, int y) throws SignatureException {
+	public static DefaultVectorSignature getColorSignature(IcyBufferedImage icyb, int colorSpace, int x, int y) throws SignatureException {
 		double[] col = getColorComponentsD_0_255(icyb, colorSpace, x, y);
 		DenseVectorSignature dvs = new DenseVectorSignature(ColorSpaceTools.NB_COLOR_CHANNELS);
 		for (int c = 0; c < ColorSpaceTools.NB_COLOR_CHANNELS; c++) {
@@ -507,29 +507,29 @@ public class ColorSpaceTools {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public static SpecificColorSpace createColorSpace(List<VectorSignature> rgbSigs, boolean quantizeFirst, int sz) throws SignatureException {
-		List<VectorSignature> sigsForPCA = rgbSigs;
+	public static SpecificColorSpace createColorSpace(List<DefaultVectorSignature> rgbSigs, boolean quantizeFirst, int sz) throws SignatureException {
+		List<DefaultVectorSignature> sigsForPCA = rgbSigs;
 
 		if (quantizeFirst) {
 			DecimalFormat df = new DecimalFormat("000000");
 			double step = 255d / (double) sz;
-			HashMap<String, List<VectorSignature>> qtz = new HashMap<String, List<VectorSignature>>();
-			for (VectorSignature vs : rgbSigs) {
+			HashMap<String, List<DefaultVectorSignature>> qtz = new HashMap<String, List<DefaultVectorSignature>>();
+			for (DefaultVectorSignature vs : rgbSigs) {
 				String h = "";
 				for (int d = 0; d < ColorSpaceTools.NB_COLOR_CHANNELS; d++) {
 					int b = (int) Math.floor(vs.get(d) / step);
 					h += df.format(b);
 				}
 				if (!qtz.containsKey(h)) {
-					qtz.put(h, new ArrayList<VectorSignature>());
+					qtz.put(h, new ArrayList<DefaultVectorSignature>());
 				}
 				qtz.get(h).add(vs);
 			}
 			Algorithm.out("Quantizing before PCA - moving from " + rgbSigs.size() + " to " + qtz.size() + "(" + (int) Math.pow(sz, ColorSpaceTools.NB_COLOR_CHANNELS) + ") sigs");
-			sigsForPCA = new ArrayList<VectorSignature>();
-			for (List<VectorSignature> sigs : qtz.values()) {
-				VectorSignature moy = new DenseVectorSignature(ColorSpaceTools.NB_COLOR_CHANNELS);
-				for (VectorSignature vs : sigs) {
+			sigsForPCA = new ArrayList<DefaultVectorSignature>();
+			for (List<DefaultVectorSignature> sigs : qtz.values()) {
+				DefaultVectorSignature moy = new DenseVectorSignature(ColorSpaceTools.NB_COLOR_CHANNELS);
+				for (DefaultVectorSignature vs : sigs) {
 					moy.add(vs);
 				}
 				moy.multiply(1d / (double) sigs.size());
@@ -540,7 +540,7 @@ public class ColorSpaceTools {
 		PCA pca = new PCA(sigsForPCA);
 		pca.compute();
 
-		VectorSignature mean = pca.getMean();
+		DefaultVectorSignature mean = pca.getMean();
 		Matrix proj = pca.getProjectionMatrix();
 
 		return new SpecificColorSpace(mean.get(0), mean.get(1), mean.get(2), proj.get(0, 0), proj.get(0, 1), proj.get(0, 2), proj.get(1, 0), proj.get(1, 1), proj.get(1, 2), proj.get(2, 0), proj.get(2, 1), proj.get(2, 2));

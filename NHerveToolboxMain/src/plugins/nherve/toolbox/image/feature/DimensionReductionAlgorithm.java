@@ -24,7 +24,7 @@ import plugins.nherve.matrix.Matrix;
 import plugins.nherve.toolbox.Algorithm;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class DimensionReductionAlgorithm.
@@ -34,10 +34,10 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 public abstract class DimensionReductionAlgorithm extends Algorithm {
 	
 	/** The signatures. */
-	protected List<VectorSignature> signatures;
+	protected List<DefaultVectorSignature> signatures;
 	
 	/** The mean. */
-	protected VectorSignature mean;
+	protected DefaultVectorSignature mean;
 	
 	/** The dim. */
 	protected int dim;
@@ -48,7 +48,7 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 	 * @param signatures
 	 *            the signatures
 	 */
-	public DimensionReductionAlgorithm(List<VectorSignature> signatures) {
+	public DimensionReductionAlgorithm(List<DefaultVectorSignature> signatures) {
 		super();
 		this.signatures = signatures;
 		this.mean = null;
@@ -71,7 +71,7 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public abstract List<VectorSignature> project(List<VectorSignature> toProject) throws SignatureException;
+	public abstract List<DefaultVectorSignature> project(List<DefaultVectorSignature> toProject) throws SignatureException;
 
 	/**
 	 * Check.
@@ -90,7 +90,7 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 			throw new SignatureException("Not enough signatures (" + n + ") to run " + getClass().getSimpleName());
 		}
 
-		VectorSignature aSignature = signatures.get(0);
+		DefaultVectorSignature aSignature = signatures.get(0);
 		dim = aSignature.getSize();
 	}
 
@@ -101,10 +101,10 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public VectorSignature getMean() throws SignatureException {
+	public DefaultVectorSignature getMean() throws SignatureException {
 		if (mean == null) {
 			mean = new DenseVectorSignature(dim);
-			for (VectorSignature s : signatures) {
+			for (DefaultVectorSignature s : signatures) {
 				mean.add(s);
 			}
 			mean.multiply(1.0 / signatures.size());
@@ -148,21 +148,21 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public Matrix getCenteredMatrix(List<VectorSignature> sigs) throws SignatureException {
+	public Matrix getCenteredMatrix(List<DefaultVectorSignature> sigs) throws SignatureException {
 		int ln = sigs.size();
 
 		if (ln < 1) {
 			throw new SignatureException("Not enough signatures (" + ln + ") to getCenteredMatrix");
 		}
 
-		VectorSignature aSignature = signatures.get(0);
+		DefaultVectorSignature aSignature = signatures.get(0);
 		int ldim = aSignature.getSize();
 		
 		Matrix m = new Matrix(ln, ldim);
-		VectorSignature mean = getMean();
+		DefaultVectorSignature mean = getMean();
 
 		int c = 0;
-		for (VectorSignature s : sigs) {
+		for (DefaultVectorSignature s : sigs) {
 			for (int d = 0; d < ldim; d++) {
 				m.set(c, d, s.get(d) - mean.get(d));
 			}
@@ -181,20 +181,20 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public Matrix getMatrix(List<VectorSignature> sigs) throws SignatureException {
+	public Matrix getMatrix(List<DefaultVectorSignature> sigs) throws SignatureException {
 		int ln = sigs.size();
 
 		if (ln < 1) {
 			throw new SignatureException("Not enough signatures (" + ln + ") to getMatrix");
 		}
 
-		VectorSignature aSignature = signatures.get(0);
+		DefaultVectorSignature aSignature = signatures.get(0);
 		int ldim = aSignature.getSize();
 		
 		Matrix m = new Matrix(ln, ldim);
 
 		int c = 0;
-		for (VectorSignature s : sigs) {
+		for (DefaultVectorSignature s : sigs) {
 			for (int d = 0; d < ldim; d++) {
 				m.set(c, d, s.get(d));
 			}

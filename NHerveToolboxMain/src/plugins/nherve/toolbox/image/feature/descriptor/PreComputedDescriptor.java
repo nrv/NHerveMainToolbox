@@ -29,7 +29,7 @@ import java.util.StringTokenizer;
 import plugins.nherve.toolbox.image.db.ImageDatabase;
 import plugins.nherve.toolbox.image.db.ImageEntry;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -37,7 +37,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, VectorSignature> implements GlobalDescriptor<ImageEntry, VectorSignature> {
+public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, DefaultVectorSignature> implements GlobalDescriptor<ImageEntry, DefaultVectorSignature> {
 	
 	/** The file. */
 	private String file;
@@ -46,7 +46,7 @@ public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, Vec
 	private int sigSize;
 	
 	/** The sigs. */
-	private Map<String, VectorSignature> sigs;
+	private Map<String, DefaultVectorSignature> sigs;
 
 	/**
 	 * Instantiates a new pre computed descriptor.
@@ -92,7 +92,7 @@ public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, Vec
 			int nbImages = Integer.parseInt(tkz.nextToken());
 			sigSize = Integer.parseInt(tkz.nextToken());
 			
-			sigs = new HashMap<String, VectorSignature>();
+			sigs = new HashMap<String, DefaultVectorSignature>();
 			
 			for (int i = 0; i < nbImages; i++) {
 				String line = raf.readLine();
@@ -103,7 +103,7 @@ public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, Vec
 				} else {
 					throw new SignatureException(this.toString() + " - directory mismatch : " + imageFile + " / " + db.getRootImageDirectory());
 				}
-				VectorSignature sig = getEmptySignature();
+				DefaultVectorSignature sig = getEmptySignature();
 				for (int d = 0; d < sigSize; d++) {
 					sig.set(d, Double.parseDouble(tkz.nextToken()));
 				}
@@ -130,7 +130,7 @@ public class PreComputedDescriptor extends DefaultDescriptorImpl<ImageEntry, Vec
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.GlobalDescriptor#extractGlobalSignature(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public VectorSignature extractGlobalSignature(ImageEntry img) throws SignatureException {
+	public DefaultVectorSignature extractGlobalSignature(ImageEntry img) throws SignatureException {
 		return sigs.get(img.getFile());
 	}
 

@@ -30,7 +30,7 @@ import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 
 
@@ -162,10 +162,10 @@ public class ColorPixel extends ColorDescriptor<Signature> {
 		
 		if (isRotationInvariance() && (kernel.size() > 1)) {
 			int d2 = 0;
-			BagOfSignatures<VectorSignature> rotSigs = new BagOfSignatures<VectorSignature>();
+			BagOfSignatures<DefaultVectorSignature> rotSigs = new BagOfSignatures<DefaultVectorSignature>();
 			rotSigs.add(sig);
 			for (int shift = 2; shift < kernel.size(); shift++) {
-				VectorSignature sig2 = getEmptySignature();
+				DefaultVectorSignature sig2 = getEmptySignature();
 				d2 = 0;
 				d = 0;
 				for (int c = 0; c < getNbColorChannels(); c++) {

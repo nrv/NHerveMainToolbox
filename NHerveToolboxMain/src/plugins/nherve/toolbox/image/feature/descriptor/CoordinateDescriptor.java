@@ -24,7 +24,7 @@ import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -34,7 +34,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescriptorImpl<T, VectorSignature> implements LocalDescriptor<T, VectorSignature, IcyPixel>{
+public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescriptorImpl<T, DefaultVectorSignature> implements LocalDescriptor<T, DefaultVectorSignature, IcyPixel>{
 	
 	/**
 	 * Instantiates a new coordinate descriptor.
@@ -53,8 +53,8 @@ public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescript
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
-		VectorSignature sig = getEmptySignature(SIZE);
+	public DefaultVectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
+		DefaultVectorSignature sig = getEmptySignature(SIZE);
 		IcyPixel px = reg.getCenter();
 		sig.set(0, ((double)px.x / (double)img.getWidth()) - 0.5);
 		sig.set(1, ((double)px.y / (double)img.getHeight()) - 0.5);
@@ -65,7 +65,7 @@ public class CoordinateDescriptor<T extends Segmentable> extends DefaultDescript
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(T img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(T img, Shape shp) throws SignatureException {
 		throw new RuntimeException("CoordinateDescriptor.extractSignature(T img, Shape shp) not implemented");
 	}
 

@@ -27,7 +27,7 @@ import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.clustering.ClusteringException;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.mask.MaskException;
 import plugins.nherve.toolbox.image.mask.MaskStack;
 
@@ -56,7 +56,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws ClusteringException
 	 *             the clustering exception
 	 */
-	void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws MaskException, ClusteringException;
+	void addToMaskStack(FuzzyClusteringAlgorithm sm, IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, DefaultVectorSignature[] sigs) throws MaskException, ClusteringException;
 	
 	/**
 	 * Gets the regions.
@@ -80,7 +80,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	VectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException;
+	DefaultVectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException;
 	
 	/**
 	 * Gets the as image.
@@ -140,7 +140,7 @@ public interface FuzzyClusteringProcessor {
 	 * @throws ClusteringException
 	 *             the clustering exception
 	 */
-	FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, VectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException;
+	FuzzyClusteringAlgorithm doClustering(IcyBufferedImage img, MaskStack seg, IcySupportRegion[] regions, DefaultVectorSignature[] sigs) throws SupportRegionException, SignatureException, MaskException, ClusteringException;
 	
 	/**
 	 * Do clustering.

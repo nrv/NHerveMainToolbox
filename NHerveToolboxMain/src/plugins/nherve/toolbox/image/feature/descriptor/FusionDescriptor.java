@@ -26,7 +26,7 @@ import plugins.nherve.toolbox.image.feature.Segmentable;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
 
 
@@ -37,10 +37,10 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenato
  *            the generic type
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescriptor<T, VectorSignature> {
+public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescriptor<T, DefaultVectorSignature> {
 	
 	/** The descriptors. */
-	private List<DefaultDescriptorImpl<T, VectorSignature>> descriptors;
+	private List<DefaultDescriptorImpl<T, DefaultVectorSignature>> descriptors;
 	
 	/** The coef. */
 	private List<Double> coef;
@@ -62,7 +62,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	public FusionDescriptor(boolean normalization, boolean display) {
 		super(display);
 		totalSignatureDim = 0;
-		descriptors = new ArrayList<DefaultDescriptorImpl<T, VectorSignature>>();
+		descriptors = new ArrayList<DefaultDescriptorImpl<T, DefaultVectorSignature>>();
 		coef = new ArrayList<Double>();
 		setNormalization(normalization);
 	}
@@ -73,7 +73,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 * @param e
 	 *            the e
 	 */
-	public void add(DefaultDescriptorImpl<T, VectorSignature> e) {
+	public void add(DefaultDescriptorImpl<T, DefaultVectorSignature> e) {
 		add(e, 1);
 	}
 	
@@ -85,7 +85,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 * @param c
 	 *            the c
 	 */
-	public void add(DefaultDescriptorImpl<T, VectorSignature> e, double c) {
+	public void add(DefaultDescriptorImpl<T, DefaultVectorSignature> e, double c) {
 		descriptors.add(e);
 		totalSignatureDim += e.getSignatureSize();
 		coef.add(c);
@@ -96,15 +96,15 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public VectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
-		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
+	public DefaultVectorSignature extractLocalSignature(T img, SupportRegion<IcyPixel> reg) throws SignatureException {
+		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(DefaultVectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
 		int dsc = 0;
 		double cf = 1;
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
-			LocalDescriptor<T, VectorSignature, IcyPixel> ld = (LocalDescriptor<T, VectorSignature, IcyPixel>) d;
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
+			LocalDescriptor<T, DefaultVectorSignature, IcyPixel> ld = (LocalDescriptor<T, DefaultVectorSignature, IcyPixel>) d;
 			cf = coef.get(dsc);
-			VectorSignature vs = (VectorSignature)(ld.extractLocalSignature(img, reg));
-			concatenator.add(new VectorSignature[]{vs}, cf);
+			DefaultVectorSignature vs = (DefaultVectorSignature)(ld.extractLocalSignature(img, reg));
+			concatenator.add(new DefaultVectorSignature[]{vs}, cf);
 			dsc++;
 		}
 		return concatenator.concatenate()[0];
@@ -115,15 +115,15 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public VectorSignature extractLocalSignature(T img, Shape shp) throws SignatureException {
-		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
+	public DefaultVectorSignature extractLocalSignature(T img, Shape shp) throws SignatureException {
+		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(DefaultVectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
 		int dsc = 0;
 		double cf = 1;
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
-			LocalDescriptor<T, VectorSignature, IcyPixel> ld = (LocalDescriptor<T, VectorSignature, IcyPixel>) d;
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
+			LocalDescriptor<T, DefaultVectorSignature, IcyPixel> ld = (LocalDescriptor<T, DefaultVectorSignature, IcyPixel>) d;
 			cf = coef.get(dsc);
-			VectorSignature vs = (VectorSignature)(ld.extractLocalSignature(img, shp));
-			concatenator.add(new VectorSignature[]{vs}, cf);
+			DefaultVectorSignature vs = (DefaultVectorSignature)(ld.extractLocalSignature(img, shp));
+			concatenator.add(new DefaultVectorSignature[]{vs}, cf);
 			dsc++;
 		}
 		return concatenator.concatenate()[0];
@@ -134,15 +134,15 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public VectorSignature extractGlobalSignature(T img) throws SignatureException {
-		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
+	public DefaultVectorSignature extractGlobalSignature(T img) throws SignatureException {
+		VectorSignatureConcatenator concatenator = new VectorSignatureConcatenator(DefaultVectorSignature.DENSE_VECTOR_SIGNATURE, isNormalization());
 		int dsc = 0;
 		double cf = 1;
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
-			GlobalDescriptor<T, VectorSignature> gd = (GlobalDescriptor<T, VectorSignature>) d;
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
+			GlobalDescriptor<T, DefaultVectorSignature> gd = (GlobalDescriptor<T, DefaultVectorSignature>) d;
 			cf = coef.get(dsc);
-			VectorSignature vs = (VectorSignature)(gd.extractGlobalSignature(img));
-			concatenator.add(new VectorSignature[]{vs}, cf);
+			DefaultVectorSignature vs = (DefaultVectorSignature)(gd.extractGlobalSignature(img));
+			concatenator.add(new DefaultVectorSignature[]{vs}, cf);
 			dsc++;
 		}
 		return concatenator.concatenate()[0];
@@ -155,7 +155,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 *            the index
 	 * @return the default descriptor impl
 	 */
-	public DefaultDescriptorImpl<T, VectorSignature> get(int index) {
+	public DefaultDescriptorImpl<T, DefaultVectorSignature> get(int index) {
 		return descriptors.get(index);
 	}
 
@@ -172,7 +172,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@Override
 	public void postProcess(T img) throws SignatureException {
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
 			d.postProcess(img);
 		}
 	}
@@ -182,7 +182,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@Override
 	public void preProcess(T img) throws SignatureException {
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
 			d.preProcess(img);
 		}
 	}
@@ -213,7 +213,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	public String toString() {
 		String res = "FusionDescriptor(";
 		boolean first = true;
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
 			if (!first) {
 				res += " | ";
 			}
@@ -229,7 +229,7 @@ public class FusionDescriptor<T extends Segmentable> extends GlobalAndLocalDescr
 	 */
 	@Override
 	public boolean needToLoadSegmentable() {
-		for (DefaultDescriptorImpl<T, VectorSignature> d : descriptors) {
+		for (DefaultDescriptorImpl<T, DefaultVectorSignature> d : descriptors) {
 			if (d.needToLoadSegmentable()) {
 				return true;
 			}

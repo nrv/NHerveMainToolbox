@@ -30,7 +30,7 @@ import plugins.nherve.toolbox.image.feature.com.KernelFactory;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.BagOfSignatures;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 
 
@@ -116,7 +116,7 @@ public class ColorPixelPair extends ColorDescriptor<Signature> {
 	public Signature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage bimg = img.getImage();
 
-		BagOfSignatures<VectorSignature> sigs = new BagOfSignatures<VectorSignature>();
+		BagOfSignatures<DefaultVectorSignature> sigs = new BagOfSignatures<DefaultVectorSignature>();
 
 		IcyPixel px = reg.getCenter();
 		int w = bimg.getWidth();
@@ -127,7 +127,7 @@ public class ColorPixelPair extends ColorDescriptor<Signature> {
 		for (IcyPixel shift : kernel) {
 			int d = 0;
 			double[] col = getColorComponentsManageBorders(bimg, px.plus(shift), w, h);
-			VectorSignature sig = getEmptySignature();
+			DefaultVectorSignature sig = getEmptySignature();
 			for (int c = 0; c < getNbColorChannels(); c++) {
 				sig.set(d++, center[c]);
 			}

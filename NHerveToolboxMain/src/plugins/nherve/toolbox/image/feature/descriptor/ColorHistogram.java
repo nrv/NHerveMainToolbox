@@ -27,7 +27,7 @@ import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -35,7 +35,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class ColorHistogram extends ColorDescriptor<VectorSignature> {
+public class ColorHistogram extends ColorDescriptor<DefaultVectorSignature> {
 	
 	/** The dim. */
 	private final int dim;
@@ -95,14 +95,14 @@ public class ColorHistogram extends ColorDescriptor<VectorSignature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		IcyBufferedImage bimg = img.getImage();
 		
 		int w = img.getWidth();
 		int h = img.getHeight();
 		int x, y, d;
 		
-		VectorSignature sig = getEmptySignature(dim);
+		DefaultVectorSignature sig = getEmptySignature(dim);
 
 		final Rectangle2D bb = shp.getBounds2D();
 
@@ -131,14 +131,14 @@ public class ColorHistogram extends ColorDescriptor<VectorSignature> {
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage bimg = img.getImage();
 		
 		int w = img.getWidth();
 		int h = img.getHeight();
 		int x, y, d;
 		
-		VectorSignature sig = getEmptySignature(dim);
+		DefaultVectorSignature sig = getEmptySignature(dim);
 
 		for (IcyPixel p : reg) {
 			x = (int)p.x;

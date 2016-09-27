@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -93,7 +93,7 @@ public class SpecificColorSpace {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public VectorSignature getColorSignature(VectorSignature rvbSig) throws SignatureException {
+	public DefaultVectorSignature getColorSignature(DefaultVectorSignature rvbSig) throws SignatureException {
 		DenseVectorSignature dvs = new DenseVectorSignature(ColorSpaceTools.NB_COLOR_CHANNELS);
 		double[] col = getColorComponents(rvbSig.get(0), rvbSig.get(1), rvbSig.get(2));
 		for (int c = 0; c < ColorSpaceTools.NB_COLOR_CHANNELS; c++) {
@@ -115,7 +115,7 @@ public class SpecificColorSpace {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public VectorSignature getColorSignature(IcyBufferedImage img, int x, int y) throws SignatureException {
+	public DefaultVectorSignature getColorSignature(IcyBufferedImage img, int x, int y) throws SignatureException {
 		double[] col = ColorSpaceTools.getColorComponentsD_0_255(img, ColorSpaceTools.RGB, x, y);
 		
 		col = getColorComponents(col[0], col[1], col[2]);

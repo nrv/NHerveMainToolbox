@@ -35,7 +35,7 @@ import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.RectangleSupportRegion;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 import edu.emory.mathcs.jtransforms.fft.DoubleFFT_2D;
 
@@ -44,7 +44,7 @@ import edu.emory.mathcs.jtransforms.fft.DoubleFFT_2D;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
+public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, DefaultVectorSignature> {
 	
 	/** The Constant df. */
 	private final static DecimalFormat df = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
@@ -155,7 +155,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuf
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new SignatureException("Not implemented yet");
 	}
 	
@@ -163,7 +163,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuf
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		IcyBufferedImage gray = null;
 
 		synchronized (cacheGray) {
@@ -178,7 +178,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuf
 		int grayH = gray.getHeight();
 
 		double[] gd = gray.getDataXYAsDouble(0);
-		VectorSignature sig = getEmptySignature();
+		DefaultVectorSignature sig = getEmptySignature();
 
 		int nws = 0;
 		int hws = 0;

@@ -25,7 +25,7 @@ import java.util.List;
 import plugins.nherve.matrix.Matrix;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class LDA.
@@ -57,7 +57,7 @@ public class LDA extends DimensionReductionAlgorithm {
 	 * @param classes
 	 *            the classes
 	 */
-	public LDA(List<VectorSignature> signatures, List<Integer> classes) {
+	public LDA(List<DefaultVectorSignature> signatures, List<Integer> classes) {
 		super(signatures);
 		this.classes = classes;
 		this.invPooled = null;
@@ -170,9 +170,9 @@ public class LDA extends DimensionReductionAlgorithm {
 	 * @throws SignatureException
 	 *             the signature exception
 	 */
-	public VectorSignature project(VectorSignature toProject) throws SignatureException {
+	public DefaultVectorSignature project(DefaultVectorSignature toProject) throws SignatureException {
 		DenseVectorSignature vs = new DenseVectorSignature(Math.max(nbGroups, 3));
-		ArrayList<VectorSignature> a = new ArrayList<VectorSignature>();
+		ArrayList<DefaultVectorSignature> a = new ArrayList<DefaultVectorSignature>();
 		a.add(toProject);
 		Matrix x = getMatrix(a);
 		
@@ -190,9 +190,9 @@ public class LDA extends DimensionReductionAlgorithm {
 	 * @see plugins.nherve.toolbox.image.feature.DimensionReductionAlgorithm#project(java.util.List)
 	 */
 	@Override
-	public List<VectorSignature> project(List<VectorSignature> toProject) throws SignatureException {
-		ArrayList<VectorSignature> proj = new ArrayList<VectorSignature>();
-		for (VectorSignature vs : toProject) {
+	public List<DefaultVectorSignature> project(List<DefaultVectorSignature> toProject) throws SignatureException {
+		ArrayList<DefaultVectorSignature> proj = new ArrayList<DefaultVectorSignature>();
+		for (DefaultVectorSignature vs : toProject) {
 			proj.add(project(vs));
 		}
 		return proj;

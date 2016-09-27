@@ -24,7 +24,7 @@ import java.util.Map;
 
 import plugins.nherve.toolbox.image.feature.Distance;
 import plugins.nherve.toolbox.image.feature.FeatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -142,9 +142,9 @@ public class VocabularyOfObjects<T, D> extends Vocabulary<T> {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public static VocabularyOfObjects<Integer, VectorSignature> build(List<VectorSignature> dobjs, Distance<VectorSignature> dst, double theoreticalMaxDistance) throws FeatureException {
+	public static VocabularyOfObjects<Integer, DefaultVectorSignature> build(List<DefaultVectorSignature> dobjs, Distance<DefaultVectorSignature> dst, double theoreticalMaxDistance) throws FeatureException {
 		try {
-			VocabularyOfObjects<Integer, VectorSignature> voc = new VocabularyOfObjects<Integer, VectorSignature>();
+			VocabularyOfObjects<Integer, DefaultVectorSignature> voc = new VocabularyOfObjects<Integer, DefaultVectorSignature>();
 			for (int i = 0; i < dobjs.size(); i++) {
 				voc.add(i, dobjs.get(i).clone());
 			}

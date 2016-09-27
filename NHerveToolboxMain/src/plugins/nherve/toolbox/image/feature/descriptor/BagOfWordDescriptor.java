@@ -23,17 +23,17 @@ import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.SegmentableImage;
 import plugins.nherve.toolbox.image.feature.com.VocabularyOfObjects;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class BagOfWordDescriptor.
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDescriptorImpl<ImageEntry<T>, VectorSignature> implements GlobalDescriptor<ImageEntry<T>, VectorSignature> {
+public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDescriptorImpl<ImageEntry<T>, DefaultVectorSignature> implements GlobalDescriptor<ImageEntry<T>, DefaultVectorSignature> {
 	
 	/** The vocabulary. */
-	private VocabularyOfObjects<Integer, VectorSignature> vocabulary;
+	private VocabularyOfObjects<Integer, DefaultVectorSignature> vocabulary;
 	
 	/** The descriptor. */
 	private String descriptor;
@@ -68,11 +68,11 @@ public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDesc
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.GlobalDescriptor#extractGlobalSignature(plugins.nherve.toolbox.image.feature.Segmentable)
 	 */
 	@Override
-	public VectorSignature extractGlobalSignature(ImageEntry<T> img) throws SignatureException {
+	public DefaultVectorSignature extractGlobalSignature(ImageEntry<T> img) throws SignatureException {
 		try {
-			VectorSignature bow = getEmptySignature();
+			DefaultVectorSignature bow = getEmptySignature();
 
-			for (VectorSignature w : img.getLocalSignatures().get(descriptor)) {
+			for (DefaultVectorSignature w : img.getLocalSignatures().get(descriptor)) {
 				double cd = Double.MAX_VALUE;
 				int cw = 0;
 				for (int i = 0; i < vocabulary.size(); i++) {
@@ -110,7 +110,7 @@ public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDesc
 	 * 
 	 * @return the vocabulary
 	 */
-	public VocabularyOfObjects<Integer, VectorSignature> getVocabulary() {
+	public VocabularyOfObjects<Integer, DefaultVectorSignature> getVocabulary() {
 		return vocabulary;
 	}
 
@@ -120,7 +120,7 @@ public class BagOfWordDescriptor<T extends SegmentableImage> extends DefaultDesc
 	 * @param vocabulary
 	 *            the vocabulary
 	 */
-	public void setVocabulary(VocabularyOfObjects<Integer, VectorSignature> vocabulary) {
+	public void setVocabulary(VocabularyOfObjects<Integer, DefaultVectorSignature> vocabulary) {
 		this.vocabulary = vocabulary;
 	}
 

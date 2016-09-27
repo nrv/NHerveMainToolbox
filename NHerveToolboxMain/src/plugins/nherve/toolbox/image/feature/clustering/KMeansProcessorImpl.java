@@ -34,7 +34,7 @@ import plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessorDefaul
 import plugins.nherve.toolbox.image.feature.fuzzy.PseudoFuzzyKMeans;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 
 
@@ -80,14 +80,14 @@ public class KMeansProcessorImpl extends FuzzyClusteringProcessorDefaultImpl imp
 			PseudoFuzzyKMeans pfkm = new PseudoFuzzyKMeans(nbClasses, nbMaxIterations, stabilizationCriterion);
 			pfkm.setLogEnabled(true);
 			
-			List<VectorSignature> allSigs = new ArrayList<VectorSignature>();
+			List<DefaultVectorSignature> allSigs = new ArrayList<DefaultVectorSignature>();
 			int i = 0;
 			for (IcyBufferedImage img : imgs) {
 				i++;
 				//System.out.println(" ..*.. image " + i + " / " + imgs.size() + " - " + img.getWidth() + "x" + img.getHeight());
 				SegmentableIcyBufferedImage simg = new SegmentableIcyBufferedImage(img);
 				IcySupportRegion[] regions = getRegions(simg);
-				VectorSignature[] sigs = getSignatures(simg, regions);
+				DefaultVectorSignature[] sigs = getSignatures(simg, regions);
 				allSigs.addAll(Arrays.asList(sigs));
 			}
 			
@@ -107,14 +107,14 @@ public class KMeansProcessorImpl extends FuzzyClusteringProcessorDefaultImpl imp
 	 * @see plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor#getSignatures(plugins.nherve.toolbox.image.feature.SegmentableBufferedImage, plugins.nherve.toolbox.image.feature.SupportRegion[])
 	 */
 	@Override
-	public VectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException {
+	public DefaultVectorSignature[] getSignatures(SegmentableIcyBufferedImage simg, IcySupportRegion[] regions) throws SignatureException {
 		ColorPixel col2 = new ColorPixel(ColorSpaceTools.RGB_TO_I1H2H3, isLogEnabled());
 		MultiThreadedSignatureExtractor<SegmentableIcyBufferedImage> mex2 = new MultiThreadedSignatureExtractor<SegmentableIcyBufferedImage>(col2);
 		mex2.setLogEnabled(isLogEnabled());
 		Signature[] sigs = mex2.extractSignatures(simg, regions);
-		VectorSignature[] vsigs = new VectorSignature[sigs.length];
+		DefaultVectorSignature[] vsigs = new DefaultVectorSignature[sigs.length];
 		for (int i = 0; i < sigs.length; i++) {
-			VectorSignature vs = (VectorSignature) sigs[i];
+			DefaultVectorSignature vs = (DefaultVectorSignature) sigs[i];
 			vsigs[i] = vs;
 		}
 

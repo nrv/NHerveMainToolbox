@@ -30,7 +30,7 @@ import plugins.nherve.toolbox.image.feature.IcySupportRegion;
 import plugins.nherve.toolbox.image.feature.SupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 
 /**
@@ -38,7 +38,7 @@ import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
+public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, DefaultVectorSignature> {
 	
 	/** The Constant DEFAULT_DIMENSION. */
 	public final static int DEFAULT_DIMENSION = 7;
@@ -132,7 +132,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, java.awt.Shape)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shp) throws SignatureException {
 		throw new RuntimeException("EdgeOrientationHistogram.extractSignature(SegmentableBufferedImage img, Shape shp) not implemented");
 	}
 
@@ -140,7 +140,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 	 * @see plugins.nherve.toolbox.image.feature.descriptor.LocalDescriptor#extractLocalSignature(plugins.nherve.toolbox.image.feature.Segmentable, plugins.nherve.toolbox.image.feature.SupportRegion)
 	 */
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		boolean[] currentImageContour = null;
 		double[] currentImageGradientAmplitude = null;
 		double[] currentImageGradientOrientation = null;
@@ -157,7 +157,7 @@ public class EdgeOrientationHistogram extends GlobalAndLocalDescriptor<Segmentab
 
 		init();
 
-		VectorSignature sig = getEmptySignature();
+		DefaultVectorSignature sig = getEmptySignature();
 		double angle = 0;
 		int idx = 0;
 		int adx = 0;

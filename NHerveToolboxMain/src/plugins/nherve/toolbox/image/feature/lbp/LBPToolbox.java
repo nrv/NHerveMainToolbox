@@ -23,7 +23,7 @@ import plugins.nherve.toolbox.image.feature.fuzzy.FuzzyClusteringProcessor;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.mask.Mask;
 import plugins.nherve.toolbox.image.mask.MaskException;
 import plugins.nherve.toolbox.image.mask.MaskStack;
@@ -555,7 +555,7 @@ public class LBPToolbox extends Algorithm {
 	public MaskStack getSegmented(SegmentableIcyBufferedImage simg) throws SignatureException {
 		try {
 			IcySupportRegion[] regions = proc.getRegions(simg);
-			VectorSignature[] sigs = proc.getSignatures(simg, regions);
+			DefaultVectorSignature[] sigs = proc.getSignatures(simg, regions);
 			MaskStack seg = new MaskStack(simg.getWidth(), simg.getHeight());
 			proc.addToMaskStack(fca, simg.getImage(), seg, regions, sigs);
 			return seg;
@@ -576,7 +576,7 @@ public class LBPToolbox extends Algorithm {
 			IcyBufferedImage[] res = new IcyBufferedImage[fca.getNbClasses()];
 
 			IcySupportRegion[] regions = proc.getRegions(simg);
-			VectorSignature[] sigs = proc.getSignatures(simg, regions);
+			DefaultVectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			for (int i = 0; i < fca.getNbClasses(); i++) {
 				double[] mb = fca.getMemberships(sigs, i);
@@ -599,7 +599,7 @@ public class LBPToolbox extends Algorithm {
 			IcyBufferedImage[] res = new IcyBufferedImage[fca.getNbClasses()];
 
 			IcySupportRegion[] regions = proc.getRegions(simg);
-			VectorSignature[] sigs = proc.getSignatures(simg, regions);
+			DefaultVectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			for (int c : workOnCanals) {
 				double[] mb = fca.getMemberships(sigs, c, workOnCanals);
@@ -619,7 +619,7 @@ public class LBPToolbox extends Algorithm {
 	public IcyBufferedImage getMembershipImage(SegmentableIcyBufferedImage simg, int canal) throws SignatureException {
 		try {
 			IcySupportRegion[] regions = proc.getRegions(simg);
-			VectorSignature[] sigs = proc.getSignatures(simg, regions);
+			DefaultVectorSignature[] sigs = proc.getSignatures(simg, regions);
 
 			double[] mb = fca.getMemberships(sigs, canal);
 			return proc.getAsImage(mb, regions, simg.getWidth(), simg.getHeight());

@@ -29,7 +29,7 @@ import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
 import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.mask.Mask;
 import plugins.nherve.toolbox.image.mask.MaskStack;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
@@ -193,7 +193,7 @@ public class CooccurenceMatrixFactory extends Algorithm {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public CooccurenceMatrix<Integer> buildFromIndexedImage(IcyBufferedImage idxImg, SegmentableIcyBufferedImage oriImg, VocabularyOfObjects<Integer, VectorSignature> vocabulary) throws FeatureException {
+	public CooccurenceMatrix<Integer> buildFromIndexedImage(IcyBufferedImage idxImg, SegmentableIcyBufferedImage oriImg, VocabularyOfObjects<Integer, DefaultVectorSignature> vocabulary) throws FeatureException {
 		if (idxImg.getDataType() != TypeUtil.TYPE_INT) {
 			throw new FeatureException("Only TYPE_INT IcyBufferedImage supported in CooccurenceMatrix.buildFromIndexedImage()");
 		}
@@ -213,12 +213,12 @@ public class CooccurenceMatrixFactory extends Algorithm {
 			for (int y = 0; y < h; y++) {
 				IcyPixel ct = new IcyPixel(x, y);
 				int center = vocabulary.getIndex(getIndexManageBorders(idxData, ct, w, h));
-				VectorSignature vs = (VectorSignature) colpix.extractLocalSignature(oriImg, ct);
+				DefaultVectorSignature vs = (DefaultVectorSignature) colpix.extractLocalSignature(oriImg, ct);
 				vs.multiply(256);
 				double sct = vocabulary.similarity(center, vs);
 				for (IcyPixel shift : kernel) {
 					IcyPixel nb = ct.plus(shift);
-					VectorSignature vs2 = (VectorSignature) colpix.extractLocalSignature(oriImg, nb);
+					DefaultVectorSignature vs2 = (DefaultVectorSignature) colpix.extractLocalSignature(oriImg, nb);
 					vs2.multiply(256);
 					int neihbour = vocabulary.getIndex(getIndexManageBorders(idxData, nb, w, h));
 					double snb = vocabulary.similarity(neihbour, vs2);

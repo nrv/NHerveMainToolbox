@@ -93,8 +93,8 @@ public abstract class DefaultThumbnailProvider<T extends GridCell> extends Algor
 		thumbWorkers = Collections.synchronizedMap(new HashMap<T, ThumbnailWorker>());
 		cacheWorkers = Collections.synchronizedMap(new HashMap<T, CacheWorker>());
 
-		thumbTM = new TaskManager(nbt);
-		cacheTM = new TaskManager(nbt);
+		thumbTM = new TaskManager("thumb", nbt);
+		cacheTM = new TaskManager("thumb", nbt);
 	}
 
 	/* (non-Javadoc)

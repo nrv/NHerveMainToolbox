@@ -15,14 +15,14 @@ import plugins.nherve.toolbox.image.feature.descriptor.GlobalAndLocalDescriptor;
 import plugins.nherve.toolbox.image.feature.region.FullImageSupportRegion;
 import plugins.nherve.toolbox.image.feature.region.IcyPixel;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.VectorSignatureConcatenator;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.nherve.toolbox.image.toolboxes.ImageTools;
 import plugins.nherve.toolbox.image.toolboxes.SomeImageTools;
 
 
-public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, VectorSignature> {
+public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyBufferedImage, DefaultVectorSignature> {
 	public final static int BINARY_ENCODING = 1;
 	public final static int TERNARY_ENCODING = 2;
 
@@ -99,8 +99,8 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 		
 	}
 
-	public VectorSignature extractLocalSignature(IcyBufferedImage precomputedLBP, SupportRegion<IcyPixel> reg) throws SignatureException {
-		VectorSignature sig = getEmptySignature(tbx.getTernarySingleSignatureSize());
+	public DefaultVectorSignature extractLocalSignature(IcyBufferedImage precomputedLBP, SupportRegion<IcyPixel> reg) throws SignatureException {
+		DefaultVectorSignature sig = getEmptySignature(tbx.getTernarySingleSignatureSize());
 		int[] loc = precomputedLBP.getDataXYAsInt(0);
 
 		if (reg instanceof FullImageSupportRegion) {
@@ -136,7 +136,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 	}
 
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, SupportRegion<IcyPixel> reg) throws SignatureException {
 		if (fuzzy) {
 			int off = 0;
 
@@ -166,7 +166,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 			} else {
 				finalSigSize = tbx.getSignatureSize() * pairs.size();
 			}
-			VectorSignature sigf = getEmptySignature(finalSigSize);
+			DefaultVectorSignature sigf = getEmptySignature(finalSigSize);
 
 			for (Pair<Integer, Integer> p : pairs) {
 				IcyBufferedImage center = grays.get(p.first);
@@ -177,7 +177,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 				} else {
 					precomputedLBP = tbx.computeFuzzyRegion(center, neighbours, reg);
 				}
-				VectorSignature sig1 = getEmptySignature(precomputedLBP.length);
+				DefaultVectorSignature sig1 = getEmptySignature(precomputedLBP.length);
 				for (int i = 0; i < precomputedLBP.length; i++) {
 					sig1.set(i, precomputedLBP[i]);
 				}
@@ -185,7 +185,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 				// TODO EN COURS DE TEST 2
 				// TODO Revoir notamment la dimension finale du vecteur
 				if (ri) {
-					VectorSignature sig2 = getEmptySignature(pptbx.getSignatureSize());
+					DefaultVectorSignature sig2 = getEmptySignature(pptbx.getSignatureSize());
 					for (int d = 0; d < sig1.getSize(); d++) {
 						sig2.addTo((int) pptbx.getRI(d), sig1.get(d));
 					}
@@ -215,7 +215,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 			}
 
 			if (precomputedLBP.length > 1) {
-				VectorSignatureConcatenator concat = new VectorSignatureConcatenator(VectorSignature.DENSE_VECTOR_SIGNATURE, false);
+				VectorSignatureConcatenator concat = new VectorSignatureConcatenator(DefaultVectorSignature.DENSE_VECTOR_SIGNATURE, false);
 				for (IcyBufferedImage pre : precomputedLBP) {
 					concat.add(extractLocalSignature(pre, reg));
 				}
@@ -227,7 +227,7 @@ public class LocalBinaryPattern extends GlobalAndLocalDescriptor<SegmentableIcyB
 	}
 
 	@Override
-	public VectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shape) throws SignatureException {
+	public DefaultVectorSignature extractLocalSignature(SegmentableIcyBufferedImage img, Shape shape) throws SignatureException {
 		throw new SignatureException("LocalBinaryPattern::extractLocalSignature not implemented for shape");
 	}
 

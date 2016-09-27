@@ -22,7 +22,7 @@ import plugins.nherve.matrix.Matrix;
 import plugins.nherve.toolbox.image.feature.FeatureException;
 import plugins.nherve.toolbox.image.feature.signature.DenseVectorSignature;
 import plugins.nherve.toolbox.image.feature.signature.SparseVectorSignature;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.feature.signature.DefaultVectorSignature;
 
 /**
  * The Class CooccurenceMatrix.
@@ -209,7 +209,7 @@ public class CooccurenceMatrix<T> extends Matrix {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public VectorSignature getSmallSignature() throws FeatureException {
+	public DefaultVectorSignature getSmallSignature() throws FeatureException {
 		DenseVectorSignature sig = new DenseVectorSignature(SMALL_SIGNATURE_SIZE);
 		sig.set(0, energy());
 		sig.set(1, entropy());
@@ -225,7 +225,7 @@ public class CooccurenceMatrix<T> extends Matrix {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public VectorSignature getMarginalizedSignature() throws FeatureException {
+	public DefaultVectorSignature getMarginalizedSignature() throws FeatureException {
 		normalizeSumToOne();
 		DenseVectorSignature sig = new DenseVectorSignature(n);
 		for (int j = 0; j < n; j++) {
@@ -243,8 +243,8 @@ public class CooccurenceMatrix<T> extends Matrix {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public VectorSignature asSignature(boolean dense) throws FeatureException {
-		VectorSignature sig = null;
+	public DefaultVectorSignature asSignature(boolean dense) throws FeatureException {
+		DefaultVectorSignature sig = null;
 		if (dense) {
 			sig = new DenseVectorSignature(n * n);
 		} else {
@@ -271,8 +271,8 @@ public class CooccurenceMatrix<T> extends Matrix {
 	 * @throws FeatureException
 	 *             the feature exception
 	 */
-	public VectorSignature diagonal(boolean dense) throws FeatureException {
-		VectorSignature sig = null;
+	public DefaultVectorSignature diagonal(boolean dense) throws FeatureException {
+		DefaultVectorSignature sig = null;
 		if (dense) {
 			sig = new DenseVectorSignature(n);
 		} else {
