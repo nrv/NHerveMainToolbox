@@ -97,7 +97,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 				sig = ld.extractLocalSignature(getImage(), data);
 				setResult(idx, sig);
 			} catch (SignatureException e) {
-				logError("On region " + data + " : " + e.getMessage());
+				error("On region " + data + " : " + e.getMessage());
 				addError(idx, e);
 			}
 		}
@@ -162,7 +162,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 					sig = ld.extractLocalSignature(getImage(), new IcyPixel(x, line));
 					setResult(idx, sig);
 				} catch (SignatureException e) {
-					logError("On pixel " + x + "x" + line + " : " + e.getMessage());
+					error("On pixel " + x + "x" + line + " : " + e.getMessage());
 					addError(idx, e);
 				}
 				idx++;
@@ -230,7 +230,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 
 				if (isLogEnabled()) {
 					cpu.stop();
-					log(" ~ " + done * 100.0 / nbr + " % ~ " + cpu.getElapsedTimeMilli() / 1000.0 + " s");
+					info(" ~ " + done * 100.0 / nbr + " % ~ " + cpu.getElapsedTimeMilli() / 1000.0 + " s");
 					cpu.start();
 				}
 				donePct += stepPct;
@@ -274,7 +274,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				interrupted = true;
-				log("MultiThreadedSignatureExtractor interrupted 1");
+				info("MultiThreadedSignatureExtractor interrupted 1");
 			}
 		} else {
 			try {
@@ -283,7 +283,7 @@ public class MultiThreadedExecutionContext extends Algorithm {
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				interrupted = true;
-				log("MultiThreadedSignatureExtractor interrupted 2");
+				info("MultiThreadedSignatureExtractor interrupted 2");
 			}
 		}
 

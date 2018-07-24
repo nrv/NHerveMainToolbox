@@ -81,9 +81,9 @@ public class MultiThreadedSignatureExtractor<T extends Segmentable> extends Sign
 		LocalDescriptor<T, ? extends Signature, IcyPixel> ld = (LocalDescriptor<T, ? extends Signature, IcyPixel>) getDescriptor();
 
 		if (regions != null) {
-			log("MultiThreadedSignatureExtractor() - Launching " + regions.length + " signatures extraction ...");
+			info("MultiThreadedSignatureExtractor() - Launching " + regions.length + " signatures extraction ...");
 		} else {
-			log("MultiThreadedSignatureExtractor() - Launching signatures extraction for each pixel (" + img.getHeight() * img.getWidth() + ") ...");
+			info("MultiThreadedSignatureExtractor() - Launching signatures extraction for each pixel (" + img.getHeight() * img.getWidth() + ") ...");
 		}
 
 		if (doPreprocess) {

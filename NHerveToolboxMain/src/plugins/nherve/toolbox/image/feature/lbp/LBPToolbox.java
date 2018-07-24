@@ -124,7 +124,7 @@ public class LBPToolbox extends Algorithm {
 
 		initNeighbours();
 
-		log("LocalBinaryPattern signature size = " + getSignatureSize() + " - (" + maxLBPIndex + " * " + v + " * " + encoding + ")");
+		info("LocalBinaryPattern signature size = " + getSignatureSize() + " - (" + maxLBPIndex + " * " + v + " * " + encoding + ")");
 	}
 
 	public long circularRightShift(long x) {

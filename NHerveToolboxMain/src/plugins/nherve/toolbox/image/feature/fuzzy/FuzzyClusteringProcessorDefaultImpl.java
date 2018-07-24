@@ -106,7 +106,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 
 		monitor.stop();
 
-		log("getAsImage CPU usage : " + monitor.getUserElapsedTimeMilli() + " ms");
+		info("getAsImage CPU usage : " + monitor.getUserElapsedTimeMilli() + " ms");
 
 		return segImg;
 	}
@@ -146,7 +146,7 @@ public abstract class FuzzyClusteringProcessorDefaultImpl extends Algorithm impl
 			return doClustering(img, seg, regions, sigs);
 		} catch (Exception e) {
 			e.printStackTrace();
-			logError(e.getClass().getName() + " : " + e.getMessage());
+			error(e.getClass().getName() + " : " + e.getMessage());
 			return null;
 		}
 	}

@@ -108,7 +108,7 @@ public abstract class DimensionReductionAlgorithm extends Algorithm {
 				mean.add(s);
 			}
 			mean.multiply(1.0 / signatures.size());
-			log(mean.toString());
+			info(mean.toString());
 		}
 		
 		return mean;

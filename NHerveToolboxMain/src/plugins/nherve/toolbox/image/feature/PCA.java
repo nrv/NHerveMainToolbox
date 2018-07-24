@@ -56,16 +56,16 @@ public class PCA extends DimensionReductionAlgorithm {
 		
 		Matrix m = getCenteredMatrix(signatures);
 		
-		log("Building variance/covariance matrix ...");
+		info("Building variance/covariance matrix ...");
 		Matrix varcov = getVarCovMatrix(m);
 		m = null;
 		
-		log("Launching EigenvalueDecomposition ... " + varcov.getRowDimension() + " x " + varcov.getColumnDimension());
+		info("Launching EigenvalueDecomposition ... " + varcov.getRowDimension() + " x " + varcov.getColumnDimension());
 		evd = varcov.eig();
 		if (isLogEnabled()) {
 			evd.getV().print(8, 3);
 		}
-		log("Done");		
+		info("Done");		
 	}
 	
 	/**

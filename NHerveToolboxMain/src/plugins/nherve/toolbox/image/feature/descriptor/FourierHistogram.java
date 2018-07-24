@@ -122,7 +122,7 @@ public class FourierHistogram extends GlobalAndLocalDescriptor<SegmentableIcyBuf
 
 		wdwRadius = getRadiuses(wdwNewHalfWindowSize);
 
-		log("FourierHistogram(w = " + windowSize + ", s = " + wdwNewWindowSize + ", nw = " + wdwNewHalfWindowSize + ") " + asString(wdwRadius));
+		info("FourierHistogram(w = " + windowSize + ", s = " + wdwNewWindowSize + ", nw = " + wdwNewHalfWindowSize + ") " + asString(wdwRadius));
 	}
 
 	/**

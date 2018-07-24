@@ -183,7 +183,7 @@ public class GridFactory extends Algorithm implements IcySupportRegionFactory {
 	 */
 	@Override
 	public List<IcySupportRegion> extractRegions(Segmentable img) throws SupportRegionException {
-		log("Launching regions extraction ...");
+		info("Launching regions extraction ...");
 		List<IcySupportRegion> res = null;
 		switch (algorithm) {
 		case ALGO_FIXED_SIZE:
@@ -199,7 +199,7 @@ public class GridFactory extends Algorithm implements IcySupportRegionFactory {
 		default:
 			throw new SupportRegionException("Algorithm(" + algorithm + ") not yet implemented");
 		}
-		log("... " + res.size() + " regions found");
+		info("... " + res.size() + " regions found");
 		return res;
 	}
 
@@ -246,7 +246,7 @@ public class GridFactory extends Algorithm implements IcySupportRegionFactory {
 	 */
 	@Override
 	public List<IcySupportRegion> extractRegions(Segmentable img, Mask mask) throws SupportRegionException {
-		log("Launching regions extraction ...");
+		info("Launching regions extraction ...");
 		List<IcySupportRegion> allRegions = extractRegions(img);
 		List<IcySupportRegion> filteredRegions = new ArrayList<IcySupportRegion>();
 		for (IcySupportRegion sr : allRegions) {
@@ -254,7 +254,7 @@ public class GridFactory extends Algorithm implements IcySupportRegionFactory {
 				filteredRegions.add(sr);
 			}
 		}
-		log("... " + filteredRegions.size() + " regions found");
+		info("... " + filteredRegions.size() + " regions found");
 		return filteredRegions;
 	}
 	

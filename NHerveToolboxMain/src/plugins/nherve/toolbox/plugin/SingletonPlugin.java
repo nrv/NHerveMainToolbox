@@ -307,15 +307,15 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	/**
 	 * Log.
 	 */
-	public void log() {
-		log("");
+	public void info() {
+		info("");
 	}
 
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.AbleToLogMessages#log(java.lang.String)
 	 */
 	@Override
-	public void log(String message) {
+	public void info(String message) {
 		if (isLogEnabled()) {
 			Algorithm.out(message);
 		}
@@ -325,12 +325,12 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	 * @see plugins.nherve.toolbox.AbleToLogMessages#logError(java.lang.String)
 	 */
 	@Override
-	public void logError(String message) {
+	public void error(String message) {
 		Algorithm.err("ERROR : " + message);
 	}
 
 	@Override
-	public void logError(Throwable e) {
+	public void error(Throwable e) {
 		Algorithm.err("ERROR : " + e.getClass().getName() + " : " + e.getMessage());
 	}
 	
@@ -338,7 +338,7 @@ public abstract class SingletonPlugin extends Plugin implements PluginImageAnaly
 	 * @see plugins.nherve.toolbox.AbleToLogMessages#logWarning(java.lang.String)
 	 */
 	@Override
-	public void logWarning(String message) {
+	public void warn(String message) {
 		Algorithm.err("WARNING : " + message);
 	}
 	

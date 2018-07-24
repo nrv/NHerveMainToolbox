@@ -75,7 +75,7 @@ public class LDA extends DimensionReductionAlgorithm {
 		Matrix m = getMatrix(signatures);
 		Matrix globalMean = getMean(m);
 		if (isLogEnabled()) {
-			log("Global mean : ");
+			info("Global mean : ");
 			globalMean.print(20, 15);
 		}
 		
@@ -92,7 +92,7 @@ public class LDA extends DimensionReductionAlgorithm {
 		
 		HashMap<Integer, Matrix> classesMatrix = new HashMap<Integer, Matrix>();
 		for (int g : classesCardinality.keySet()) {
-			log("Class " + g + " has " + classesCardinality.get(g) + " members");
+			info("Class " + g + " has " + classesCardinality.get(g) + " members");
 			classesMatrix.put(g, new Matrix(classesCardinality.get(g), dim));
 		}
 		
@@ -110,7 +110,7 @@ public class LDA extends DimensionReductionAlgorithm {
 		for (int g : classesMatrix.keySet()) {
 			Matrix lm = getMean(classesMatrix.get(g));
 			if (isLogEnabled()) {
-				log("Class " + g + " mean : ");
+				info("Class " + g + " mean : ");
 				lm.print(20, 15);
 			}
 			classesMean.put(g, lm);
@@ -126,7 +126,7 @@ public class LDA extends DimensionReductionAlgorithm {
 		for (int g : classesMatrix.keySet()) {
 			Matrix mx = getVarCovMatrix(classesMatrix.get(g));
 			if (isLogEnabled()) {
-				log("C"+g+": ");
+				info("C"+g+": ");
 				mx.print(20, 15);
 			}
 			varcov.put(g, mx);
@@ -140,7 +140,7 @@ public class LDA extends DimensionReductionAlgorithm {
 		pooled.timesEquals(1.0 / (double) m.getRowDimension());
 		
 		if (isLogEnabled()) {
-			log("Pooled C: ");
+			info("Pooled C: ");
 			pooled.print(20, 15);
 		}
 		
@@ -158,7 +158,7 @@ public class LDA extends DimensionReductionAlgorithm {
 			constStuff.set(0, g, c);
 		}
 		
-		log("LDA done");
+		info("LDA done");
 	}
 
 	/**

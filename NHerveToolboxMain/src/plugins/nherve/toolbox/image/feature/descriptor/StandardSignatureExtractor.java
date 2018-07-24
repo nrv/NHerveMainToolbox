@@ -54,7 +54,7 @@ public class StandardSignatureExtractor<T extends Segmentable> extends Signature
 		}
 		LocalDescriptor<T, ? extends Signature, IcyPixel> ld = (LocalDescriptor<T, ? extends Signature, IcyPixel>) getDescriptor();
 		
-		log("StandardSignatureExtractor - Launching " + regions.length + " signatures extraction ...");
+		info("StandardSignatureExtractor - Launching " + regions.length + " signatures extraction ...");
 
 		Signature[] result = new Signature[regions.length];
 		if (doPreprocess) {
